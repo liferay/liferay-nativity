@@ -1,0 +1,1 @@
+Liferay Nativity is the cross-platform Java library for creating icon overlays and context menus. 
