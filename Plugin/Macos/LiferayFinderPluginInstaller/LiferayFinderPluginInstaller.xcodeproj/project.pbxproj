@@ -1,0 +1,426 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		693C0294165F74890068041F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 693C0293165F74890068041F /* Carbon.framework */; };
+		69931AE6165E3E6100E425BE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69931AE5165E3E6100E425BE /* Cocoa.framework */; };
+		69931AF2165E3E6100E425BE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 69931AF1165E3E6100E425BE /* main.m */; };
+		69931AF9165E3E6100E425BE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 69931AF8165E3E6100E425BE /* AppDelegate.m */; };
+		69931B08165E43AE00E425BE /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69931B07165E43AE00E425BE /* ServiceManagement.framework */; };
+		69931B0A165E43E800E425BE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69931B09165E43E800E425BE /* Security.framework */; };
+		69931B13165E46E200E425BE /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 69931B12165E46E200E425BE /* main.c */; };
+		69931B1B165E4EA600E425BE /* FinderPluginHelper-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69931B19165E4EA600E425BE /* FinderPluginHelper-Info.plist */; };
+		69931B1C165E4EA600E425BE /* FinderPluginHelper-Launchd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69931B1A165E4EA600E425BE /* FinderPluginHelper-Launchd.plist */; };
+		69931B1E165E4FAC00E425BE /* com.liferay.FinderPluginHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 69931B0F165E46E200E425BE /* com.liferay.FinderPluginHelper */; };
+		69931B1F165E4FB400E425BE /* FinderPluginHelper-Info.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 69931B19165E4EA600E425BE /* FinderPluginHelper-Info.plist */; };
+		69931B20165E4FB900E425BE /* FinderPluginHelper-Launchd.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 69931B1A165E4EA600E425BE /* FinderPluginHelper-Launchd.plist */; };
+		69931B22165E68E200E425BE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 69931B21165E68E200E425BE /* MainMenu.xib */; };
+		699B292C1668C1AD002382A1 /* LiferayFinderPlugin.app in Resources */ = {isa = PBXBuildFile; fileRef = 699B292B1668C1AD002382A1 /* LiferayFinderPlugin.app */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		69931B0D165E46E200E425BE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		69931B1D165E4F6700E425BE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchServices;
+			dstSubfolderSpec = 1;
+			files = (
+				69931B20165E4FB900E425BE /* FinderPluginHelper-Launchd.plist in CopyFiles */,
+				69931B1F165E4FB400E425BE /* FinderPluginHelper-Info.plist in CopyFiles */,
+				69931B1E165E4FAC00E425BE /* com.liferay.FinderPluginHelper in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		693C0291165E7F670068041F /* LiferayFinderPlugin.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = LiferayFinderPlugin.app; sourceTree = "<group>"; };
+		693C0293165F74890068041F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
+		69931AE1165E3E6000E425BE /* LiferayFinderPluginInstaller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiferayFinderPluginInstaller.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		69931AE5165E3E6100E425BE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		69931AE8165E3E6100E425BE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		69931AE9165E3E6100E425BE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		69931AEA165E3E6100E425BE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		69931AED165E3E6100E425BE /* LiferayFinderPluginInstaller-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LiferayFinderPluginInstaller-Info.plist"; sourceTree = "<group>"; };
+		69931AF1165E3E6100E425BE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		69931AF3165E3E6100E425BE /* LiferayFinderPluginInstaller-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LiferayFinderPluginInstaller-Prefix.pch"; sourceTree = "<group>"; };
+		69931AF7165E3E6100E425BE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		69931AF8165E3E6100E425BE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		69931B07165E43AE00E425BE /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		69931B09165E43E800E425BE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		69931B0F165E46E200E425BE /* com.liferay.FinderPluginHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.liferay.FinderPluginHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		69931B12165E46E200E425BE /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		69931B19165E4EA600E425BE /* FinderPluginHelper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FinderPluginHelper-Info.plist"; sourceTree = "<group>"; };
+		69931B1A165E4EA600E425BE /* FinderPluginHelper-Launchd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FinderPluginHelper-Launchd.plist"; sourceTree = "<group>"; };
+		69931B21165E68E200E425BE /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		699B292B1668C1AD002382A1 /* LiferayFinderPlugin.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = LiferayFinderPlugin.app; path = ../LiferayFinderPlugin/build/Release/LiferayFinderPlugin.app; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		69931ADE165E3E6000E425BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69931B0A165E43E800E425BE /* Security.framework in Frameworks */,
+				69931B08165E43AE00E425BE /* ServiceManagement.framework in Frameworks */,
+				69931AE6165E3E6100E425BE /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69931B0C165E46E200E425BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				693C0294165F74890068041F /* Carbon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		69931AD6165E3E6000E425BE = {
+			isa = PBXGroup;
+			children = (
+				699B292B1668C1AD002382A1 /* LiferayFinderPlugin.app */,
+				693C0293165F74890068041F /* Carbon.framework */,
+				693C0291165E7F670068041F /* LiferayFinderPlugin.app */,
+				69931B09165E43E800E425BE /* Security.framework */,
+				69931AEB165E3E6100E425BE /* LiferayFinderPluginInstaller */,
+				69931B11165E46E200E425BE /* com.liferay.FinderPluginHelper */,
+				69931AE4165E3E6100E425BE /* Frameworks */,
+				69931AE2165E3E6000E425BE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		69931AE2165E3E6000E425BE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				69931AE1165E3E6000E425BE /* LiferayFinderPluginInstaller.app */,
+				69931B0F165E46E200E425BE /* com.liferay.FinderPluginHelper */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		69931AE4165E3E6100E425BE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				69931B07165E43AE00E425BE /* ServiceManagement.framework */,
+				69931AE5165E3E6100E425BE /* Cocoa.framework */,
+				69931AE7165E3E6100E425BE /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		69931AE7165E3E6100E425BE /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				69931AE8165E3E6100E425BE /* AppKit.framework */,
+				69931AE9165E3E6100E425BE /* CoreData.framework */,
+				69931AEA165E3E6100E425BE /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		69931AEB165E3E6100E425BE /* LiferayFinderPluginInstaller */ = {
+			isa = PBXGroup;
+			children = (
+				69931AF7165E3E6100E425BE /* AppDelegate.h */,
+				69931AF8165E3E6100E425BE /* AppDelegate.m */,
+				69931AEC165E3E6100E425BE /* Supporting Files */,
+				69931B21165E68E200E425BE /* MainMenu.xib */,
+			);
+			path = LiferayFinderPluginInstaller;
+			sourceTree = "<group>";
+		};
+		69931AEC165E3E6100E425BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				69931AED165E3E6100E425BE /* LiferayFinderPluginInstaller-Info.plist */,
+				69931AF1165E3E6100E425BE /* main.m */,
+				69931AF3165E3E6100E425BE /* LiferayFinderPluginInstaller-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		69931B11165E46E200E425BE /* com.liferay.FinderPluginHelper */ = {
+			isa = PBXGroup;
+			children = (
+				69931B19165E4EA600E425BE /* FinderPluginHelper-Info.plist */,
+				69931B1A165E4EA600E425BE /* FinderPluginHelper-Launchd.plist */,
+				69931B12165E46E200E425BE /* main.c */,
+			);
+			path = com.liferay.FinderPluginHelper;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		69931AE0165E3E6000E425BE /* LiferayFinderPluginInstaller */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69931AFF165E3E6100E425BE /* Build configuration list for PBXNativeTarget "LiferayFinderPluginInstaller" */;
+			buildPhases = (
+				69931ADD165E3E6000E425BE /* Sources */,
+				69931ADE165E3E6000E425BE /* Frameworks */,
+				69931ADF165E3E6000E425BE /* Resources */,
+				69931B1D165E4F6700E425BE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiferayFinderPluginInstaller;
+			productName = LiferayFinderPluginInstaller;
+			productReference = 69931AE1165E3E6000E425BE /* LiferayFinderPluginInstaller.app */;
+			productType = "com.apple.product-type.application";
+		};
+		69931B0E165E46E200E425BE /* com.liferay.FinderPluginHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69931B16165E46E200E425BE /* Build configuration list for PBXNativeTarget "com.liferay.FinderPluginHelper" */;
+			buildPhases = (
+				69931B0B165E46E200E425BE /* Sources */,
+				69931B0C165E46E200E425BE /* Frameworks */,
+				69931B0D165E46E200E425BE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = com.liferay.FinderPluginHelper;
+			productName = com.liferay.FinderPluginHelper;
+			productReference = 69931B0F165E46E200E425BE /* com.liferay.FinderPluginHelper */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		69931AD8165E3E6000E425BE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 69931ADB165E3E6000E425BE /* Build configuration list for PBXProject "LiferayFinderPluginInstaller" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 69931AD6165E3E6000E425BE;
+			productRefGroup = 69931AE2165E3E6000E425BE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				69931AE0165E3E6000E425BE /* LiferayFinderPluginInstaller */,
+				69931B0E165E46E200E425BE /* com.liferay.FinderPluginHelper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		69931ADF165E3E6000E425BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				699B292C1668C1AD002382A1 /* LiferayFinderPlugin.app in Resources */,
+				69931B1B165E4EA600E425BE /* FinderPluginHelper-Info.plist in Resources */,
+				69931B1C165E4EA600E425BE /* FinderPluginHelper-Launchd.plist in Resources */,
+				69931B22165E68E200E425BE /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		69931ADD165E3E6000E425BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69931AF2165E3E6100E425BE /* main.m in Sources */,
+				69931AF9165E3E6100E425BE /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69931B0B165E46E200E425BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69931B13165E46E200E425BE /* main.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		69931AFD165E3E6100E425BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		69931AFE165E3E6100E425BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		69931B00165E3E6100E425BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "Joe Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Prefix.pch";
+				INFOPLIST_FILE = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx10.6;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		69931B01165E3E6100E425BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "Joe Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Prefix.pch";
+				INFOPLIST_FILE = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx10.6;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		69931B17165E46E200E425BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Joe Developer";
+				INFOPLIST_FILE = "com.liferay.FinderPluginHelper/FinderPluginHelper-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"com.liferay.FinderPluginHelper/FinderPluginHelper-Info.plist",
+					"-sectcreate",
+					__TEXT,
+					__launchd_plist,
+					"com.liferay.FinderPluginHelper/FinderPluginHelper-Launchd.plist",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		69931B18165E46E200E425BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Joe Developer";
+				INFOPLIST_FILE = "com.liferay.FinderPluginHelper/FinderPluginHelper-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"com.liferay.FinderPluginHelper/FinderPluginHelper-Info.plist",
+					"-sectcreate",
+					__TEXT,
+					__launchd_plist,
+					"com.liferay.FinderPluginHelper/FinderPluginHelper-Launchd.plist",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		69931ADB165E3E6000E425BE /* Build configuration list for PBXProject "LiferayFinderPluginInstaller" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69931AFD165E3E6100E425BE /* Debug */,
+				69931AFE165E3E6100E425BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		69931AFF165E3E6100E425BE /* Build configuration list for PBXNativeTarget "LiferayFinderPluginInstaller" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69931B00165E3E6100E425BE /* Debug */,
+				69931B01165E3E6100E425BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		69931B16165E46E200E425BE /* Build configuration list for PBXNativeTarget "com.liferay.FinderPluginHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69931B17165E46E200E425BE /* Debug */,
+				69931B18165E46E200E425BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 69931AD8165E3E6000E425BE /* Project object */;
+}
