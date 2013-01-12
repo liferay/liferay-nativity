@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<project name="sync-java" basedir="." default="compile">
+	<property name="application.name" value="Liferay Nativity" />
+
+	<property name="project.dir" value="." />
+
+	<property name="java.dir" value="${project.dir}/java" />
+
+	<property file="${project.dir}/build.${user.name}.properties" />
+	<property file="${project.dir}/build.${env.COMPUTERNAME}.properties" />
+	<property file="${project.dir}/build.${env.HOST}.properties" />
+	<property file="${project.dir}/build.${env.HOSTNAME}.properties" />
+	<property file="${project.dir}/build.properties" />
+
+	<path id="portal.classpath">
+		<pathelement location="${portal.dir}/portal-impl/classes" />
+		<pathelement location="${portal.dir}/portal-service/classes" />
+		<pathelement location="${portal.dir}/portal-web/docroot/WEB-INF/classes" />
+		<pathelement location="${portal.dir}/util-java/classes" />
+		<fileset dir="${portal.dir}/lib/development" includes="*.jar" />
+		<fileset dir="${portal.dir}/lib/global" includes="*.jar" />
+		<fileset dir="${portal.dir}/lib/portal" includes="*.jar" />
+	</path>
+
+	<target name="build-jar" depends="compile">
+		<jar destfile="${project.tmp.dir}/jar/${package.name}.jar">
+			<fileset dir="${java.dir}/classes" />
+		</jar>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${java.dir}/classes" />
+		<delete dir="dist" />
+		<delete dir="${project.tmp.dir}" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${java.dir}/classes" />
+
+		<javac
+			compiler="${javac.compiler}"
+			debug="${javac.debug}"
+			deprecation="${javac.deprecation}"
+			destdir="${java.dir}/classes"
+			encoding="${javac.encoding}"
+			includeAntRuntime="false"
+			nowarn="${javac.nowarn}"
+			srcdir="${java.dir}/src"
+		/>
+
+		<copy todir="${java.dir}/classes">
+			<fileset dir="${java.dir}/src" excludes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="format-source">
+		<java
+			classname="com.liferay.portal.tools.SourceFormatter"
+			classpathref="portal.classpath"
+			dir="${java.dir}"
+			fork="true"
+			newenvironment="true"
+		>
+			<jvmarg value="-Xmx128m" />
+		</java>
+
+		<delete file="ServiceBuilder.temp" />
+	</target>
+
+</project>
