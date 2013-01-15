@@ -84,26 +84,14 @@ OSStatus    SendFinderSyncEvent( const FSRef* inObjectRef )
     return result;
 }
 
--(void) enableOverlays : (BOOL) enable
+-(void) repaintAllWindows
 {
-    overlaysEnabled_ = enable;
-}
-
--(void) setIcon : (NSNumber*) icon forFile : (NSString*) path
-{
-    [fileNamesCache_ setObject:icon forKey:path];
-
-    FSRef ref;
-    CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath: path], &ref);
-    SendFinderSyncEvent(&ref);
-    
-    [[NSWorkspace sharedWorkspace] noteFileSystemChanged];
-    
     NSArray* windows = [[NSApplication sharedApplication] windows];
-    
+        
     for (int i=0;i<[windows count];++i)
     {
         NSWindow* window = [windows objectAtIndex:i];
+                
         [window update];
         
         if ([[window className] isEqualToString:@"TBrowserWindow"])
@@ -117,9 +105,42 @@ OSStatus    SendFinderSyncEvent( const FSRef* inObjectRef )
     }
 }
 
+-(void) notifyFileChanged : (NSString*) path
+{
+    FSRef ref;
+    CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath: path], &ref);
+    SendFinderSyncEvent(&ref);
+    
+    [[NSWorkspace sharedWorkspace] noteFileSystemChanged:path];
+}
+
+
+-(void) enableOverlays : (BOOL) enable
+{
+    overlaysEnabled_ = enable;
+    
+    for (int i=0;i<[fileNamesCache_ count]; ++i)
+    {
+         //[self notifyFileChanged: [fileNamesCache_ object]]
+    }
+    
+    [self repaintAllWindows];
+}
+
+-(void) setIcon : (NSNumber*) icon forFile : (NSString*) path
+{
+    [fileNamesCache_ setObject:icon forKey:path];
+
+    [self notifyFileChanged: path];   
+    [self repaintAllWindows];
+}
+
 -(void) removeIconFromFile : (NSString*) path
 {
     [fileNamesCache_ removeObjectForKey:path];
+    
+    [self notifyFileChanged: path];
+    [self repaintAllWindows];
 }
 
 @end

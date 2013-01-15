@@ -22,14 +22,15 @@
 - (void)IconOverlayHandlers_drawImage:(id)arg1
 {
  
-    NSString *url = [self previewItemURL];
+    TIconViewCell* realSelf = (TIconViewCell*) self;
+    FINode* node = (FINode*) [realSelf representedItem];
+        
+    NSString *url = [node previewItemURL];
 	NSRect rect = [(IKImageBrowserCell*)self frame];
     
     NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath: [url path]];
     
-    // [url release];
-    
-	if ([imageIndex intValue] > 0)
+    if ([imageIndex intValue] > 0)
     {
         NSImage *icon = [arg1 _nsImage];
         
