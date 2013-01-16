@@ -149,6 +149,22 @@
     [self replyString:@"1" toSocket:sock];
 }
 
+- (void) execRemoveFileIconsCmd: (NSArray*) cmdData replyTo:(AsyncSocket*) sock
+{
+    NSUInteger cmdDataCount = [cmdData count];
+
+    if (cmdDataCount < 2)
+        return;
+
+    for (int i = 1; i < cmdDataCount; i++)
+    {
+        NSString* fileName = (NSString*)[cmdData objectAtIndex:i];
+
+        [[ContentManager sharedInstance] removeIconFromFile:fileName];
+    }
+
+    [self replyString:@"1" toSocket:sock];
+}
 
 - (void) execSetFileIconCmd: (NSArray*) cmdData replyTo:(AsyncSocket*) sock
 {
@@ -159,6 +175,29 @@
     NSString* iconIndex = (NSString*)[cmdData objectAtIndex:2];
     
     [[ContentManager sharedInstance] setIcon:[numberFormatter numberFromString:iconIndex] forFile:fileName];
+    [self replyString:@"1" toSocket:sock];
+}
+
+- (void) execSetFileIconsCmd: (NSArray*) cmdData replyTo:(AsyncSocket*) sock
+{
+    NSUInteger cmdDataCount = [cmdData count];
+
+    if ((cmdDataCount < 3) || (cmdDataCount + 1) % 2)
+        return;
+
+    NSDictionary* iconDictionary = [[NSMutableDictionary alloc] init];
+
+    for (int i = 1; i < cmdDataCount - 1; i += 2)
+    {
+        NSString* iconIdString = [cmdData objectAtIndex:(i+1)];
+        NSNumber* iconId = [numberFormatter numberFromString:iconIdString];
+
+        NSString* path = [cmdData objectAtIndex:i];
+
+        [iconDictionary setObject:iconId forKey:path];
+    }
+
+    [[ContentManager sharedInstance] setIcons:iconDictionary];
     [self replyString:@"1" toSocket:sock];
 }
 
@@ -181,15 +220,19 @@
     NSString* cmdId = (NSString*)[cmdData objectAtIndex:0];
     if ([cmdId isEqualToString:@"setFileIcon"])
         [self execSetFileIconCmd: cmdData replyTo:sock];
-    if ([cmdId isEqualToString:@"removeFileIcon"])
+    else if ([cmdId isEqualToString:@"setFileIcons"])
+        [self execSetFileIconsCmd: cmdData replyTo:sock];
+    else if ([cmdId isEqualToString:@"removeFileIcon"])
         [self execRemoveFileIconCmd: cmdData replyTo:sock];
-    if ([cmdId isEqualToString:@"enableOverlays"])
+    else if ([cmdId isEqualToString:@"removeFileIcons"])
+        [self execRemoveFileIconsCmd: cmdData replyTo:sock];
+    else if ([cmdId isEqualToString:@"enableOverlays"])
         [self execEnableOverlaysCmd: cmdData replyTo:sock];
-    if ([cmdId isEqualToString:@"registerIcon"])
+    else if ([cmdId isEqualToString:@"registerIcon"])
         [self execRegisterIconCmd: cmdData replyTo:sock];
-    if ([cmdId isEqualToString:@"unregisterIcon"])
+    else if ([cmdId isEqualToString:@"unregisterIcon"])
         [self execUnregisterIconCmd: cmdData replyTo:sock];
-    if ([cmdId isEqualToString:@"setMenuTitle"])
+    else if ([cmdId isEqualToString:@"setMenuTitle"])
         [self execSetMenuTitleCmd: cmdData replyTo:sock];
 
 }
