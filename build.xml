@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="sync-java" basedir="." default="compile">
+<project name="liferay-nativity" basedir="." default="compile">
 	<property name="application.name" value="Liferay Nativity" />
 
 	<property name="project.dir" value="." />

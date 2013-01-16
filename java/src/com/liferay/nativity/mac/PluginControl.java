@@ -17,13 +17,13 @@ package com.liferay.nativity.mac;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 
+import java.net.Socket;
 public class PluginControl {
 
 	/**
 	 * Initialize connection with native service
-	 * 
+	 *
 	 * @return true if connection is successful
 	 */
 	public boolean connect() {
@@ -32,7 +32,7 @@ public class PluginControl {
 
 			_serviceInputStream = new DataInputStream(
 				_serviceSocket.getInputStream());
-			
+
 			_serviceOutputStream = new DataOutputStream(
 				_serviceSocket.getOutputStream());
 
@@ -45,7 +45,7 @@ public class PluginControl {
 
 			_callbackThread = new ReadThread(this);
 			_callbackThread.start();
-		} 
+		}
 		catch (IOException e) {
 			return false;
 		}
@@ -66,20 +66,20 @@ public class PluginControl {
 
 	/**
 	 * Enable/Disable icon overlay feature
-	 * 
+	 *
 	 * @param enable pass true is overlay feature should be enabled
 	 */
 	public void enableOverlays(boolean enable) {
 		String command = "enableOverlays:" + (enable ? "1" : "0");
-		
+
 		_sendCommand(command);
 	}
 
 	/**
 	 * Register icon in the service
-	 * 
+	 *
 	 * @param path to icon file
-	 * 
+	 *
 	 * @return registered icon id or 0 in case error
 	 */
 	public int registerIcon(String path) {
@@ -92,19 +92,19 @@ public class PluginControl {
 
 	/**
 	 * Remove icon overlay from file (previously set by setIconForFile)
-	 * 
+	 *
 	 * @param name of file
 	 */
 	public void removeFileIcon(String fileName) {
 		String command = "remove FileIcon:" + fileName;
 
-		_sendCommand(command);	
+		_sendCommand(command);
 	}
 
 	/**
-	 * Set title of root context menu item, all other items will be added as 
+	 * Set title of root context menu item, all other items will be added as
 	 * children of it
-	 * 
+	 *
 	 * @param new title of item
 	 */
 	public void setContextMenuTitle(String title) {
@@ -115,7 +115,7 @@ public class PluginControl {
 
 	/**
 	 * Associate icon with fileName
-	 * 
+	 *
 	 * @param target file name
 	 * @param id of icon that should be associated with file
 	 */
@@ -127,7 +127,7 @@ public class PluginControl {
 
 	/**
 	 * Unregister icon in the service
-	 * 
+	 *
 	 * @param id of icon previously registered by registerIcon method
 	 */
 	public void unregisterIcon(int id) {
@@ -138,11 +138,11 @@ public class PluginControl {
 
 	/**
 	 * Callback method called by native plugin when context menu executed on one
-	 * or more files. User code can override this method to add a number of 
+	 * or more files. User code can override this method to add a number of
 	 * additional items to context menu.
-	 * 
+	 *
 	 * @param array of file names on which context menu executed
-	 * 
+	 *
 	 * @return array of menu items that should be added to context menu, or null
 	 *         if additional context menu not needed
 	 */
@@ -152,89 +152,95 @@ public class PluginControl {
 
 	/**
 	 * Callback method that executes when user selects custom menu item
-	 * 
-	 * @param index of menu item (index in the array returned by previous 
+	 *
+	 * @param index of menu item (index in the array returned by previous
 	 *        getMenuItems call)
 	 * @param files array on which context menu item executed
 	 */
 	protected void menuItemExecuted(int index, String[] files) {
 	}
 
+	private String _sendCommand(String command) {
+		try {
+			command += "\r\n";
+
+			_serviceOutputStream.writeBytes(command);
+
+			String reply = _serviceInputStream.readLine();
+
+			return reply;
+		}
+		catch (IOException e) {
+			return null;
+		}
+	}
+
 	private void doCallbackLoop() {
 		while (_callbackSocket.isConnected()) {
 			try {
 				String data = _callbackInputStream.readLine();
-	
+
 				if (data.startsWith("menuQuery:")) {
 					String currentFiles = data.substring(10, data.length());
-					
+
 					_currentFiles = currentFiles.split(":");
-	
+
 					String[] items = getMenuItems(_currentFiles);
-	
+
 					String itemsStr = new String();
-					
+
 					if (items != null) {
 						for (int i=0; i<items.length; ++i) {
 							if (i > 0)
 								itemsStr += ":";
-	
+
 							itemsStr += items[i];
 						}
 					}
-					
+
 					_callbackOutputStream.writeBytes(itemsStr + "\r\n");
 				}
-				
+
 				if (data.startsWith("menuExec:")) {
 					menuItemExecuted(
 						Integer.parseInt(data.substring(9, data.length())),
 						_currentFiles);
 				}
-			} 
+			}
 			catch (IOException e) {
 			}
 		}
 	}
 
-	private String _sendCommand(String command) {
-		try {
-			command += "\r\n";
-			
-			_serviceOutputStream.writeBytes(command);
-			
-			String reply = _serviceInputStream.readLine();
-			
-			return reply;
-		}
-		catch (IOException e) {
-			return null;
-		}	
-	}
-	
+	private DataInputStream _callbackInputStream;
+
+	private DataOutputStream _callbackOutputStream;
+
+	private Socket _callbackSocket;
+
+	private ReadThread _callbackThread;
+
+	private String[] _currentFiles;
+
+	private DataInputStream _serviceInputStream;
+
+	private DataOutputStream _serviceOutputStream;
+
+	private Socket _serviceSocket;
+
 	private class ReadThread extends Thread {
-	
+
 		public ReadThread(PluginControl pluginControl) {
 			_pluginControl = pluginControl;
 		}
-	
+
 		@Override
 		public void run() {
 			_pluginControl.doCallbackLoop();
 		}
-	
+
 		private PluginControl _pluginControl;
-		
+
 	}
-	
-	private DataInputStream _callbackInputStream;
-	private DataOutputStream _callbackOutputStream;
-	private Socket _callbackSocket;
-	private ReadThread _callbackThread;
-	private String[] _currentFiles;
 
-	private Socket _serviceSocket;
-	private DataInputStream _serviceInputStream;
-	private DataOutputStream _serviceOutputStream;
-
-}	
+}
