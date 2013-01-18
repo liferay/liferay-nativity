@@ -18,10 +18,11 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Socket;
-import java.util.Map;
-import java.util.Map.Entry;
 
+import java.net.Socket;
+
+import java.util.Map.Entry;
+import java.util.Map;
 public class PluginControl {
 
 	/**
@@ -58,7 +59,7 @@ public class PluginControl {
 	}
 
 	/**
-	 * disconnects from plugin service
+	 * Disconnects from plugin service
 	 */
 	public void disconnect() {
 		try {
@@ -112,7 +113,7 @@ public class PluginControl {
 	 */
 	public void removeFileIcon(String[] fileNames) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		sb.append("removeFileIcons");
 
 		for (String fileName : fileNames) {
@@ -120,7 +121,7 @@ public class PluginControl {
 			sb.append(fileName);
 		}
 
-		_sendCommand(sb.toString());	
+		_sendCommand(sb.toString());
 	}
 
 	/**
@@ -149,41 +150,39 @@ public class PluginControl {
 
 	/**
 	 * Associate icons with multiple fileNames.
-	 * 
+	 *
 	 * @param map containing icon id values keyed by file name
 	 */
-    public void setIconsForFiles(
-    	Map<String, Integer> fileIconsMap) {
+	public void setIconsForFiles(Map<String, Integer> fileIconsMap) {
+		StringBuilder sb = new StringBuilder();
 
-    	StringBuilder sb = new StringBuilder();
+		sb.append("setFileIcons");
 
-    	sb.append("setFileIcons");
+		int i = 0;
 
-    	int i = 0;
+		for (Entry<String, Integer> entry : fileIconsMap.entrySet()) {
+			sb.append(":");
+			sb.append(entry.getKey());
+			sb.append(":");
+			sb.append(entry.getValue());
 
-    	for (Entry<String, Integer> entry : fileIconsMap.entrySet()) {
-    		sb.append(":");
-    		sb.append(entry.getKey());
-    		sb.append(":");
-    		sb.append(entry.getValue());
+			i++;
 
-    		i++;
+			if (i == _messageBufferSize) {
+				_sendCommand(sb.toString());
 
-    		if (i == _messageBufferSize) {
-    			_sendCommand(sb.toString());
+				sb = new StringBuilder();
 
-    			sb = new StringBuilder();
+			sb.append("setFileIcons");
 
-    	    	sb.append("setFileIcons"); 
+				i = 0;
+			}
+		}
 
-    			i = 0;
-    		}
-    	}
-
-    	if (i > 0) {
-    		_sendCommand(sb.toString());	    		
-    	}
-    }
+		if (i > 0) {
+			_sendCommand(sb.toString());
+		}
+	}
 
 	/**
 	 * Unregister icon in the service
@@ -260,16 +259,16 @@ public class PluginControl {
 	private String _sendCommand(String command) {
 		try {
 			command += "\r\n";
-			
+
 			_serviceOutputStream.writeBytes(command);
-			
+
 			String reply = _serviceBufferedReader.readLine();
 
 			return reply;
 		}
 		catch (IOException e) {
 			return null;
-		}	
+		}
 	}
 
 	private static long _messageBufferSize = 500;
@@ -286,9 +285,9 @@ public class PluginControl {
 
 	private BufferedReader _serviceBufferedReader;
 
-	private Socket _serviceSocket;
-
 	private DataOutputStream _serviceOutputStream;
+
+	private Socket _serviceSocket;
 
 	private class ReadThread extends Thread {
 
