@@ -33,7 +33,8 @@
 }
 
 + (RequestManager*) sharedInstance;
-- (void)start;
+- (void) start;
 - (NSArray* ) menuItemsForFiles: (NSArray*) files;
-- (void) menuItemClicked: (NSNumber*) item;
+- (void) menuItemClicked: (NSNumber*) item withTitle:(NSString*) title;
+
 @end

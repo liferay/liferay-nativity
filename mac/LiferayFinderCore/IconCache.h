@@ -22,6 +22,8 @@
 
 + (IconCache*) sharedInstance;
 
+- (NSNumber*) registerIcon:(NSString*) path;
+
 @property(nonatomic, retain) NSMutableDictionary *dictionary_;
 
 @end

@@ -276,8 +276,12 @@
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock
 {
-	if (connectedSocket == sock)
+    if (connectedSocket == sock)
+    {
         connectedSocket = nil;
+        
+        [[ContentManager sharedInstance] enableOverlays:false];
+    }
 
     if (callbackSocket == sock)
         callbackSocket = nil;
@@ -308,18 +312,22 @@
     return [callbackMsg componentsSeparatedByString:@":"];
 }
 
-- (void) menuItemClicked: (NSNumber*) item
+- (void)menuItemClicked:(NSNumber*)item withTitle:(NSString*)title
 {
     if (callbackSocket == nil)
+    {
         return;
+    }
     
     NSString* text = @"menuExec:";
-  
+    
     text = [text stringByAppendingString:[item stringValue]];
+    text = [text stringByAppendingString:@":"];
+    text = [text stringByAppendingString:title];
     
     NSData* data = [[text stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
     [data retain];
-
+    
     [callbackSocket writeData:data withTimeout:-1 tag:0];
 }
 

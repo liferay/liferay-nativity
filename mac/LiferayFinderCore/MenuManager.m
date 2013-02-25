@@ -39,7 +39,6 @@ static MenuManager *sharedInstance = nil;
 	if (self == [super init])
 	{
 		menuTitle = [[NSString alloc] initWithCString:"Liferay"];
-        
 	};
 	
 	return self;
@@ -58,7 +57,6 @@ static MenuManager *sharedInstance = nil;
     
     int count = end - start;
     
-    //int index=0;
     NSMutableArray *selectedItems = [[NSMutableArray alloc] initWithCapacity:count];
     struct TFENode* current;
     for (current = start; current < end; ++current)
@@ -73,7 +71,7 @@ static MenuManager *sharedInstance = nil;
 
 - (void)menuItemClicked:(id) param
 {
-    [[RequestManager sharedInstance] menuItemClicked: [param representedObject]];
+    [[RequestManager sharedInstance] menuItemClicked: [param representedObject] withTitle: [param title]];
 }
 
 - (void)addItemsToMenu:(TContextMenu *)menu forPaths:(NSArray *)selectedItems
