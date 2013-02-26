@@ -43,17 +43,27 @@ int main(int argc, char* argv[])
 	/* Obtain the right to install privileged helper tools (kSMRightBlessPrivilegedHelper). */
 	OSStatus status = AuthorizationCreate(&authRights, kAuthorizationEmptyEnvironment, flags, &authRef);
 
-	if (status != errAuthorizationSuccess)
+	if (status == errAuthorizationSuccess)
 	{
-		NSLog(@"Failed to create AuthorizationRef, return code %i", status);
+		createInstallInfo(argv[0]);
+		
+		result = SMJobBless(kSMDomainSystemLaunchd, (CFStringRef)@"com.liferay.FinderPluginHelper", authRef, (CFErrorRef*)error);
+
+		if (result)
+		{
+			return 0;
+		}
+		else
+		{
+			NSLog(@"SMJobBless failed to execute, error %@", error);
+
+			return 1;
+		}
 	}
 	else
 	{
-		createInstallInfo(argv[0]);
-		result = SMJobBless(kSMDomainSystemLaunchd, (CFStringRef)@"com.liferay.FinderPluginHelper", authRef, (CFErrorRef*)error);
+		NSLog(@"Failed to create AuthorizationRef, return code %i", status);
+
+		return 1;
 	}
-
-	return result;
-
-	return 1;
 }
