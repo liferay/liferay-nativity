@@ -95,21 +95,17 @@ OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
 	return result;
 }
 
-- (void)notifyFileChanged:(NSString*)path
+- (void)removeAllIcons
 {
-	FSRef ref;
-
-	CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath: path], &ref);
-	SendFinderSyncEvent(&ref);
-
-	[[NSWorkspace sharedWorkspace] noteFileSystemChanged:path];
+    [fileNamesCache_ removeAllObjects];
+    
+    [self repaintAllWindows];
 }
 
 - (void)removeIconFromFile:(NSString*)path
 {
 	[fileNamesCache_ removeObjectForKey:path];
 
-	[self notifyFileChanged:path];
 	[self repaintAllWindows];
 }
 

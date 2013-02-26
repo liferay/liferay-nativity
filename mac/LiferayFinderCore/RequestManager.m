@@ -74,6 +74,10 @@
 	{
 		[self execSetFileIconsCmd:cmdData replyTo:sock];
 	}
+    else if ([cmdId isEqualToString:@"removeAllFileIcons"])
+	{
+		[self execRemoveAllFileIconsCmd:cmdData replyTo:sock];
+	}
 	else if ([cmdId isEqualToString:@"removeFileIcon"])
 	{
 		[self execRemoveFileIconCmd:cmdData replyTo:sock];
@@ -128,6 +132,20 @@
 	[self replyString:[numberFormatter stringFromNumber:index] toSocket:sock];
 }
 
+- (void)execRemoveAllFileIconsCmd:(NSArray*)cmdData replyTo:(AsyncSocket*)sock
+{
+	NSUInteger cmdDataCount = [cmdData count];
+    
+	if (cmdDataCount != 2)
+	{
+		return;
+	}
+
+    [[ContentManager sharedInstance] removeAllIcons];
+    
+	[self replyString:@"1" toSocket:sock];
+}
+
 - (void)execRemoveFileIconCmd:(NSArray*)cmdData replyTo:(AsyncSocket*)sock
 {
 	if ([cmdData count] != 2)
@@ -138,6 +156,7 @@
 	NSString* fileName = (NSString*)[cmdData objectAtIndex:1];
 
 	[[ContentManager sharedInstance] removeIconFromFile:fileName];
+
 	[self replyString:@"1" toSocket:sock];
 }
 
