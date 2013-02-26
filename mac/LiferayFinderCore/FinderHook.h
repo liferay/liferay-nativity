@@ -15,11 +15,9 @@
 #import <Cocoa/Cocoa.h>
 #import "RequestManager.h"
 
+@interface FinderHook : NSObject
 
-@interface FinderHook : NSObject 
- 
-+ (void)hookMethod:(SEL)oldSelector inClass:(NSString *)className toCallToTheNewMethod:(SEL)newSelector;
-+ (void)hookClassMethod:(SEL)oldSelector inClass:(NSString *)className toCallToTheNewMethod:(SEL)newSelector;
-
++ (void)hookClassMethod:(SEL)oldSelector inClass:(NSString*)className toCallToTheNewMethod:(SEL)newSelector;
++ (void)hookMethod:(SEL)oldSelector inClass:(NSString*)className toCallToTheNewMethod:(SEL)newSelector;
 
 @end

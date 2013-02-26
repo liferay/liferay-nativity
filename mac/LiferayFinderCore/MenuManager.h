@@ -19,14 +19,15 @@ struct TFENodeVector;
 
 @interface MenuManager : NSObject
 {
-    NSString* menuTitle;
+	NSString* menuTitle;
 }
 
-+ (MenuManager *)sharedInstance;
-@property (nonatomic, strong) NSMutableArray *menuItems;
-- (NSArray*)pathsForNodes:(const struct TFENodeVector *)nodes;
-- (void)addItemsToMenu:(TContextMenu *)menu forPaths:(NSArray*)selectedItems;
+@property (nonatomic, strong) NSMutableArray* menuItems;
 
--(void) setMenuTitle: (NSString*) title;
++ (MenuManager*)sharedInstance;
+
+- (void)addItemsToMenu:(TContextMenu*)menu forPaths:(NSArray*)selectedItems;
+- (NSArray*)pathsForNodes:(const struct TFENodeVector*)nodes;
+- (void)setMenuTitle:(NSString*)title;
 
 @end

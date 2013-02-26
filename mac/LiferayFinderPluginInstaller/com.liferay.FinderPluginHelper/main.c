@@ -18,88 +18,99 @@
 #include <sys/syscall.h>
 #include <Carbon/Carbon.h>
 
+OSErr FindProcessBySignature(OSType type, OSType creator, ProcessSerialNumber* psn);
+void checkFinder(void);
+void checkUpdate(void);
 
-OSErr
-FindProcessBySignature(
-					   OSType				type,
-					   OSType				creator,
-					   ProcessSerialNumber	*psn )
+OSErr FindProcessBySignature(OSType type, OSType creator, ProcessSerialNumber* psn)
 {
-    ProcessSerialNumber tempPSN = { 0, kNoProcess };
-    ProcessInfoRec procInfo = {0};
-    OSErr err = noErr;
-    
-    procInfo.processInfoLength = sizeof( ProcessInfoRec );
-    procInfo.processName = nil;
-    //procInfo.processAppSpec = nil;
-    
-    while( !err ) {
-        err = GetNextProcess( &tempPSN );
-        if( !err )
-            err = GetProcessInformation( &tempPSN, &procInfo );
-        if( !err
-		   && procInfo.processType == type
-		   && procInfo.processSignature == creator ) {
-            *psn = tempPSN;
-            return noErr;
-        }
-    }
-    
-    return err;
-}
+	ProcessSerialNumber tempPSN = { 0, kNoProcess };
+	ProcessInfoRec procInfo = { 0 };
+	OSErr err = noErr;
 
+	procInfo.processInfoLength = sizeof(ProcessInfoRec);
+	procInfo.processName = nil;
 
-void checkUpdate()
-{
-    char buffer[1024];
-    char sysCall[2048];
-    
-    FILE* f = fopen("/tmp/liferayPlugin.info","r");
-    if (!f)
-        return;
-    
-    fgets(buffer,1024,f);
-    
-    fclose(f);
-    remove("/tmp/liferayPlugin.info");
-    
-    system("rm -r \"/Library/Application Support/Liferay\"");
-    system("mkdir \"/Library/Application Support/Liferay\"");
-    
-    sprintf(sysCall , "cp -r \"%s\" \"/Library/Application Support/Liferay\"", buffer);
-    
-    system(sysCall);
+	while (!err)
+	{
+		err = GetNextProcess(&tempPSN);
+
+		if (!err)
+		{
+			err = GetProcessInformation(&tempPSN, &procInfo);
+		}
+		if (!err && procInfo.processType == type && procInfo.processSignature == creator)
+		{
+			*psn = tempPSN;
+
+			return noErr;
+		}
+	}
+
+	return err;
 }
 
 static pid_t g_lastFinderPid = 0;
 
-void checkFinder()
+void checkFinder(void)
 {
-    ProcessSerialNumber psn;
-	
-	FindProcessBySignature( 'FNDR', 'MACS', &psn );
-	
+	ProcessSerialNumber psn;
+
+	FindProcessBySignature('FNDR', 'MACS', &psn);
+
 	pid_t pid;
+
 	GetProcessPID(&psn, &pid);
-    
-    if (pid != g_lastFinderPid)
-    {
-        system("\"/Library/Application Support/Liferay/LiferayFinderPlugin.app/Contents/MacOS/LiferayFinderPlugin\"");
-        g_lastFinderPid = pid;
-        
-    }
+
+	if (pid != g_lastFinderPid)
+	{
+		sleep(1);
+
+		int err = system("\"/Library/Application Support/Liferay/LiferayFinderPlugin.app/Contents/MacOS/LiferayFinderPlugin\"");
+
+		char buff[40];
+
+		sprintf(buff, "error: %d", err);
+
+		g_lastFinderPid = pid;
+	}
 }
 
-int main (int argc, const char * argv[])
-{    
-    checkUpdate();
-    
-    for(;;)
-    {
-        checkFinder();
-        
-        sleep(5);
-    }
-    return 0;
+void checkUpdate(void)
+{
+	char buffer[1024];
+	char sysCall[2048];
+
+	FILE* f = fopen("/tmp/liferayPlugin.info", "r");
+
+	if (!f)
+	{
+		return;
+	}
+
+	fgets(buffer, 1024, f);
+
+	fclose(f);
+	remove("/tmp/liferayPlugin.info");
+
+	system("rm -r \"/Library/Application Support/Liferay\"");
+	system("mkdir \"/Library/Application Support/Liferay\"");
+
+	sprintf(sysCall, "cp -r \"%s\" \"/Library/Application Support/Liferay\"", buffer);
+
+	system(sysCall);
 }
 
+int main(int argc, const char* argv[])
+{
+	checkUpdate();
+
+	for (;;)
+	{
+		checkFinder();
+
+		sleep(5);
+	}
+
+	return 0;
+}

@@ -18,23 +18,24 @@
 
 @interface RequestManager : NSObject
 {
-    AsyncSocket *listenSocket;
-	AsyncSocket *connectedSocket;
-    
-    AsyncSocket *listenSocket2;
-	AsyncSocket *callbackSocket;
-    
-    NSNumberFormatter *numberFormatter;
-    NSData* warningData;
-    NSCondition* callbackCondition;
-    NSString* callbackMsg;
-    
+	AsyncSocket* listenSocket;
+	AsyncSocket* connectedSocket;
+
+	AsyncSocket* listenSocket2;
+	AsyncSocket* callbackSocket;
+
+	NSCondition* callbackCondition;
+	NSString* callbackMsg;
+	NSNumberFormatter* numberFormatter;
+	NSData* warningData;
+
 	BOOL isRunning;
 }
 
-+ (RequestManager*) sharedInstance;
-- (void) start;
-- (NSArray* ) menuItemsForFiles: (NSArray*) files;
-- (void) menuItemClicked: (NSNumber*) item withTitle:(NSString*) title;
++ (RequestManager*)sharedInstance;
+
+- (void)menuItemClicked:(NSNumber*)item withTitle:(NSString*)title;
+- (NSArray* )menuItemsForFiles:(NSArray*)files;
+- (void)start;
 
 @end

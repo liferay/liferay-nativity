@@ -26,48 +26,51 @@ static IconCache* sharedInstance = nil;
 	{
 		dictionary_ = [[NSMutableDictionary alloc] init];
 		currentIconId_ = 0;
-	};
-	
+	}
+	;
+
 	return self;
 }
 
-+ (IconCache*)sharedInstance 
++ (IconCache*)sharedInstance
 {
-    @synchronized(self) 
+	@synchronized(self)
 	{
-        if (sharedInstance == nil) 
+		if (sharedInstance == nil)
 		{
-            sharedInstance = [[self alloc] init];
-        }
-    }
-    return sharedInstance;
+			sharedInstance = [[self alloc] init];
+		}
+	}
+	return sharedInstance;
 }
 
--(void) unregisterIcon: (NSNumber*) iconId
+- (void)unregisterIcon:(NSNumber*)iconId
 {
 	[dictionary_ removeObjectForKey:iconId];
 }
 
--(NSNumber*) registerIcon: (NSString*) path
+- (NSNumber*)registerIcon:(NSString*)path
 {
-	NSImage* image = [[NSImage alloc]initWithContentsOfFile: path];
+	NSImage* image = [[NSImage alloc]initWithContentsOfFile:path];
+
 	if (image == nil)
 	{
 		return nil;
 	}
-	
+
 	currentIconId_++;
 	NSNumber* index = [NSNumber numberWithInt:currentIconId_];
 
 	[dictionary_ setObject:image forKey:index];
 	[image release];
-	
+
 	return [NSNumber numberWithInt:currentIconId_];
 }
 
--(NSImage*) getIcon: (NSNumber*) iconId
+- (NSImage*)getIcon:(NSNumber*)iconId
 {
 	NSImage* image = [dictionary_ objectForKey:iconId];
+
 	return image;
 }
 

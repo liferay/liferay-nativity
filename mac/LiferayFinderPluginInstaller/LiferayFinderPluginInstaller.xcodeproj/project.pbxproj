@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		693C0294165F74890068041F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 693C0293165F74890068041F /* Carbon.framework */; };
+		0BCD8CE616A9E30D00FFBB21 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BCD8CE516A9E30D00FFBB21 /* Carbon.framework */; };
 		69931AE6165E3E6100E425BE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69931AE5165E3E6100E425BE /* Cocoa.framework */; };
 		69931AF2165E3E6100E425BE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 69931AF1165E3E6100E425BE /* main.m */; };
 		69931AF9165E3E6100E425BE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 69931AF8165E3E6100E425BE /* AppDelegate.m */; };
@@ -48,8 +48,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		693C0291165E7F670068041F /* LiferayFinderPlugin.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = LiferayFinderPlugin.app; sourceTree = "<group>"; };
-		693C0293165F74890068041F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
+		0BCD8CE516A9E30D00FFBB21 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
 		69931AE1165E3E6000E425BE /* LiferayFinderPluginInstaller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiferayFinderPluginInstaller.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69931AE5165E3E6100E425BE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		69931AE8165E3E6100E425BE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -67,7 +66,7 @@
 		69931B19165E4EA600E425BE /* FinderPluginHelper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FinderPluginHelper-Info.plist"; sourceTree = "<group>"; };
 		69931B1A165E4EA600E425BE /* FinderPluginHelper-Launchd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FinderPluginHelper-Launchd.plist"; sourceTree = "<group>"; };
 		69931B21165E68E200E425BE /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
-		699B292B1668C1AD002382A1 /* LiferayFinderPlugin.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = LiferayFinderPlugin.app; path = ../LiferayFinderPlugin/build/Release/LiferayFinderPlugin.app; sourceTree = "<group>"; };
+		699B292B1668C1AD002382A1 /* LiferayFinderPlugin.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = LiferayFinderPlugin.app; path = "../../../../../../Library/Developer/Xcode/DerivedData/LiferayFinderPlugin-guybbhvudhydpdevuybotcyvzkno/Build/Products/Debug/LiferayFinderPlugin.app"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				693C0294165F74890068041F /* Carbon.framework in Frameworks */,
+				0BCD8CE616A9E30D00FFBB21 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,9 +94,8 @@
 		69931AD6165E3E6000E425BE = {
 			isa = PBXGroup;
 			children = (
+				0BCD8CE516A9E30D00FFBB21 /* Carbon.framework */,
 				699B292B1668C1AD002382A1 /* LiferayFinderPlugin.app */,
-				693C0293165F74890068041F /* Carbon.framework */,
-				693C0291165E7F670068041F /* LiferayFinderPlugin.app */,
 				69931B09165E43E800E425BE /* Security.framework */,
 				69931AEB165E3E6100E425BE /* LiferayFinderPluginInstaller */,
 				69931B11165E46E200E425BE /* com.liferay.FinderPluginHelper */,
@@ -271,6 +269,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "Joe Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -288,6 +288,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -298,6 +299,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "Joe Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -308,6 +311,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
 			name = Release;

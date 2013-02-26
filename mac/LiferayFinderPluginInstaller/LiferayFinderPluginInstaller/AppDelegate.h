@@ -16,8 +16,6 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-//@property (assign) IBOutlet NSWindow *window;
-
-- (BOOL)blessHelperWithLabel:(NSString *)label error:(NSError **)error;
+- (BOOL)blessHelperWithLabel:(NSString*)label error:(NSError**)error;
 
 @end

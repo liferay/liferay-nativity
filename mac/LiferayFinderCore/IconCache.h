@@ -17,13 +17,14 @@
 
 @interface IconCache : NSObject {
 	int currentIconId_;
-	NSMutableDictionary *dictionary_;
+	NSMutableDictionary* dictionary_;
 }
 
-+ (IconCache*) sharedInstance;
++ (IconCache*)sharedInstance;
 
-- (NSNumber*) registerIcon:(NSString*) path;
+- (NSImage*)getIcon:(NSNumber*)iconId;
+- (NSNumber*)registerIcon:(NSString*)path;
 
-@property(nonatomic, retain) NSMutableDictionary *dictionary_;
+@property(nonatomic, retain) NSMutableDictionary* dictionary_;
 
 @end
