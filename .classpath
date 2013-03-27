@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="java/src"/>
+	<classpathentry kind="src" path="java/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="java/lib/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="java/lib/slf4j-log4j12-1.6.1.jar"/>
+	<classpathentry kind="lib" path="java/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="java/lib/flexjson-2.1.jar"/>
 	<classpathentry kind="output" path="java/bin"/>
 </classpath>

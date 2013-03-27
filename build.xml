@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 
-<project name="liferay-nativity" basedir="." default="compile">
-	<property name="application.name" value="Liferay Nativity" />
-
+<project name="liferay-nativity-java" basedir="." default="compile">
 	<property name="project.dir" value="." />
+	<property name="project.tmp.dir" value="${project.dir}/tmp" />
 
 	<property name="java.dir" value="${project.dir}/java" />
+
+	<property environment="env" />
 
 	<property file="${project.dir}/build.${user.name}.properties" />
 	<property file="${project.dir}/build.${env.COMPUTERNAME}.properties" />
@@ -23,12 +24,196 @@
 		<fileset dir="${portal.dir}/lib/portal" includes="*.jar" />
 	</path>
 
+	<path id="lib.classpath">
+		<fileset dir="${java.dir}/lib" includes="*.jar" />
+	</path>
+
 	<target name="build-jar" depends="compile">
-		<jar destfile="${project.tmp.dir}/jar/${package.name}.jar">
+		<delete dir="${java.dir}/dist" />
+
+		<jar destfile="${project.dir}/dist/liferay-nativity-${package.version}.jar" filesetmanifest="mergewithoutmain">
 			<fileset dir="${java.dir}/classes" />
+			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
 		</jar>
 	</target>
 	
+	<target name="build-windows-util" depends="compile">
+        <if>
+            <not>
+                <equals arg1="${target.os}" arg2="windows" />
+            </not>
+            <then>
+                <fail>
+                    Ant target must be run in Windows
+                </fail>
+            </then>
+        </if>
+        
+		<mkdir dir="${project.dir}/dist/" />
+
+        <exec
+            executable="${nativity.dir}/build-windows.cmd"
+            failonerror="true"
+        >
+            <arg value="LiferayNativityUtil" />
+            <arg value="${nativity.dir}/windows" />
+            <arg value="${ms.sdk.7.1.dir}" />
+            <arg value="${framework.dir}" />
+        </exec>
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityUtil_x64.dll"
+            toFile="${project.dir}/dist//LiferayNativityUtil_x64.dll"
+        />
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityUtil_x86.dll"
+            toFile="${project.dir}/dist/LiferayNativityUtil_x86.dll"
+        />
+
+    </target>
+    
+	<target name="build-windows-menus" depends="compile">
+        <if>
+            <not>
+                <equals arg1="${target.os}" arg2="windows" />
+            </not>
+            <then>
+                <fail>
+                    Ant target must be run in Windows
+                </fail>
+            </then>
+        </if>
+        
+		<mkdir dir="${project.dir}/dist/" />
+		
+	    <copy
+	        file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuContants.h.original"
+	        toFile="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuContants.h"
+	        overwrite="true"
+	        force="true"
+	        failonerror="true"
+	    />
+	        
+	    <replace file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuContants.h">
+	    	<replacefilter token="[$context.menu.guid$]" value="${context.menu.guid}" />
+	   </replace>
+
+        <exec
+            executable="${nativity.dir}/build-windows.cmd"
+            failonerror="true"
+        >
+            <arg value="LiferayNativityContextMenus" />
+            <arg value="${nativity.dir}/windows" />
+            <arg value="${ms.sdk.7.1.dir}" />
+            <arg value="${framework.dir}" />
+        </exec>
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityContextMenus_x64.dll"
+            toFile="${project.dir}/dist/LiferayNativityContextMenus_x64.dll"
+        />
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityContextMenus_x86.dll"
+            toFile="${project.dir}/dist/LiferayNativityContextMenus_x86.dll"
+        />
+
+    </target>
+	
+	<target name="build-windows-overlays" depends="compile">
+        <if>
+            <not>
+                <equals arg1="${target.os}" arg2="windows" />
+            </not>
+            <then>
+                <fail>
+                    Ant target must be run in Windows
+                </fail>
+            </then>
+        </if>
+        
+		<mkdir dir="${project.dir}/dist/" />
+		
+	    <copy
+		    file="${overlay.path}"
+	        toFile="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/overlay.ico"
+	        overwrite="true"
+	        force="true"
+	        failonerror="true"
+	    />
+
+		<copy
+		    file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h.original"
+		    toFile="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h"
+		    overwrite="true"
+		    force="true"
+		    failonerror="true"
+		/>
+		
+	    <replace file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h">
+	        <replacefilter token="[$overlay.guid$]" value="${overlay.guid}" />
+	        <replacefilter token="[$overlay.id$]" value="${overlay.id}" />
+	    	<replacefilter token="[$overlay.name$]" value="${overlay.name}" />
+	    </replace>
+		
+        <exec
+            executable="${nativity.dir}/build-windows.cmd"
+            failonerror="true"
+        >
+            <arg value="LiferayNativityOverlays" />
+            <arg value="${nativity.dir}/windows" />
+            <arg value="${ms.sdk.7.1.dir}" />
+            <arg value="${framework.dir}" />
+        </exec>
+
+		<copy
+		    file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityOverlays_x64.dll"
+		    toFile="${project.dir}/dist/${overlay.name}_x64.dll"
+		/>
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityOverlays_x86.dll"
+            toFile="${project.dir}/dist/${overlay.name}_x86.dll"
+        />
+        
+    </target>
+    
+    <target name="build-windows-service" depends="compile">
+        <if>
+            <not>
+                <equals arg1="${target.os}" arg2="windows" />
+            </not>
+            <then>
+                <fail>
+                    Ant target must be run in Windows
+                </fail>
+            </then>
+        </if>
+        
+    	<mkdir dir="${project.dir}/dist/" />
+
+        <exec
+            executable="${nativity.dir}/build-windows.cmd"
+            failonerror="true"
+        >
+            <arg value="LiferayNativityExtensionServer" />
+            <arg value="${nativity.dir}/windows" />
+            <arg value="${ms.sdk.7.1.dir}" />
+            <arg value="${framework.dir}" />
+        </exec>
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityExtensionServer_x64.exe"
+            toFile="${project.dir}/dist/LiferayNativityExtensionServer_x64.exe"
+        />
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityExtensionServer_x86.exe"
+            toFile="${project.dir}/dist/LiferayNativityExtensionServer_x86.exe"
+        />
+    </target>
+
 	<target name="clean">
 		<delete dir="${java.dir}/classes" />
 		<delete dir="dist" />
@@ -36,22 +221,33 @@
 	</target>
 
 	<target name="compile">
+		<antcall target="compile-java">
+			<param name="javac.classpathref" value="lib.classpath" />
+			<param name="javac.destdir" value="${java.dir}/classes" />
+			<param name="javac.srcdir" value="${java.dir}/src" />
+		</antcall>
+	</target>
+
+	<target name="compile-java">
 		<mkdir dir="${java.dir}/classes" />
 
+		<copy todir="${javac.destdir}">
+			<fileset dir="${javac.srcdir}" excludes="**/*.java" />
+		</copy>
+
 		<javac
+			classpathref="${javac.classpathref}"
 			compiler="${javac.compiler}"
 			debug="${javac.debug}"
 			deprecation="${javac.deprecation}"
-			destdir="${java.dir}/classes"
+			destdir="${javac.destdir}"
 			encoding="${javac.encoding}"
 			includeAntRuntime="false"
 			nowarn="${javac.nowarn}"
-			srcdir="${java.dir}/src"
+			srcdir="${javac.srcdir}"
 		/>
 
-		<copy todir="${java.dir}/classes">
-			<fileset dir="${java.dir}/src" excludes="**/*.java" />
-		</copy>
+		<echo file="${javac.destdir}/.touch"></echo>
 	</target>
 
 	<target name="format-source">
@@ -67,5 +263,4 @@
 
 		<delete file="ServiceBuilder.temp" />
 	</target>
-
 </project>
