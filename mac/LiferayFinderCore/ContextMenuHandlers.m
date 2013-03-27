@@ -25,6 +25,7 @@
 	if ([MenuManager sharedInstance].menuItems.count > 0)
 	{
 		MenuManager* contextMenuUtils = [MenuManager sharedInstance];
+
 		[contextMenuUtils addItemsToMenu:arg1 forPaths:contextMenuUtils.menuItems];
 		[contextMenuUtils.menuItems removeAllObjects];
 	}

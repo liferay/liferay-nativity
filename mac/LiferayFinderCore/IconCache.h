@@ -24,6 +24,7 @@
 
 - (NSImage*)getIcon:(NSNumber*)iconId;
 - (NSNumber*)registerIcon:(NSString*)path;
+- (void)unregisterIcon:(NSNumber*)iconId;
 
 @property(nonatomic, retain) NSMutableDictionary* dictionary_;
 

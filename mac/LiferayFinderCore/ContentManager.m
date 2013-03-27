@@ -97,14 +97,17 @@ OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
 
 - (void)removeAllIcons
 {
-    [fileNamesCache_ removeAllObjects];
-    
-    [self repaintAllWindows];
+	[fileNamesCache_ removeAllObjects];
+
+	[self repaintAllWindows];
 }
 
-- (void)removeIconFromFile:(NSString*)path
+- (void)removeIcons:(NSArray*)paths
 {
-	[fileNamesCache_ removeObjectForKey:path];
+	for (NSString* path in paths)
+	{
+		[fileNamesCache_ removeObjectForKey:path];
+	}
 
 	[self repaintAllWindows];
 }
@@ -130,19 +133,15 @@ OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
 	}
 }
 
-- (void)setIcon:(NSNumber*)icon forFile:(NSString*)path
-{
-	NSDictionary* iconDictionary = [[NSMutableDictionary alloc] init];
-
-	[iconDictionary setValue:icon forKey:path];
-
-	[self setIcons:iconDictionary];
-}
-
-- (void)setIcons:(NSDictionary*)iconDictionary
+- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)rootFolder
 {
 	for (NSString* path in iconDictionary)
 	{
+        if (rootFolder && ![path hasPrefix:rootFolder])
+        {
+            continue;
+        }
+
 		NSNumber* iconId = [iconDictionary objectForKey:path];
 
 		[fileNamesCache_ setObject:iconId forKey:path];

@@ -60,6 +60,7 @@ static MenuManager* sharedInstance = nil;
 	}
 
 	NSString* firstElement = [items objectAtIndex:0];
+
 	if ([firstElement isEqualToString:@""])
 	{
 		return;

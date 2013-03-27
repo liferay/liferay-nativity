@@ -26,8 +26,7 @@
 - (void)enableOverlays:(BOOL)enable;
 - (NSNumber*)iconByPath:(NSString*)path;
 - (void)removeAllIcons;
-- (void)removeIconFromFile:(NSString*)path;
-- (void)setIcon:(NSNumber*)icon forFile:(NSString*)path;
-- (void)setIcons:(NSDictionary*)iconDictionary;
+- (void)removeIcons:(NSArray*)paths;
+- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)rootFolder;
 
 @end

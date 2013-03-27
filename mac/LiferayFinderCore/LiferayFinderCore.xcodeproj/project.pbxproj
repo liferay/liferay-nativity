@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BFAF21C16F8E6C10017EA7E /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BFAF21B16F8E6C10017EA7E /* JSONKit.m */; };
 		692C18A516660C4700BF6A53 /* ContextMenuHandlers.m in Sources */ = {isa = PBXBuildFile; fileRef = 692C18A416660C4600BF6A53 /* ContextMenuHandlers.m */; };
 		692C18A9166617F500BF6A53 /* IconOverlayHandlers.m in Sources */ = {isa = PBXBuildFile; fileRef = 692C18A8166617F500BF6A53 /* IconOverlayHandlers.m */; };
 		692C18AC1666392700BF6A53 /* MenuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 692C18AB1666392700BF6A53 /* MenuManager.m */; };
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		0BFAF21A16F8E6C10017EA7E /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		0BFAF21B16F8E6C10017EA7E /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		692C18A316660C4600BF6A53 /* ContextMenuHandlers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenuHandlers.h; sourceTree = "<group>"; };
 		692C18A416660C4600BF6A53 /* ContextMenuHandlers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContextMenuHandlers.m; sourceTree = "<group>"; };
 		692C18A7166617F500BF6A53 /* IconOverlayHandlers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconOverlayHandlers.h; sourceTree = "<group>"; };
@@ -96,6 +99,7 @@
 		08FB77AFFE84173DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				0BFAF21916F8E6910017EA7E /* JSONKit */,
 				69938780164946E50044E4DF /* AsyncSocket.h */,
 				69938781164946E50044E4DF /* AsyncSocket.m */,
 				8C37DD99161593BD00016A95 /* FinderHook.h */,
@@ -114,6 +118,15 @@
 				692C18AB1666392700BF6A53 /* MenuManager.m */,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		0BFAF21916F8E6910017EA7E /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				0BFAF21A16F8E6C10017EA7E /* JSONKit.h */,
+				0BFAF21B16F8E6C10017EA7E /* JSONKit.m */,
+			);
+			name = JSONKit;
 			sourceTree = "<group>";
 		};
 		19C28FB6FE9D52B211CA2CBB /* Products */ = {
@@ -194,6 +207,7 @@
 				692C18A516660C4700BF6A53 /* ContextMenuHandlers.m in Sources */,
 				692C18A9166617F500BF6A53 /* IconOverlayHandlers.m in Sources */,
 				692C18AC1666392700BF6A53 /* MenuManager.m in Sources */,
+				0BFAF21C16F8E6C10017EA7E /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
