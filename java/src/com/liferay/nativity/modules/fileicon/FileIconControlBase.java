@@ -37,13 +37,13 @@ public abstract class FileIconControlBase {
 
 	public abstract void removeAllFileIcons();
 
-	public abstract void removeFileIcon(String fileName);
+	public abstract void removeFileIcon(String path);
 
-	public abstract void removeFileIcons(String[] fileNames);
+	public abstract void removeFileIcons(String[] paths);
 
-	public abstract void setIconForFile(String fileName, int iconId);
+	public abstract void setFileIcon(String path, int iconId);
 
-	public abstract void setIconsForFiles(Map<String, Integer> fileIconsMap);
+	public abstract void setFileIcons(Map<String, Integer> fileIconsMap);
 
 	public abstract void unregisterIcon(int id);
 

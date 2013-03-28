@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AppleNativityPluginControlImpl extends NativityPluginControl {
 
-	public void connect() {
+	public boolean connect() {
 		try {
 			_serviceSocket = new Socket("127.0.0.1", _serviceSocketPort);
 
@@ -62,23 +62,27 @@ public class AppleNativityPluginControlImpl extends NativityPluginControl {
 			_callbackThread = new ReadThread(this);
 
 			_callbackThread.start();
+
+			return true;
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 		}
 
-		return;
+		return false;
 	}
 
-	public void disconnect() {
+	public boolean disconnect() {
 		try {
 			_serviceSocket.close();
+
+			return true;
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 		}
 
-		return;
+		return false;
 	}
 
 	@Override

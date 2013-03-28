@@ -42,6 +42,12 @@ public abstract class ContextMenuControl {
 		}
 	}
 
+	/**
+	 * Adds a ExecuteMenuItemListener to respond to menu item selections.
+	 * Multiple listeners can be added.
+	 *
+	 * @param listener to respond to menu item selections
+	 */
 	public void addExecuteMenuItemListener(
 		ExecuteMenuItemListener executeMenuItemListener) {
 
@@ -50,21 +56,31 @@ public abstract class ContextMenuControl {
 	}
 
 	/**
-	 * Set the listener that triggers when a context menu opens
-	 *
-	 * @param a
-	 *            MenuItemListener
+	 * TODO
 	 */
-
 	public abstract String[] getHelpItemsForMenus(String[] files);
 
+	/**
+	 * Called by the native service when the user requests a context menu popup
+	 *
+	 * @param the files selected for this context menu popup
+	 *
+	 * @return array of menu item titles to populate the context menu
+	 */
 	public abstract String[] getMenuItems(String[] paths);
 
+	/**
+	 * Removes all ExecuteMenuItemListeners
+	 */
 	public void removeAllExecuteMenuItemListeners() {
-
 		_contextMenuControlBaseDelegate.removeAllExecuteMenuItemListeners();
 	}
 
+	/**
+	 * Removes a ExecuteMenuItemListener
+	 *
+	 * @param the ExecuteMenuItemListener to remove
+	 */
 	public void removeExecuteMenuItemListener(
 		ExecuteMenuItemListener executeMenuItemListener) {
 
@@ -76,7 +92,7 @@ public abstract class ContextMenuControl {
 	 * Set title of root context menu item, all other items will be added as
 	 * children of it
 	 *
-	 * @param new title of item
+	 * @param title of context menu
 	 */
 	public void setContextMenuTitle(String title) {
 		NativityMessage message = new NativityMessage(
@@ -85,9 +101,6 @@ public abstract class ContextMenuControl {
 		_pluginControl.sendMessage(message);
 	}
 
-	/**
-	 * @return
-	 */
 	protected ContextMenuControlBase createAppleContextMenuControlBase() {
 		return new AppleContextMenuControlImpl(_pluginControl) {
 
@@ -103,9 +116,6 @@ public abstract class ContextMenuControl {
 		};
 	}
 
-	/**
-	 * @return
-	 */
 	protected ContextMenuControlBase createWindowsContextMenuControlBase() {
 		return new WindowsContextMenuControlImpl(_pluginControl) {
 

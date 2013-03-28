@@ -82,31 +82,31 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 	}
 
 	@Override
-	public void removeFileIcon(String fileName) {
+	public void removeFileIcon(String path) {
 		NativityMessage message = new NativityMessage(
-			Constants.CLEAR_FILE_ICON, fileName);
+			Constants.CLEAR_FILE_ICON, path);
 
 		pluginControl.sendMessage(message);
 	}
 
 	@Override
-	public void removeFileIcons(String[] fileNames) {
+	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
-			Constants.CLEAR_FILE_ICON, fileNames);
+			Constants.CLEAR_FILE_ICON, paths);
 
 		pluginControl.sendMessage(message);
 	}
 
 	@Override
-	public void setIconForFile(String fileName, int iconId) {
+	public void setFileIcon(String path, int iconId) {
 		NativityMessage message = new NativityMessage(
-			Constants.UPDATE_FILE_ICON, fileName);
+			Constants.UPDATE_FILE_ICON, path);
 
 		pluginControl.sendMessage(message);
 	}
 
 	@Override
-	public void setIconsForFiles(Map<String, Integer> fileIconsMap) {
+	public void setFileIcons(Map<String, Integer> fileIconsMap) {
 		NativityMessage message = new NativityMessage(
 			Constants.UPDATE_FILE_ICON, fileIconsMap.keySet());
 

@@ -23,17 +23,19 @@ import com.liferay.nativity.plugincontrol.NativityPluginControl;
 public class LinuxNativityPluginControlImpl extends NativityPluginControl {
 
 	@Override
-	public void connect() {
+	public boolean connect() {
 
 		// TODO Auto-generated method stub
 
+		return false;
 	}
 
 	@Override
-	public void disconnect() {
+	public boolean disconnect() {
 
 		// TODO Auto-generated method stub
 
+		return false;
 	}
 
 	@Override

@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 public class WindowsNativityPluginControlImpl extends NativityPluginControl {
 
 	@Override
-	public void connect() {
+	public boolean connect() {
 		_logger.debug("Connecting...");
 
 		if (running()) {
-			return;
+			return true;
 		}
 
 		_receive = new WindowsReceiveSocket(this);
@@ -43,10 +43,13 @@ public class WindowsNativityPluginControlImpl extends NativityPluginControl {
 		_sendExecutor.execute(_send);
 
 		_logger.debug("Done connecting");
+
+		return true;
 	}
 
-	public void disconnect() {
-
+	@Override
+	public boolean disconnect() {
+		return true;
 	}
 
 	@Override
@@ -61,9 +64,6 @@ public class WindowsNativityPluginControlImpl extends NativityPluginControl {
 		return "";
 	}
 
-	/**
-	 * Not used for Windows
-	 */
 	@Override
 	public void setRootFolder(String folder) {
 		NativityMessage message = new NativityMessage(
@@ -82,8 +82,7 @@ public class WindowsNativityPluginControlImpl extends NativityPluginControl {
 
 	@Override
 	public boolean startPlugin(String path) throws Exception {
-
-		return false;
+		return true;
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

@@ -74,24 +74,24 @@ public abstract class AppleFileIconControlImpl extends FileIconControlBase {
 
 	}
 
-	public void removeFileIcon(String fileName) {
+	public void removeFileIcon(String path) {
 		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_FILE_ICONS, new String[] { fileName });
+			Constants.REMOVE_FILE_ICONS, new String[] { path });
 
 		pluginControl.sendMessage(message);
 	}
 
-	public void removeFileIcons(String[] fileNames) {
+	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_FILE_ICONS, fileNames);
+			Constants.REMOVE_FILE_ICONS, paths);
 
 		pluginControl.sendMessage(message);
 	}
 
-	public void setIconForFile(String fileName, int iconId) {
+	public void setFileIcon(String path, int iconId) {
 		Map<String, Integer> map = new HashMap<String, Integer>(1);
 
-		map.put(fileName, iconId);
+		map.put(path, iconId);
 
 		NativityMessage message = new NativityMessage(
 			Constants.SET_FILE_ICONS, map);
@@ -99,7 +99,7 @@ public abstract class AppleFileIconControlImpl extends FileIconControlBase {
 		pluginControl.sendMessage(message);
 	}
 
-	public void setIconsForFiles(Map<String, Integer> fileIconsMap) {
+	public void setFileIcons(Map<String, Integer> fileIconsMap) {
 		Map<String, Integer> map = new HashMap<String, Integer>(
 			_messageBufferSize);
 

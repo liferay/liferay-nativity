@@ -129,9 +129,9 @@ public class TestDriver {
 
 	private static void _clearFileIcon(FileIconControl fileIconControl) {
 		if (_list) {
-			String[] fileNames = new String[] { _testFolder, _testFile };
+			String[] paths = new String[] { _testFolder, _testFile };
 
-			fileIconControl.removeFileIcons(fileNames);
+			fileIconControl.removeFileIcons(paths);
 		}
 		else {
 			fileIconControl.removeFileIcon(_testFolder);
@@ -217,10 +217,10 @@ public class TestDriver {
 			map.put(_testFolder, _fileIconId);
 			map.put(_testFile, _fileIconId);
 
-			fileIconControl.setIconsForFiles(map);
+			fileIconControl.setFileIcons(map);
 		}
 		else {
-			fileIconControl.setIconForFile(_testFolder, _fileIconId);
+			fileIconControl.setFileIcon(_testFolder, _fileIconId);
 		}
 
 		try {

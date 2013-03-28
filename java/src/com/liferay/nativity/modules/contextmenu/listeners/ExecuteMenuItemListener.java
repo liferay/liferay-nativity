@@ -19,9 +19,15 @@ package com.liferay.nativity.modules.contextmenu.listeners;
  */
 public abstract class ExecuteMenuItemListener {
 
-	public ExecuteMenuItemListener() {
-	}
-
+	/**
+	 * Called when a context menu item is selected
+	 *
+	 * @param index value of the selected menu item
+	 *
+	 * @param text value of the selected menu item
+	 *
+	 * @param array of selected file paths
+	 */
 	public abstract void onExecuteMenuItem(
 		int menuIndex, String menuText, String[] paths);
 

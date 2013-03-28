@@ -37,7 +37,7 @@ public class TestContextMenuControl extends ContextMenuControl {
 
 	@Override
 	public String[] getHelpItemsForMenus(String[] paths) {
-		_logger.debug("getMenuItems {}", paths);
+		_logger.debug("getHelpItemsForMenus {}", paths);
 
 		int count = _random.nextInt(20) + 3;
 

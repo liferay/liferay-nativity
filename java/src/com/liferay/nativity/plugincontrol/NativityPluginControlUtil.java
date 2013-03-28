@@ -27,6 +27,12 @@ import org.slf4j.LoggerFactory;
  */
 public class NativityPluginControlUtil {
 
+	/**
+	 * Static method to get an instance of NativityPluginControl
+	 *
+	 * @return implementation of NativityPluginControl instance based on the
+	 * users operating system. Returns null for unsupported operating systems.
+	 */
 	public static NativityPluginControl getNativityPluginControl() {
 		if (_nativityPluginControl == null) {
 			if (OSDetector.isApple()) {

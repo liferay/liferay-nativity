@@ -40,42 +40,103 @@ public abstract class FileIconControl {
 		}
 	}
 
+	/**
+	 * Disables file icon overlays
+	 */
 	public void disableFileIcons() {
 		_fileIconControlBaseDelegate.disableFileIcons();
 	}
 
+	/**
+	 * Enables file icon overlays
+	 */
 	public void enableFileIcons() {
 		_fileIconControlBaseDelegate.enableFileIcons();
 	}
 
-	// Windows only
-
+	/**
+	 * Windows only
+	 *
+	 * Called by the native service to request the icon overlay id for the
+	 * specified file
+	 *
+	 * @param file path requesting the overlay icon
+	 *
+	 * @return icon overlay id
+	 */
 	public abstract int getIconForFile(String path);
 
+	/**
+	 * Mac only
+	 *
+	 * Register an overlay icon
+	 *
+	 * @param path to the overlay icon
+	 *
+	 * @return overlay icon id
+	 */
 	public int registerIcon(String path) {
 		return _fileIconControlBaseDelegate.registerIcon(path);
 	}
 
+	/**
+	 * Mac only
+	 *
+	 * Removes all file icon overlays
+	 */
 	public void removeAllFileIcons() {
 		_fileIconControlBaseDelegate.removeAllFileIcons();
 	}
 
-	public void removeFileIcon(String fileName) {
-		_fileIconControlBaseDelegate.removeFileIcon(fileName);
+	/**
+	 * Removes file icon overlay
+	 *
+	 * @param file path to remove the file icon overlay
+	 */
+	public void removeFileIcon(String path) {
+		_fileIconControlBaseDelegate.removeFileIcon(path);
 	}
 
-	public void removeFileIcons(String[] fileNames) {
-		_fileIconControlBaseDelegate.removeFileIcons(fileNames);
+	/**
+	 * Removes file icon overlays
+	 *
+	 * @param file paths to remove file icon overlays
+	 */
+	public void removeFileIcons(String[] paths) {
+		_fileIconControlBaseDelegate.removeFileIcons(paths);
 	}
 
-	public void setIconForFile(String fileName, int iconId) {
-		_fileIconControlBaseDelegate.setIconForFile(fileName, iconId);
+	/**
+	 * Mac only
+	 *
+	 * Set file icon overlay
+	 *
+	 * @param file path to set file icon overlays
+	 *
+	 * @param id of file icon overlay
+	 */
+	public void setFileIcon(String path, int iconId) {
+		_fileIconControlBaseDelegate.setFileIcon(path, iconId);
 	}
 
-	public void setIconsForFiles(Map<String, Integer> fileIconsMap) {
-		_fileIconControlBaseDelegate.setIconsForFiles(fileIconsMap);
+	/**
+	 * Mac only
+	 *
+	 * Set file icon overlays
+	 *
+	 * @param map containing paths and file icon overlay ids
+	 */
+	public void setFileIcons(Map<String, Integer> fileIconsMap) {
+		_fileIconControlBaseDelegate.setFileIcons(fileIconsMap);
 	}
 
+	/**
+	 * Mac only
+	 *
+	 * Unregister an overlay icon
+	 *
+	 * @param overlay icon id
+	 */
 	public void unregisterIcon(int id) {
 		_fileIconControlBaseDelegate.unregisterIcon(id);
 	}
