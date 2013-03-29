@@ -41,12 +41,21 @@ public class ContextMenuControlFactory {
 				_contextMenuControl =
 					contextMenuControlFactory.createWindowsContextMenuControl();
 			}
+			else if (OSDetector.isLinux()) {
+			_contextMenuControl =
+					contextMenuControlFactory.createLinuxContextMenuControl();
+			}
 		}
 
 		return _contextMenuControl;
 	}
 
 	protected ContextMenuControl createAppleContextMenuControl() {
+		return new AppleContextMenuControlImpl(
+			_nativityControl, _contextMenuControlCallback);
+	}
+
+	protected ContextMenuControl createLinuxContextMenuControl() {
 		return new AppleContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}

@@ -38,8 +38,7 @@ public interface ContextMenuControl extends ContextMenuControlCallback {
 	 *
 	 * @param array of selected file paths
 	 */
-	public void fireMenuItemListeners(
-		int menuIndex, String menuText, String[] paths);
+	public void fireMenuItemListeners(String menuText, String[] paths);
 
 	/**
 	 * Removes all MenuItemListeners

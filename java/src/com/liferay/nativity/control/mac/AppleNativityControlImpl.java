@@ -46,7 +46,8 @@ public class AppleNativityControlImpl extends NativityControl {
 			_serviceSocket = new Socket("127.0.0.1", _serviceSocketPort);
 
 			_serviceBufferedReader = new BufferedReader(
-				new InputStreamReader(_serviceSocket.getInputStream()));
+				new InputStreamReader(
+					_serviceSocket.getInputStream(), "UTF-8"));
 
 			_serviceOutputStream = new DataOutputStream(
 				_serviceSocket.getOutputStream());
@@ -54,7 +55,8 @@ public class AppleNativityControlImpl extends NativityControl {
 			_callbackSocket = new Socket("127.0.0.1", _callbackSocketPort);
 
 			_callbackBufferedReader = new BufferedReader(
-				new InputStreamReader(_callbackSocket.getInputStream()));
+				new InputStreamReader(
+					_callbackSocket.getInputStream(), "UTF-8"));
 
 			_callbackOutputStream = new DataOutputStream(
 				_callbackSocket.getOutputStream());
@@ -121,17 +123,17 @@ public class AppleNativityControlImpl extends NativityControl {
 			message);
 
 		try {
-			command += "\r\n";
+			command += _RETURN_NEW_LINE;
 
-			_serviceOutputStream.writeBytes(command);
+			_serviceOutputStream.write(command.getBytes("UTF-8"));
 
 			String reply = _serviceBufferedReader.readLine();
 
 			if (reply == null) {
 				_serviceSocket.close();
 
-				if (_socketCloseListener != null) {
-					_socketCloseListener.onSocketClose();
+				for (SocketCloseListener listener : socketCloseListeners) {
+					listener.onSocketClose();
 				}
 			}
 
@@ -139,6 +141,10 @@ public class AppleNativityControlImpl extends NativityControl {
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
+
+			for (SocketCloseListener listener : socketCloseListeners) {
+				listener.onSocketClose();
+			}
 
 			return "";
 		}
@@ -152,12 +158,6 @@ public class AppleNativityControlImpl extends NativityControl {
 		sendMessage(message);
 	}
 
-	public void setSocketCloseListener(
-		SocketCloseListener socketCloseListener) {
-
-		_socketCloseListener = socketCloseListener;
-	}
-
 	@Override
 	public void setSystemFolder(String folder) {
 	}
@@ -166,7 +166,7 @@ public class AppleNativityControlImpl extends NativityControl {
 	public boolean startPlugin(String path) throws Exception {
 		_logger.trace("Starting Finder plugin helper");
 
-		Process process = Runtime.getRuntime().exec(path);
+		Process process = Runtime.getRuntime().exec(new String[] { path });
 
 		BufferedReader inputBufferedReader = new BufferedReader(
 			new InputStreamReader(process.getInputStream()));
@@ -225,8 +225,8 @@ public class AppleNativityControlImpl extends NativityControl {
 				if (data == null) {
 					_callbackSocket.close();
 
-					if (_socketCloseListener != null) {
-						_socketCloseListener.onSocketClose();
+					for (SocketCloseListener listener : socketCloseListeners) {
+						listener.onSocketClose();
 					}
 
 					break;
@@ -254,20 +254,26 @@ public class AppleNativityControlImpl extends NativityControl {
 				String response;
 
 				if (responseMessage == null) {
-					response = "\r\n";
+					response = _RETURN_NEW_LINE;
 				}
 				else {
 					response = _jsonSerializer.exclude("*.class")
-						.deepSerialize(responseMessage) + "\r\n";
+						.deepSerialize(responseMessage) + _RETURN_NEW_LINE;
 				}
 
-				_callbackOutputStream.writeBytes(response);
+				_callbackOutputStream.write(response.getBytes("UTF-8"));
 			}
 			catch (IOException ioe) {
 				_logger.error(ioe.getMessage(), ioe);
+
+				for (SocketCloseListener listener : socketCloseListeners) {
+					listener.onSocketClose();
+				}
 			}
 		}
 	}
+
+	private static final String _RETURN_NEW_LINE = "\r\n";
 
 	private static int _callbackSocketPort = 33002;
 	private static JSONSerializer _jsonSerializer = new JSONSerializer();
@@ -284,6 +290,5 @@ public class AppleNativityControlImpl extends NativityControl {
 	private BufferedReader _serviceBufferedReader;
 	private DataOutputStream _serviceOutputStream;
 	private Socket _serviceSocket;
-	private SocketCloseListener _socketCloseListener;
 
 }

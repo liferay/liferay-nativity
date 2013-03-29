@@ -62,6 +62,10 @@ public class AppleFileIconControlImpl extends FileIconControlBase {
 
 		String reply = nativityControl.sendMessage(message);
 
+		if (reply == null) {
+			return -1;
+		}
+
 		return Integer.parseInt(reply);
 	}
 

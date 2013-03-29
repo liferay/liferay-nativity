@@ -14,7 +14,11 @@
 
 package com.liferay.nativity.control;
 
+import com.liferay.nativity.listeners.SocketCloseListener;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +28,19 @@ public abstract class NativityControl {
 
 	public NativityControl() {
 		_commandMap = new HashMap<String, MessageListener>();
+		socketCloseListeners = new ArrayList<SocketCloseListener>();
+	}
+
+	/**
+	 * Mac only
+	 *
+	 * Adds a SocketCloserListener that will be triggered when the socket
+	 * connection to the native service is closed
+	 *
+	 * @param SocketCloseListener instance
+	 */
+	public void addSocketCloseListener(SocketCloseListener listener) {
+		socketCloseListeners.add(listener);
 	}
 
 	/**
@@ -74,6 +91,17 @@ public abstract class NativityControl {
 	}
 
 	/**
+	 * Mac only
+	 *
+	 * Removes a previously added SocketCloserListener instance
+	 *
+	 * @param SocketCloseListener instance to remove
+	 */
+	public void removeSocketCloseListener(SocketCloseListener listener) {
+		socketCloseListeners.remove(listener);
+	}
+
+	/**
 	 * Checks if the native service is running
 	 *
 	 * @return true if native service is running
@@ -120,6 +148,8 @@ public abstract class NativityControl {
 	 * @return true if the service successfully started
 	 */
 	public abstract boolean startPlugin(String path) throws Exception;
+
+	protected List<SocketCloseListener> socketCloseListeners;
 
 	private Map<String, MessageListener> _commandMap;
 

@@ -75,12 +75,10 @@ public class WindowsContextMenuControlImpl extends ContextMenuControlBase {
 				@SuppressWarnings("unchecked")
 				List<String> args = (List<String>)message.getValue();
 
-				int index = Integer.valueOf(args.get(0));
-
-				args.remove(0);
+				String title = args.remove(0);
 
 				fireMenuItemListeners(
-					index, "", args.toArray(new String[args.size()]));
+					title, args.toArray(new String[args.size()]));
 
 				return null;
 			}

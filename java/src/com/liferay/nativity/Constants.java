@@ -33,13 +33,9 @@ public class Constants {
 
 	public static final String MENU_EXEC = "menuExec";
 
-	public static final String MENU_INDEX = "menuIndex";
-
 	public static final String MENU_ITEMS = "menuItems";
 
 	public static final String MENU_QUERY = "menuQuery";
-
-	public static final String MENU_TEXT = "menuText";
 
 	public static final String PERFORM_ACTION = "performAction";
 

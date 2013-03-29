@@ -41,12 +41,21 @@ public class FileIconControlFactory {
 				_fileIconControl =
 					fileIconControlFactory.createWindowsFileIconControl();
 			}
+			else if (OSDetector.isLinux()) {
+				_fileIconControl =
+					fileIconControlFactory.createLinuxFileIconControl();
+			}
 		}
 
 		return _fileIconControl;
 	}
 
 	protected FileIconControl createAppleFileIconControl() {
+		return new AppleFileIconControlImpl(
+			_nativityControl, _fileIconControlCallback);
+	}
+
+	protected FileIconControl createLinuxFileIconControl() {
 		return new AppleFileIconControlImpl(
 			_nativityControl, _fileIconControlCallback);
 	}

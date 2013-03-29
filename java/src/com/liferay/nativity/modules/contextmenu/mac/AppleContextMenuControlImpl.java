@@ -22,7 +22,6 @@ import com.liferay.nativity.modules.contextmenu.ContextMenuControlBase;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Dennis Ju
@@ -59,17 +58,13 @@ public class AppleContextMenuControlImpl extends ContextMenuControlBase {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
-				Map<String, Object> args =
-					(Map<String, Object>)message.getValue();
-
-				int menuIndex = (Integer)args.get(Constants.MENU_INDEX);
-				String menuText = (String)args.get(Constants.MENU_TEXT);
+				String menuText = (String)message.getValue();
 
 				String[] currentFiles =
 					(String[])_currentFiles.toArray(
 						new String[_currentFiles.size()]);
 
-				fireMenuItemListeners(menuIndex, menuText, currentFiles);
+				fireMenuItemListeners(menuText, currentFiles);
 
 				return null;
 			}
