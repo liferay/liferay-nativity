@@ -12,23 +12,22 @@
  * details.
  */
 
-package com.liferay.nativity.modules.contextmenu.listeners;
+package com.liferay.nativity.test;
+
+import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
+
+import java.util.Random;
 
 /**
- * @author Dennis Ju
+ * @author Gail Hernandez
  */
-public abstract class ExecuteMenuItemListener {
+public class TestFileIconControlCallback implements FileIconControlCallback {
 
-	/**
-	 * Called when a context menu item is selected
-	 *
-	 * @param index value of the selected menu item
-	 *
-	 * @param text value of the selected menu item
-	 *
-	 * @param array of selected file paths
-	 */
-	public abstract void onExecuteMenuItem(
-		int menuIndex, String menuText, String[] paths);
+	@Override
+	public int getIconForFile(String path) {
+		return _random.nextInt(10);
+	}
+
+	private Random _random = new Random();
 
 }

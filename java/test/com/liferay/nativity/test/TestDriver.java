@@ -16,9 +16,9 @@ package com.liferay.nativity.test;
 
 import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
 import com.liferay.nativity.modules.fileicon.FileIconControl;
+import com.liferay.nativity.modules.fileicon.FileIconControlFactory;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
-import com.liferay.nativity.plugincontrol.NativityPluginControlUtil;
 
 import flexjson.JSONSerializer;
 
@@ -42,28 +42,33 @@ import org.slf4j.LoggerFactory;
  */
 public class TestDriver {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		_intitializeLogging();
 
 		NativityMessage message =  new NativityMessage();
+
 		message.setCommand("BLAH");
+
 		List<String> items = new ArrayList<String>();
+
 		items.add("ONE");
+
 		message.setValue(items);
 
 		JSONSerializer serializer = new JSONSerializer();
+
 		_logger.debug(serializer.deepSerialize(message));
 
 		_logger.debug("main");
 
-		NativityPluginControl nativityControl =
-			NativityPluginControlUtil.getNativityPluginControl();
+		NativityControl nativityControl = NativityControl.getNativityControl();
 
-		TestFileIconControl fileIconControl = new TestFileIconControl(
-			nativityControl);
+		FileIconControlFactory fileIconControlFactory =
+			new FileIconControlFactory(
+				nativityControl, new TestFileIconControlCallback());
+
+		FileIconControl fileIconControl =
+			fileIconControlFactory.getFileIconControl();
 
 		TestContextMenuControl contextMenuControl = new TestContextMenuControl(
 			nativityControl);
@@ -186,7 +191,7 @@ public class TestDriver {
 		}
 	}
 
-	private static void _setRootFolder(NativityPluginControl nativityControl) {
+	private static void _setRootFolder(NativityControl nativityControl) {
 		nativityControl.setRootFolder(_testRootFolder);
 
 		try {
@@ -197,9 +202,7 @@ public class TestDriver {
 		}
 	}
 
-	private static void _setSystemFolder(
-		NativityPluginControl nativityControl) {
-
+	private static void _setSystemFolder(NativityControl nativityControl) {
 		nativityControl.setSystemFolder(_testRootFolder);
 
 		try {

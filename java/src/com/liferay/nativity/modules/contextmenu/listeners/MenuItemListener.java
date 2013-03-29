@@ -12,23 +12,23 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol;
+package com.liferay.nativity.modules.contextmenu.listeners;
 
 /**
  * @author Dennis Ju
  */
-public abstract class MessageListener {
+public abstract class MenuItemListener {
 
-	public MessageListener(String command) {
-		_command = command;
-	}
-
-	public String getCommand() {
-		return _command;
-	}
-
-	public abstract NativityMessage onMessage(NativityMessage nativityMessage);
-
-	private String _command;
+	/**
+	 * Called when a context menu item is selected
+	 *
+	 * @param index value of the selected menu item
+	 *
+	 * @param text value of the selected menu item
+	 *
+	 * @param array of selected file paths
+	 */
+	public abstract void onMenuItemSelected(
+		int menuIndex, String menuText, String[] paths);
 
 }

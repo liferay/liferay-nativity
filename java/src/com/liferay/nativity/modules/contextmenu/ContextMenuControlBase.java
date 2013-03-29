@@ -14,8 +14,8 @@
 
 package com.liferay.nativity.modules.contextmenu;
 
-import com.liferay.nativity.modules.contextmenu.listeners.ExecuteMenuItemListener;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
+import com.liferay.nativity.modules.contextmenu.listeners.MenuItemListener;
+import com.liferay.nativity.plugincontrol.NativityControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,24 +25,21 @@ import java.util.List;
  */
 public abstract class ContextMenuControlBase {
 
-	public ContextMenuControlBase(NativityPluginControl pluginControl) {
+	public ContextMenuControlBase(NativityControl pluginControl) {
 		this.pluginControl = pluginControl;
 
-		_executeMenuItemListeners = new ArrayList<ExecuteMenuItemListener>();
+		_menuItemListeners = new ArrayList<MenuItemListener>();
 	}
 
-	public void addExecuteMenuItemListener(ExecuteMenuItemListener listener) {
-		_executeMenuItemListeners.add(listener);
+	public void addMenuItemListener(MenuItemListener listener) {
+		_menuItemListeners.add(listener);
 	}
 
-	public void fireExecuteMenuItemListeners(
+	public void fireMenuItemListeners(
 		int menuIndex, String menuText, String[] paths) {
 
-		for (ExecuteMenuItemListener executeMenuItemListener :
-				_executeMenuItemListeners) {
-
-			executeMenuItemListener.onExecuteMenuItem(
-				menuIndex, menuText, paths);
+		for (MenuItemListener menuItemListener : _menuItemListeners) {
+			menuItemListener.onMenuItemSelected(menuIndex, menuText, paths);
 		}
 	}
 
@@ -50,20 +47,18 @@ public abstract class ContextMenuControlBase {
 
 	public abstract String[] getMenuItems(String[] paths);
 
-	public void removeAllExecuteMenuItemListeners() {
-		_executeMenuItemListeners.clear();
+	public void removeAllMenuItemListeners() {
+		_menuItemListeners.clear();
 	}
 
-	public void removeExecuteMenuItemListener(
-		ExecuteMenuItemListener executeMenuItemListener) {
-
-		_executeMenuItemListeners.remove(executeMenuItemListener);
+	public void removeMenuItemListener(MenuItemListener menuItemListener) {
+		_menuItemListeners.remove(menuItemListener);
 	}
 
 	public abstract void setContextMenuTitle(String title);
 
-	protected List<ExecuteMenuItemListener> _executeMenuItemListeners;
+	protected List<MenuItemListener> _menuItemListeners;
 
-	protected NativityPluginControl pluginControl;
+	protected NativityControl pluginControl;
 
 }

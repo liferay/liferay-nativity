@@ -17,8 +17,8 @@ package com.liferay.nativity.modules.contextmenu.win;
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlBase;
 import com.liferay.nativity.plugincontrol.MessageListener;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 
 import java.util.List;
 
@@ -28,14 +28,14 @@ import java.util.List;
 public abstract class WindowsContextMenuControlImpl
 	extends ContextMenuControlBase {
 
-	public WindowsContextMenuControlImpl(NativityPluginControl pluginControl) {
+	public WindowsContextMenuControlImpl(NativityControl pluginControl) {
 		super(pluginControl);
 
 		MessageListener getMenuListMessageListener = new MessageListener(
 			Constants.GET_MENU_LIST) {
 
 			@Override
-			public NativityMessage onMessageReceived(NativityMessage message) {
+			public NativityMessage onMessage(NativityMessage message) {
 				@SuppressWarnings("unchecked")
 				List<String> args = (List<String>)message.getValue();
 
@@ -52,7 +52,7 @@ public abstract class WindowsContextMenuControlImpl
 			Constants.GET_HELP_ITEMS) {
 
 			@Override
-			public NativityMessage onMessageReceived(NativityMessage message) {
+			public NativityMessage onMessage(NativityMessage message) {
 				@SuppressWarnings("unchecked")
 				List<String> args = (List<String>)message.getValue();
 
@@ -68,7 +68,7 @@ public abstract class WindowsContextMenuControlImpl
 		MessageListener performActionMessageListener = new MessageListener(
 			Constants.PERFORM_ACTION) {
 
-			public NativityMessage onMessageReceived(NativityMessage message) {
+			public NativityMessage onMessage(NativityMessage message) {
 				@SuppressWarnings("unchecked")
 				List<String> args = (List<String>)message.getValue();
 
@@ -76,8 +76,7 @@ public abstract class WindowsContextMenuControlImpl
 
 				args.remove(0);
 
-				//TODO pass title
-				fireExecuteMenuItemListeners(
+				fireMenuItemListeners(
 					index, "", args.toArray(new String[args.size()]));
 
 				return null;

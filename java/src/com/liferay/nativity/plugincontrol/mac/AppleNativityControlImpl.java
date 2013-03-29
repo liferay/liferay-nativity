@@ -16,8 +16,8 @@ package com.liferay.nativity.plugincontrol.mac;
 
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.listeners.SocketCloseListener;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Dennis Ju
  */
-public class AppleNativityPluginControlImpl extends NativityPluginControl {
+public class AppleNativityControlImpl extends NativityControl {
 
 	public boolean connect() {
 		try {
@@ -204,7 +204,7 @@ public class AppleNativityPluginControlImpl extends NativityPluginControl {
 
 	protected class ReadThread extends Thread {
 
-		public ReadThread(AppleNativityPluginControlImpl pluginControl) {
+		public ReadThread(AppleNativityControlImpl pluginControl) {
 			_pluginControl = pluginControl;
 		}
 
@@ -213,7 +213,7 @@ public class AppleNativityPluginControlImpl extends NativityPluginControl {
 			_pluginControl._doCallbackLoop();
 		}
 
-		private AppleNativityPluginControlImpl _pluginControl;
+		private AppleNativityControlImpl _pluginControl;
 
 	}
 
@@ -249,7 +249,7 @@ public class AppleNativityPluginControlImpl extends NativityPluginControl {
 				NativityMessage message = _messageJSONDeserializer.deserialize(
 					data, NativityMessage.class);
 
-				NativityMessage responseMessage = fireMessageListener(message);
+				NativityMessage responseMessage = fireOnMessage(message);
 
 				String response;
 
@@ -271,8 +271,10 @@ public class AppleNativityPluginControlImpl extends NativityPluginControl {
 
 	private static int _callbackSocketPort = 33002;
 	private static JSONSerializer _jsonSerializer = new JSONSerializer();
+
 	private static Logger _logger = LoggerFactory.getLogger(
-		AppleNativityPluginControlImpl.class.getName());
+		AppleNativityControlImpl.class.getName());
+
 	private static int _serviceSocketPort = 33001;
 
 	private BufferedReader _callbackBufferedReader;

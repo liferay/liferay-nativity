@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WindowsReceiveSocket extends WindowsSocketBase {
 
-	public WindowsReceiveSocket(WindowsNativityPluginControlImpl plugin) {
+	public WindowsReceiveSocket(WindowsNativityControlImpl plugin) {
 		super(33001);
 
 		_plugIn = plugin;
@@ -61,6 +61,6 @@ public class WindowsReceiveSocket extends WindowsSocketBase {
 		WindowsReceiveSocket.class.getName());
 
 	private Executor _messageProcessor = Executors.newSingleThreadExecutor();
-	private WindowsNativityPluginControlImpl _plugIn;
+	private WindowsNativityControlImpl _plugIn;
 
 }

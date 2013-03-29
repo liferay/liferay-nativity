@@ -14,15 +14,52 @@
 
 package com.liferay.nativity.plugincontrol;
 
+import com.liferay.nativity.plugincontrol.linux.LinuxNativityControlImpl;
+import com.liferay.nativity.plugincontrol.mac.AppleNativityControlImpl;
+import com.liferay.nativity.plugincontrol.win.WindowsNativityControlImpl;
+import com.liferay.nativity.util.OSDetector;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Dennis Ju
  */
-public abstract class NativityPluginControl {
+public abstract class NativityControl {
 
-	public NativityPluginControl() {
+	/**
+	 * Factory method to get an instance of NativityPluginControl
+	 *
+	 * @return implementation of NativityPluginControl instance based on the
+	 * user's operating system. Returns null for unsupported operating systems.
+	 */
+	public static NativityControl getNativityControl() {
+		if (_nativityControl == null) {
+			if (OSDetector.isApple()) {
+				_nativityControl = new AppleNativityControlImpl();
+			}
+			else if (OSDetector.isWindows()) {
+				_nativityControl = new WindowsNativityControlImpl();
+			}
+			else if (OSDetector.isLinux()) {
+				_nativityControl = new LinuxNativityControlImpl();
+			}
+			else {
+				_logger.error(
+					"NativityControl does not support {}",
+					System.getProperty("os.name"));
+
+				_nativityControl = null;
+			}
+		}
+
+		return _nativityControl;
+	}
+
+	public NativityControl() {
 		_commandMap = new HashMap<String, MessageListener>();
 	}
 
@@ -50,14 +87,14 @@ public abstract class NativityPluginControl {
 	 * if no registered MessageListener is found or if no response
 	 * needs to be sent back to the native service.
 	 */
-	public NativityMessage fireMessageListener(NativityMessage message) {
+	public NativityMessage fireOnMessage(NativityMessage message) {
 		MessageListener messageListener = _commandMap.get(message.getCommand());
 
 		if (messageListener == null) {
 			return null;
 		}
 
-		return messageListener.onMessageReceived(message);
+		return messageListener.onMessage(message);
 	}
 
 	/**
@@ -120,6 +157,11 @@ public abstract class NativityPluginControl {
 	 * @return true if the service successfully started
 	 */
 	public abstract boolean startPlugin(String path) throws Exception;
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		NativityControl.class.getName());
+
+	private static NativityControl _nativityControl;
 
 	private Map<String, MessageListener> _commandMap;
 

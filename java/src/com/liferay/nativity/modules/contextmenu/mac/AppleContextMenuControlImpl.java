@@ -17,8 +17,8 @@ package com.liferay.nativity.modules.contextmenu.mac;
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlBase;
 import com.liferay.nativity.plugincontrol.MessageListener;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 
 import java.util.List;
 import java.util.Map;
@@ -29,14 +29,14 @@ import java.util.Map;
 public abstract class AppleContextMenuControlImpl
 	extends ContextMenuControlBase {
 
-	public AppleContextMenuControlImpl(NativityPluginControl pluginControl) {
+	public AppleContextMenuControlImpl(NativityControl pluginControl) {
 		super(pluginControl);
 
 		MessageListener menuQueryMessageListener = new MessageListener(
 			Constants.MENU_QUERY) {
 
 			@Override
-			public NativityMessage onMessageReceived(NativityMessage message) {
+			public NativityMessage onMessage(NativityMessage message) {
 				_currentFiles = (List<String>)message.getValue();
 
 				String[] currentFilesArray =
@@ -53,8 +53,9 @@ public abstract class AppleContextMenuControlImpl
 
 		MessageListener menuExecMessageListener = new MessageListener(
 			Constants.MENU_EXEC) {
+
 			@Override
-			public NativityMessage onMessageReceived(NativityMessage message) {
+			public NativityMessage onMessage(NativityMessage message) {
 				Map<String, Object> args =
 					(Map<String, Object>)message.getValue();
 
@@ -65,7 +66,7 @@ public abstract class AppleContextMenuControlImpl
 					(String[])_currentFiles.toArray(
 						new String[_currentFiles.size()]);
 
-				fireExecuteMenuItemListeners(menuIndex, menuText, currentFiles);
+				fireMenuItemListeners(menuIndex, menuText, currentFiles);
 
 				return null;
 			}

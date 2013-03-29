@@ -15,8 +15,8 @@
 package com.liferay.nativity.plugincontrol.win;
 
 import com.liferay.nativity.Constants;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Dennis Ju
  */
-public class WindowsNativityPluginControlImpl extends NativityPluginControl {
+public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean connect() {
@@ -86,7 +86,7 @@ public class WindowsNativityPluginControlImpl extends NativityPluginControl {
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(
-		WindowsNativityPluginControlImpl.class.getName());
+		WindowsNativityControlImpl.class.getName());
 
 	private WindowsReceiveSocket _receive;
 

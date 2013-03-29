@@ -15,7 +15,7 @@
 package com.liferay.nativity.test;
 
 import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
+import com.liferay.nativity.plugincontrol.NativityControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestContextMenuControl extends ContextMenuControl {
 
-	public TestContextMenuControl(NativityPluginControl pluginControl) {
+	public TestContextMenuControl(NativityControl pluginControl) {
 		super(pluginControl);
 
 		_random = new Random();

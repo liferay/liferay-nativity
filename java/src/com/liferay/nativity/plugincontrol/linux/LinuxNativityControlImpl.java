@@ -14,65 +14,44 @@
 
 package com.liferay.nativity.plugincontrol.linux;
 
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 
 /**
  * @author Dennis Ju
  */
-public class LinuxNativityPluginControlImpl extends NativityPluginControl {
+public class LinuxNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean connect() {
-
-		// TODO Auto-generated method stub
-
 		return false;
 	}
 
 	@Override
 	public boolean disconnect() {
-
-		// TODO Auto-generated method stub
-
 		return false;
 	}
 
 	@Override
 	public boolean running() {
-
-		// TODO Auto-generated method stub
-
 		return false;
 	}
 
 	@Override
 	public String sendMessage(NativityMessage message) {
-
-		// TODO Auto-generated method stub
-
 		return null;
 	}
 
 	@Override
 	public void setRootFolder(String folder) {
-
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void setSystemFolder(String folder) {
-
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean startPlugin(String path) throws Exception {
-
-		// TODO Auto-generated method stub
-
 		return false;
 	}
 

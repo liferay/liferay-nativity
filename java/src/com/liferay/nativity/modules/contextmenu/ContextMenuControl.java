@@ -15,11 +15,11 @@
 package com.liferay.nativity.modules.contextmenu;
 
 import com.liferay.nativity.Constants;
-import com.liferay.nativity.modules.contextmenu.listeners.ExecuteMenuItemListener;
+import com.liferay.nativity.modules.contextmenu.listeners.MenuItemListener;
 import com.liferay.nativity.modules.contextmenu.mac.AppleContextMenuControlImpl;
 import com.liferay.nativity.modules.contextmenu.win.WindowsContextMenuControlImpl;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 import com.liferay.nativity.util.OSDetector;
 
 /**
@@ -27,7 +27,7 @@ import com.liferay.nativity.util.OSDetector;
  */
 public abstract class ContextMenuControl {
 
-	public ContextMenuControl(NativityPluginControl pluginControl) {
+	public ContextMenuControl(NativityControl pluginControl) {
 		_pluginControl = pluginControl;
 
 		if (_contextMenuControlBaseDelegate == null) {
@@ -43,21 +43,15 @@ public abstract class ContextMenuControl {
 	}
 
 	/**
-	 * Adds a ExecuteMenuItemListener to respond to menu item selections.
+	 * Adds a MenuItemListener to respond to menu item selections.
 	 * Multiple listeners can be added.
 	 *
 	 * @param listener to respond to menu item selections
 	 */
-	public void addExecuteMenuItemListener(
-		ExecuteMenuItemListener executeMenuItemListener) {
-
-		_contextMenuControlBaseDelegate.addExecuteMenuItemListener(
-			executeMenuItemListener);
+	public void addMenuItemListener(MenuItemListener menuItemListener) {
+		_contextMenuControlBaseDelegate.addMenuItemListener(menuItemListener);
 	}
 
-	/**
-	 * TODO
-	 */
 	public abstract String[] getHelpItemsForMenus(String[] files);
 
 	/**
@@ -70,22 +64,20 @@ public abstract class ContextMenuControl {
 	public abstract String[] getMenuItems(String[] paths);
 
 	/**
-	 * Removes all ExecuteMenuItemListeners
+	 * Removes all MenuItemListeners
 	 */
-	public void removeAllExecuteMenuItemListeners() {
-		_contextMenuControlBaseDelegate.removeAllExecuteMenuItemListeners();
+	public void removeAllMenuItemListeners() {
+		_contextMenuControlBaseDelegate.removeAllMenuItemListeners();
 	}
 
 	/**
-	 * Removes a ExecuteMenuItemListener
+	 * Removes a MenuItemListener
 	 *
-	 * @param the ExecuteMenuItemListener to remove
+	 * @param the MenuItemListener to remove
 	 */
-	public void removeExecuteMenuItemListener(
-		ExecuteMenuItemListener executeMenuItemListener) {
-
-		_contextMenuControlBaseDelegate.removeExecuteMenuItemListener(
-			executeMenuItemListener);
+	public void removeMenuItemListener(MenuItemListener menuItemListener) {
+		_contextMenuControlBaseDelegate.removeMenuItemListener(
+			menuItemListener);
 	}
 
 	/**
@@ -133,6 +125,6 @@ public abstract class ContextMenuControl {
 	}
 
 	private ContextMenuControlBase _contextMenuControlBaseDelegate;
-	private NativityPluginControl _pluginControl;
+	private NativityControl _pluginControl;
 
 }

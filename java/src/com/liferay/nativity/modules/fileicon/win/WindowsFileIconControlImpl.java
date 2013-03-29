@@ -16,9 +16,10 @@ package com.liferay.nativity.modules.fileicon.win;
 
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
+import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 import com.liferay.nativity.plugincontrol.MessageListener;
+import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.plugincontrol.NativityMessage;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
 
 import java.util.List;
 import java.util.Map;
@@ -26,22 +27,25 @@ import java.util.Map;
 /**
  * @author Dennis Ju
  */
-public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
+public class WindowsFileIconControlImpl extends FileIconControlBase {
 
-	public WindowsFileIconControlImpl(NativityPluginControl pluginControl) {
-		super(pluginControl);
+	public WindowsFileIconControlImpl(
+		NativityControl nativityControl,
+		FileIconControlCallback fileIconControlCallback) {
 
-		MessageListener getFileOverlayIdMessageListener = new MessageListener(
+		super(nativityControl, fileIconControlCallback);
+
+		MessageListener messageListener = new MessageListener(
 			Constants.GET_FILE_OVERLAY_ID) {
 
 			@Override
-			public NativityMessage onMessageReceived(NativityMessage message) {
+			public NativityMessage onMessage(NativityMessage message) {
 				List<String> args = (List<String>)message.getValue();
 
 				if (args.size() > 0) {
-					String arg1 = args.get(0);
+					String arg = args.get(0);
 
-					int icon = getIconForFile(arg1);
+					int icon = getIconForFile(arg);
 
 					return new NativityMessage(
 						Constants.GET_FILE_OVERLAY_ID, icon);
@@ -52,7 +56,7 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 			}
 		};
 
-		pluginControl.registerMessageListener(getFileOverlayIdMessageListener);
+		nativityControl.registerMessageListener(messageListener);
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 		NativityMessage message = new NativityMessage(
 			Constants.ENABLE_FILE_ICONS, String.valueOf(false));
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 		NativityMessage message = new NativityMessage(
 			Constants.ENABLE_FILE_ICONS, String.valueOf(true));
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	@Override
@@ -78,7 +82,6 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	@Override
 	public void removeAllFileIcons() {
-		//TODO
 	}
 
 	@Override
@@ -86,7 +89,7 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 		NativityMessage message = new NativityMessage(
 			Constants.CLEAR_FILE_ICON, path);
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	@Override
@@ -94,7 +97,7 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 		NativityMessage message = new NativityMessage(
 			Constants.CLEAR_FILE_ICON, paths);
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	@Override
@@ -102,7 +105,7 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 		NativityMessage message = new NativityMessage(
 			Constants.UPDATE_FILE_ICON, path);
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	@Override
@@ -110,11 +113,12 @@ public abstract class WindowsFileIconControlImpl extends FileIconControlBase {
 		NativityMessage message = new NativityMessage(
 			Constants.UPDATE_FILE_ICON, fileIconsMap.keySet());
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	@Override
 	public void unregisterIcon(int id) {
+		return;
 	}
 
 }

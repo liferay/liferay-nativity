@@ -12,29 +12,13 @@
  * details.
  */
 
-package com.liferay.nativity.test;
-
-import com.liferay.nativity.modules.fileicon.FileIconControl;
-import com.liferay.nativity.plugincontrol.NativityPluginControl;
-
-import java.util.Random;
+package com.liferay.nativity.modules.fileicon;
 
 /**
- * @author Gail Hernandez
+ * @author Michael Young
  */
-public class TestFileIconControl extends FileIconControl {
+public interface FileIconControlCallback {
 
-	public TestFileIconControl(NativityPluginControl pluginControl) {
-		super(pluginControl);
-
-		_random = new Random();
-	}
-
-	@Override
-	public int getIconForFile(String path) {
-		return _random.nextInt(10);
-	}
-
-	private Random _random;
+	public int getIconForFile(String path);
 
 }

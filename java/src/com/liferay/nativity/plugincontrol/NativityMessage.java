@@ -19,8 +19,6 @@ package com.liferay.nativity.plugincontrol;
  */
 public class NativityMessage {
 
-	// Parameterless constructor needed for flexjson
-
 	public NativityMessage() {
 	}
 
@@ -44,8 +42,6 @@ public class NativityMessage {
 	public void setValue(Object value) {
 		_value = value;
 	}
-
-	// Parameterless constructor needed for flexjson
 
 	private String _command;
 	private Object _value;
