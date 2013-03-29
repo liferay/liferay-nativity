@@ -15,11 +15,11 @@
 package com.liferay.nativity.modules.contextmenu;
 
 import com.liferay.nativity.Constants;
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.listeners.MenuItemListener;
 import com.liferay.nativity.modules.contextmenu.mac.AppleContextMenuControlImpl;
 import com.liferay.nativity.modules.contextmenu.win.WindowsContextMenuControlImpl;
-import com.liferay.nativity.plugincontrol.NativityControl;
-import com.liferay.nativity.plugincontrol.NativityMessage;
 import com.liferay.nativity.util.OSDetector;
 
 /**

@@ -12,38 +12,23 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol;
+package com.liferay.nativity.control;
 
 /**
  * @author Dennis Ju
  */
-public class NativityMessage {
+public abstract class MessageListener {
 
-	public NativityMessage() {
-	}
-
-	public NativityMessage(String command, Object value) {
+	public MessageListener(String command) {
 		_command = command;
-		_value = value;
 	}
 
 	public String getCommand() {
 		return _command;
 	}
 
-	public Object getValue() {
-		return _value;
-	}
-
-	public void setCommand(String command) {
-		_command = command;
-	}
-
-	public void setValue(Object value) {
-		_value = value;
-	}
+	public abstract NativityMessage onMessage(NativityMessage nativityMessage);
 
 	private String _command;
-	private Object _value;
 
 }

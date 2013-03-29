@@ -15,10 +15,10 @@
 package com.liferay.nativity.modules.contextmenu.win;
 
 import com.liferay.nativity.Constants;
+import com.liferay.nativity.control.MessageListener;
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlBase;
-import com.liferay.nativity.plugincontrol.MessageListener;
-import com.liferay.nativity.plugincontrol.NativityControl;
-import com.liferay.nativity.plugincontrol.NativityMessage;
 
 import java.util.List;
 

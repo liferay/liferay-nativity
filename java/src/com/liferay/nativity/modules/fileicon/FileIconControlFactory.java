@@ -14,9 +14,9 @@
 
 package com.liferay.nativity.modules.fileicon;
 
+import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.modules.fileicon.mac.AppleFileIconControlImpl;
 import com.liferay.nativity.modules.fileicon.win.WindowsFileIconControlImpl;
-import com.liferay.nativity.plugincontrol.NativityControl;
 import com.liferay.nativity.util.OSDetector;
 
 /**

@@ -12,11 +12,11 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol;
+package com.liferay.nativity.control;
 
-import com.liferay.nativity.plugincontrol.linux.LinuxNativityControlImpl;
-import com.liferay.nativity.plugincontrol.mac.AppleNativityControlImpl;
-import com.liferay.nativity.plugincontrol.win.WindowsNativityControlImpl;
+import com.liferay.nativity.control.linux.LinuxNativityControlImpl;
+import com.liferay.nativity.control.mac.AppleNativityControlImpl;
+import com.liferay.nativity.control.win.WindowsNativityControlImpl;
 import com.liferay.nativity.util.OSDetector;
 
 import java.util.HashMap;

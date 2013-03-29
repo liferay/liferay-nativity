@@ -12,9 +12,9 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol.win;
+package com.liferay.nativity.control.win;
 
-import com.liferay.nativity.plugincontrol.NativityMessage;
+import com.liferay.nativity.control.NativityMessage;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;

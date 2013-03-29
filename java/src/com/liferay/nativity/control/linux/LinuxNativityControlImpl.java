@@ -12,10 +12,10 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol.linux;
+package com.liferay.nativity.control.linux;
 
-import com.liferay.nativity.plugincontrol.NativityControl;
-import com.liferay.nativity.plugincontrol.NativityMessage;
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityMessage;
 
 /**
  * @author Dennis Ju

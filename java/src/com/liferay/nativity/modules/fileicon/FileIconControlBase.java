@@ -14,7 +14,7 @@
 
 package com.liferay.nativity.modules.fileicon;
 
-import com.liferay.nativity.plugincontrol.NativityControl;
+import com.liferay.nativity.control.NativityControl;
 
 /**
  * @author Michael Young

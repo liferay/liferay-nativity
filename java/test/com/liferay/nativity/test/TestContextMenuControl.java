@@ -14,8 +14,8 @@
 
 package com.liferay.nativity.test;
 
+import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
-import com.liferay.nativity.plugincontrol.NativityControl;
 
 import java.util.ArrayList;
 import java.util.List;

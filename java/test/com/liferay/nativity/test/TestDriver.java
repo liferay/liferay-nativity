@@ -14,11 +14,11 @@
 
 package com.liferay.nativity.test;
 
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
 import com.liferay.nativity.modules.fileicon.FileIconControl;
 import com.liferay.nativity.modules.fileicon.FileIconControlFactory;
-import com.liferay.nativity.plugincontrol.NativityControl;
-import com.liferay.nativity.plugincontrol.NativityMessage;
 
 import flexjson.JSONSerializer;
 

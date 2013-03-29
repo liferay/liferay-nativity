@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol.win;
+package com.liferay.nativity.control.win;
 
 import java.io.IOException;
 

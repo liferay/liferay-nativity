@@ -12,23 +12,14 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol;
+package com.liferay.nativity.control;
 
 /**
- * @author Dennis Ju
+ * @author Gail Hernandez
  */
-public abstract class MessageListener {
+public interface MenuItemListener {
 
-	public MessageListener(String command) {
-		_command = command;
-	}
-
-	public String getCommand() {
-		return _command;
-	}
-
-	public abstract NativityMessage onMessage(NativityMessage nativityMessage);
-
-	private String _command;
+	public void menuItemExecuted(
+		int menuIndex, String menuText, String[] paths);
 
 }

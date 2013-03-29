@@ -12,14 +12,38 @@
  * details.
  */
 
-package com.liferay.nativity.plugincontrol;
+package com.liferay.nativity.control;
 
 /**
- * @author Gail Hernandez
+ * @author Dennis Ju
  */
-public interface MenuItemListener {
+public class NativityMessage {
 
-	public void menuItemExecuted(
-		int menuIndex, String menuText, String[] paths);
+	public NativityMessage() {
+	}
+
+	public NativityMessage(String command, Object value) {
+		_command = command;
+		_value = value;
+	}
+
+	public String getCommand() {
+		return _command;
+	}
+
+	public Object getValue() {
+		return _value;
+	}
+
+	public void setCommand(String command) {
+		_command = command;
+	}
+
+	public void setValue(Object value) {
+		_value = value;
+	}
+
+	private String _command;
+	private Object _value;
 
 }
