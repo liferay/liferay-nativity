@@ -14,8 +14,7 @@
 
 package com.liferay.nativity.test;
 
-import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +26,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Gail Hernandez
  */
-public class TestContextMenuControl extends ContextMenuControl {
-
-	public TestContextMenuControl(NativityControl pluginControl) {
-		super(pluginControl);
-
-		_random = new Random();
-	}
+public class TestContextMenuControlCallback
+	implements ContextMenuControlCallback {
 
 	@Override
 	public String[] getHelpItemsForMenus(String[] paths) {
@@ -66,8 +60,8 @@ public class TestContextMenuControl extends ContextMenuControl {
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(
-		TestContextMenuControl.class.getName());
+		TestContextMenuControlCallback.class.getName());
 
-	private Random _random;
+	private Random _random = new Random();
 
 }

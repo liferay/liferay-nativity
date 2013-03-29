@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 public class WindowsReceiveSocket extends WindowsSocketBase {
 
-	public WindowsReceiveSocket(WindowsNativityControlImpl plugin) {
+	public WindowsReceiveSocket(WindowsNativityControlImpl nativityControl) {
 		super(33001);
 
-		_plugIn = plugin;
+		_nativityControl = nativityControl;
 	}
 
 	protected void handleConnection() {
@@ -45,7 +45,7 @@ public class WindowsReceiveSocket extends WindowsSocketBase {
 			_logger.trace("Got connection");
 
 			_messageProcessor.execute(
-				new MessageProcessor(clientSocket, _plugIn));
+				new MessageProcessor(clientSocket, _nativityControl));
 		}
 		catch (SocketException se) {
 
@@ -61,6 +61,6 @@ public class WindowsReceiveSocket extends WindowsSocketBase {
 		WindowsReceiveSocket.class.getName());
 
 	private Executor _messageProcessor = Executors.newSingleThreadExecutor();
-	private WindowsNativityControlImpl _plugIn;
+	private WindowsNativityControlImpl _nativityControl;
 
 }

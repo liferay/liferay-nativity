@@ -19,17 +19,20 @@ import com.liferay.nativity.control.MessageListener;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlBase;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 
 import java.util.List;
 
 /**
  * @author Dennis Ju
  */
-public abstract class WindowsContextMenuControlImpl
-	extends ContextMenuControlBase {
+public class WindowsContextMenuControlImpl extends ContextMenuControlBase {
 
-	public WindowsContextMenuControlImpl(NativityControl pluginControl) {
-		super(pluginControl);
+	public WindowsContextMenuControlImpl(
+		NativityControl nativityControl,
+		ContextMenuControlCallback contextMenuControlCallback) {
+
+		super(nativityControl, contextMenuControlCallback);
 
 		MessageListener getMenuListMessageListener = new MessageListener(
 			Constants.GET_MENU_LIST) {
@@ -46,7 +49,7 @@ public abstract class WindowsContextMenuControlImpl
 			}
 		};
 
-		pluginControl.registerMessageListener(getMenuListMessageListener);
+		nativityControl.registerMessageListener(getMenuListMessageListener);
 
 		MessageListener getHelpItemsMessageListener = new MessageListener(
 			Constants.GET_HELP_ITEMS) {
@@ -63,7 +66,7 @@ public abstract class WindowsContextMenuControlImpl
 			}
 		};
 
-		pluginControl.registerMessageListener(getHelpItemsMessageListener);
+		nativityControl.registerMessageListener(getHelpItemsMessageListener);
 
 		MessageListener performActionMessageListener = new MessageListener(
 			Constants.PERFORM_ACTION) {
@@ -83,7 +86,7 @@ public abstract class WindowsContextMenuControlImpl
 			}
 		};
 
-		pluginControl.registerMessageListener(performActionMessageListener);
+		nativityControl.registerMessageListener(performActionMessageListener);
 	}
 
 	@Override
@@ -91,7 +94,7 @@ public abstract class WindowsContextMenuControlImpl
 		NativityMessage message = new NativityMessage(
 			Constants.SET_MENU_TITLE, title);
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 }

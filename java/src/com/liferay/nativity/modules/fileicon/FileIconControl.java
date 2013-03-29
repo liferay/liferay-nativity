@@ -21,22 +21,75 @@ import java.util.Map;
  */
 public interface FileIconControl extends FileIconControlCallback {
 
+	/**
+	 * Disables file icon overlays
+	 */
 	public void disableFileIcons();
 
+	/**
+	 * Enables file icon overlays
+	 */
 	public void enableFileIcons();
 
+	/**
+	 * Mac only
+	 *
+	 * Register an overlay icon
+	 *
+	 * @param path to the overlay icon
+	 *
+	 * @return overlay icon id
+	 */
 	public int registerIcon(String path);
 
+	/**
+	 * Mac only
+	 *
+	 * Removes all file icon overlays
+	 */
 	public void removeAllFileIcons();
 
+	/**
+	 * Removes file icon overlay
+	 *
+	 * @param file path to remove the file icon overlay
+	 */
 	public void removeFileIcon(String path);
 
+	/**
+	 * Removes file icon overlays
+	 *
+	 * @param file paths to remove file icon overlays
+	 */
 	public void removeFileIcons(String[] paths);
 
+	/**
+	 * Mac only
+	 *
+	 * Set file icon overlay
+	 *
+	 * @param file path to set file icon overlays
+	 *
+	 * @param id of file icon overlay
+	 */
 	public void setFileIcon(String path, int iconId);
 
+	/**
+	 * Mac only
+	 *
+	 * Set file icon overlays
+	 *
+	 * @param map containing paths and file icon overlay ids
+	 */
 	public void setFileIcons(Map<String, Integer> fileIconsMap);
 
+	/**
+	 * Mac only
+	 *
+	 * Unregister an overlay icon
+	 *
+	 * @param overlay icon id
+	 */
 	public void unregisterIcon(int id);
 
 }

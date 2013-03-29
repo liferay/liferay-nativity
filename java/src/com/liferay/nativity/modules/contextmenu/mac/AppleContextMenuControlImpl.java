@@ -19,6 +19,7 @@ import com.liferay.nativity.control.MessageListener;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlBase;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,13 @@ import java.util.Map;
 /**
  * @author Dennis Ju
  */
-public abstract class AppleContextMenuControlImpl
-	extends ContextMenuControlBase {
+public class AppleContextMenuControlImpl extends ContextMenuControlBase {
 
-	public AppleContextMenuControlImpl(NativityControl pluginControl) {
-		super(pluginControl);
+	public AppleContextMenuControlImpl(
+		NativityControl nativityControl,
+		ContextMenuControlCallback contextMenuControlCallback) {
+
+		super(nativityControl, contextMenuControlCallback);
 
 		MessageListener menuQueryMessageListener = new MessageListener(
 			Constants.MENU_QUERY) {
@@ -49,7 +52,7 @@ public abstract class AppleContextMenuControlImpl
 			}
 		};
 
-		pluginControl.registerMessageListener(menuQueryMessageListener);
+		nativityControl.registerMessageListener(menuQueryMessageListener);
 
 		MessageListener menuExecMessageListener = new MessageListener(
 			Constants.MENU_EXEC) {
@@ -72,15 +75,15 @@ public abstract class AppleContextMenuControlImpl
 			}
 		};
 
-		pluginControl.registerMessageListener(menuExecMessageListener);
+		nativityControl.registerMessageListener(menuExecMessageListener);
 	}
 
 	@Override
-	public final void setContextMenuTitle(String title) {
+	public void setContextMenuTitle(String title) {
 		NativityMessage message = new NativityMessage(
 			Constants.SET_MENU_TITLE, title);
 
-		pluginControl.sendMessage(message);
+		nativityControl.sendMessage(message);
 	}
 
 	private List<String> _currentFiles;

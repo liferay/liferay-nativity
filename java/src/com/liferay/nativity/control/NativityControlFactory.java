@@ -1,0 +1,64 @@
+/**
+ * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+package com.liferay.nativity.control;
+
+import com.liferay.nativity.control.linux.LinuxNativityControlImpl;
+import com.liferay.nativity.control.mac.AppleNativityControlImpl;
+import com.liferay.nativity.control.win.WindowsNativityControlImpl;
+import com.liferay.nativity.util.OSDetector;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author Dennis Ju
+ */
+public class NativityControlFactory {
+
+	/**
+	 * Factory method to get an instance of NativityControl
+	 *
+	 * @return implementation of NativityControl instance based on the
+	 * user's operating system. Returns null for unsupported operating systems.
+	 */
+	public static NativityControl getNativityControl() {
+		if (_nativityControl == null) {
+			if (OSDetector.isApple()) {
+				_nativityControl = new AppleNativityControlImpl();
+			}
+			else if (OSDetector.isWindows()) {
+				_nativityControl = new WindowsNativityControlImpl();
+			}
+			else if (OSDetector.isLinux()) {
+				_nativityControl = new LinuxNativityControlImpl();
+			}
+			else {
+				_logger.error(
+					"NativityControl does not support {}",
+					System.getProperty("os.name"));
+
+				_nativityControl = null;
+			}
+		}
+
+		return _nativityControl;
+	}
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		NativityControlFactory.class.getName());
+
+	private static NativityControl _nativityControl;
+
+}

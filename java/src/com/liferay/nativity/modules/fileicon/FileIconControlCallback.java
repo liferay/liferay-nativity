@@ -19,6 +19,16 @@ package com.liferay.nativity.modules.fileicon;
  */
 public interface FileIconControlCallback {
 
+	/**
+	 * Windows only
+	 *
+	 * Called by the native service to request the icon overlay id for the
+	 * specified file
+	 *
+	 * @param file path requesting the overlay icon
+	 *
+	 * @return icon overlay id
+	 */
 	public int getIconForFile(String path);
 
 }

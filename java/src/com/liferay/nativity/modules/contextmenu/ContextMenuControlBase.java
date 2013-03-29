@@ -23,10 +23,14 @@ import java.util.List;
 /**
  * @author Dennis Ju
  */
-public abstract class ContextMenuControlBase {
+public abstract class ContextMenuControlBase implements ContextMenuControl {
 
-	public ContextMenuControlBase(NativityControl pluginControl) {
-		this.pluginControl = pluginControl;
+	public ContextMenuControlBase(
+		NativityControl nativityControl,
+		ContextMenuControlCallback contextMenuControlCallback) {
+
+		this.nativityControl = nativityControl;
+		this.contextMenuControlCallback = contextMenuControlCallback;
 
 		_menuItemListeners = new ArrayList<MenuItemListener>();
 	}
@@ -43,9 +47,15 @@ public abstract class ContextMenuControlBase {
 		}
 	}
 
-	public abstract String[] getHelpItemsForMenus(String[] paths);
+	@Override
+	public String[] getHelpItemsForMenus(String[] paths) {
+		return contextMenuControlCallback.getHelpItemsForMenus(paths);
+	}
 
-	public abstract String[] getMenuItems(String[] paths);
+	@Override
+	public String[] getMenuItems(String[] paths) {
+		return contextMenuControlCallback.getMenuItems(paths);
+	}
 
 	public void removeAllMenuItemListeners() {
 		_menuItemListeners.clear();
@@ -55,10 +65,9 @@ public abstract class ContextMenuControlBase {
 		_menuItemListeners.remove(menuItemListener);
 	}
 
-	public abstract void setContextMenuTitle(String title);
+	protected ContextMenuControlCallback contextMenuControlCallback;
+	protected NativityControl nativityControl;
 
-	protected List<MenuItemListener> _menuItemListeners;
-
-	protected NativityControl pluginControl;
+	private List<MenuItemListener> _menuItemListeners;
 
 }

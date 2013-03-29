@@ -15,8 +15,10 @@
 package com.liferay.nativity.test;
 
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityControlFactory;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlFactory;
 import com.liferay.nativity.modules.fileicon.FileIconControl;
 import com.liferay.nativity.modules.fileicon.FileIconControlFactory;
 
@@ -61,17 +63,16 @@ public class TestDriver {
 
 		_logger.debug("main");
 
-		NativityControl nativityControl = NativityControl.getNativityControl();
-
-		FileIconControlFactory fileIconControlFactory =
-			new FileIconControlFactory(
-				nativityControl, new TestFileIconControlCallback());
+		NativityControl nativityControl =
+			NativityControlFactory.getNativityControl();
 
 		FileIconControl fileIconControl =
-			fileIconControlFactory.getFileIconControl();
+			FileIconControlFactory.getFileIconControl(
+				nativityControl, new TestFileIconControlCallback());
 
-		TestContextMenuControl contextMenuControl = new TestContextMenuControl(
-			nativityControl);
+		ContextMenuControl contextMenuControl =
+			ContextMenuControlFactory.getContextMenuControl(
+			nativityControl, new TestContextMenuControlCallback());
 
 		BufferedReader bufferedReader = new BufferedReader(
 			new InputStreamReader(System.in));

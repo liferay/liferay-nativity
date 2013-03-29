@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
 public class MessageProcessor implements Runnable {
 
 	public MessageProcessor(
-		Socket clientSocket, WindowsNativityControlImpl plugIn) {
+		Socket clientSocket, WindowsNativityControlImpl nativityControl) {
 
 		_clientSocket = clientSocket;
-		_plugIn = plugIn;
+		_nativityControl = nativityControl;
 	}
 
 	@Override
@@ -94,7 +94,8 @@ public class MessageProcessor implements Runnable {
 			NativityMessage message = jsonDeserializer.deserialize(
 				receivedMessage, NativityMessage.class);
 
-			NativityMessage responseMessage = _plugIn.fireOnMessage(message);
+			NativityMessage responseMessage = _nativityControl.fireOnMessage(
+				message);
 
 			if (responseMessage == null) {
 				_logger.debug("Response Null");
@@ -154,7 +155,7 @@ public class MessageProcessor implements Runnable {
 
 	private Socket _clientSocket;
 	private InputStreamReader _inputStreamReader;
+	private WindowsNativityControlImpl _nativityControl;
 	private OutputStreamWriter _outputStreamWriter;
-	private WindowsNativityControlImpl _plugIn;
 
 }

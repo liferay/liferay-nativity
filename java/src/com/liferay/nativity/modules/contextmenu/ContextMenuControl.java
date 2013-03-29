@@ -14,33 +14,12 @@
 
 package com.liferay.nativity.modules.contextmenu;
 
-import com.liferay.nativity.Constants;
-import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.listeners.MenuItemListener;
-import com.liferay.nativity.modules.contextmenu.mac.AppleContextMenuControlImpl;
-import com.liferay.nativity.modules.contextmenu.win.WindowsContextMenuControlImpl;
-import com.liferay.nativity.util.OSDetector;
 
 /**
  * @author Dennis Ju
  */
-public abstract class ContextMenuControl {
-
-	public ContextMenuControl(NativityControl pluginControl) {
-		_pluginControl = pluginControl;
-
-		if (_contextMenuControlBaseDelegate == null) {
-			if (OSDetector.isApple()) {
-				_contextMenuControlBaseDelegate =
-					createAppleContextMenuControlBase();
-			}
-			else if (OSDetector.isWindows()) {
-				_contextMenuControlBaseDelegate =
-					createWindowsContextMenuControlBase();
-			}
-		}
-	}
+public interface ContextMenuControl extends ContextMenuControlCallback {
 
 	/**
 	 * Adds a MenuItemListener to respond to menu item selections.
@@ -48,37 +27,31 @@ public abstract class ContextMenuControl {
 	 *
 	 * @param listener to respond to menu item selections
 	 */
-	public void addMenuItemListener(MenuItemListener menuItemListener) {
-		_contextMenuControlBaseDelegate.addMenuItemListener(menuItemListener);
-	}
-
-	public abstract String[] getHelpItemsForMenus(String[] files);
+	public void addMenuItemListener(MenuItemListener menuItemListener);
 
 	/**
-	 * Called by the native service when the user requests a context menu popup
+	 * Notifies all MenuItemListener instances when a menu item is selected
 	 *
-	 * @param the files selected for this context menu popup
+	 * @param index value of the selected menu item
 	 *
-	 * @return array of menu item titles to populate the context menu
+	 * @param text value of the selected menu item
+	 *
+	 * @param array of selected file paths
 	 */
-	public abstract String[] getMenuItems(String[] paths);
+	public void fireMenuItemListeners(
+		int menuIndex, String menuText, String[] paths);
 
 	/**
 	 * Removes all MenuItemListeners
 	 */
-	public void removeAllMenuItemListeners() {
-		_contextMenuControlBaseDelegate.removeAllMenuItemListeners();
-	}
+	public void removeAllMenuItemListeners();
 
 	/**
 	 * Removes a MenuItemListener
 	 *
 	 * @param the MenuItemListener to remove
 	 */
-	public void removeMenuItemListener(MenuItemListener menuItemListener) {
-		_contextMenuControlBaseDelegate.removeMenuItemListener(
-			menuItemListener);
-	}
+	public void removeMenuItemListener(MenuItemListener menuItemListener);
 
 	/**
 	 * Set title of root context menu item, all other items will be added as
@@ -86,45 +59,6 @@ public abstract class ContextMenuControl {
 	 *
 	 * @param title of context menu
 	 */
-	public void setContextMenuTitle(String title) {
-		NativityMessage message = new NativityMessage(
-			Constants.SET_MENU_TITLE, title);
-
-		_pluginControl.sendMessage(message);
-	}
-
-	protected ContextMenuControlBase createAppleContextMenuControlBase() {
-		return new AppleContextMenuControlImpl(_pluginControl) {
-
-			@Override
-			public String[] getMenuItems(String[] paths) {
-				return ContextMenuControl.this.getMenuItems(paths);
-			}
-
-			@Override
-			public String[] getHelpItemsForMenus(String[] paths) {
-				return ContextMenuControl.this.getMenuItems(paths);
-			}
-		};
-	}
-
-	protected ContextMenuControlBase createWindowsContextMenuControlBase() {
-		return new WindowsContextMenuControlImpl(_pluginControl) {
-
-			@Override
-			public String[] getMenuItems(String[] paths) {
-
-				return ContextMenuControl.this.getMenuItems(paths);
-			}
-
-			@Override
-			public String[] getHelpItemsForMenus(String[] paths) {
-				return ContextMenuControl.this.getMenuItems(paths);
-			}
-		};
-	}
-
-	private ContextMenuControlBase _contextMenuControlBaseDelegate;
-	private NativityControl _pluginControl;
+	public void setContextMenuTitle(String title);
 
 }
