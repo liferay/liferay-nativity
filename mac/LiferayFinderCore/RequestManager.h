@@ -26,7 +26,6 @@
 
 	NSCondition* callbackCondition;
 	NSString* callbackMsg;
-    NSString* folderPath;
 	NSNumberFormatter* numberFormatter;
 	NSString* rootFolder;
 	NSData* warningData;

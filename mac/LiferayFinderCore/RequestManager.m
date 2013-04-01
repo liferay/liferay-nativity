@@ -58,45 +58,46 @@
 	return sharedInstance;
 }
 
-- (void)execCommand:(NSDictionary*)jsonDictionary replyTo:(AsyncSocket*)sock
+- (void)execCommand:(NSData*)data replyTo:(AsyncSocket*)sock
 {
-	NSString* cmdId = [jsonDictionary objectForKey:@"command"];
+    NSDictionary* jsonDictionary = [data objectFromJSONData];
 
+	NSString* command = [jsonDictionary objectForKey:@"command"];
 	NSData* value = [jsonDictionary objectForKey:@"value"];
 
-	if (!value)
+	if (!command)
 	{
 		return;
 	}
-	if ([cmdId isEqualToString:@"setFileIcons"])
+	if ([command isEqualToString:@"setFileIcons"])
 	{
 		[self execSetFileIconsCmd:value replyTo:sock];
 	}
-	else if ([cmdId isEqualToString:@"removeFileIcons"])
+	else if ([command isEqualToString:@"removeFileIcons"])
 	{
 		[self execRemoveFileIconsCmd:value replyTo:sock];
 	}
-	else if ([cmdId isEqualToString:@"removeAllFileIcons"])
+	else if ([command isEqualToString:@"removeAllFileIcons"])
 	{
 		[self execRemoveAllFileIconsCmd:value replyTo:sock];
 	}
-	else if ([cmdId isEqualToString:@"enableOverlays"])
+	else if ([command isEqualToString:@"enableOverlays"])
 	{
 		[self execEnableOverlaysCmd:value replyTo:sock];
 	}
-	else if ([cmdId isEqualToString:@"registerIcon"])
+	else if ([command isEqualToString:@"registerIcon"])
 	{
 		[self execRegisterIconCmd:value replyTo:sock];
 	}
-	else if ([cmdId isEqualToString:@"unregisterIcon"])
+	else if ([command isEqualToString:@"unregisterIcon"])
 	{
 		[self execUnregisterIconCmd:value replyTo:sock];
 	}
-	else if ([cmdId isEqualToString:@"setMenuTitle"])
+	else if ([command isEqualToString:@"setMenuTitle"])
 	{
 		[self execSetMenuTitleCmd:value replyTo:sock];
 	}
-    else if ([cmdId isEqualToString:@"setRootFolder"])
+    else if ([command isEqualToString:@"setRootFolder"])
 	{
 		[self execSetRootFolderCmd:value replyTo:sock];
 	}
@@ -116,6 +117,10 @@
 	NSString* path = (NSString*)cmdData;
 
 	NSNumber* index = [[IconCache sharedInstance] registerIcon:path];
+
+    if (!index) {
+        index = [NSNumber numberWithInt:-1];
+    }
 
 	[self replyString:[numberFormatter stringFromNumber:index] toSocket:sock];
 }
@@ -158,7 +163,7 @@
 {
     rootFolder = (NSString*)cmdData;
     [rootFolder retain];
-    
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -178,15 +183,10 @@
 		return;
 	}
 
-	NSDictionary* itemDictionary = [[NSMutableDictionary alloc] init];
-
-	[itemDictionary setValue:item forKey:@"menuIndex"];
-	[itemDictionary setValue:title forKey:@"menuText"];
-
 	NSDictionary* menuExecDictionary = [[NSMutableDictionary alloc] init];
 
 	[menuExecDictionary setValue:@"menuExec" forKey:@"command"];
-	[menuExecDictionary setValue:itemDictionary forKey:@"value"];
+	[menuExecDictionary setValue:title forKey:@"value"];
 
 	NSString* jsonString = [menuExecDictionary JSONString];
 
@@ -232,10 +232,14 @@
 	while (callbackMsg == nil)
 	{
 		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+
+		if (callbackSocket == nil) {
+			return nil;
+		}
 	}
 
     NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
-    
+
 	return (NSArray*)[responseDictionary objectForKey:@"value"];
 }
 
@@ -263,10 +267,7 @@
 {
 	if (sock == connectedSocket)
 	{
-		NSData* jsonData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
-		NSDictionary* jsonDictionary = [jsonData objectFromJSONData];
-
-		[self execCommand:jsonDictionary replyTo:sock];
+		[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:sock];
 
 		[sock readDataToData:[AsyncSocket CRLFData] withTimeout:-1 tag:0];
 	}

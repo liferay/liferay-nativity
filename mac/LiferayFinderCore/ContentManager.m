@@ -120,6 +120,10 @@ OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
 	{
 		NSWindow* window = [windows objectAtIndex:i];
 
+		if (![window isVisible]) {
+			continue;
+		}
+
 		[window update];
 
 		if ([[window className] isEqualToString:@"TBrowserWindow"])

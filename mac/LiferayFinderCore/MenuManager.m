@@ -100,7 +100,6 @@ static MenuManager* sharedInstance = nil;
 
 			if ([titleElements count] > 1)
 			{
-
 				NSString* state = [titleElements objectAtIndex:1];
 
 				if ([state isEqualToString:@"true"])
