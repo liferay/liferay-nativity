@@ -17,7 +17,8 @@ include_directories(/usr/include/atk-1.0)
 
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
 
+find_library(JSONCPP_LIBRARY NAMES libjson_linux-gcc-4.6_libmt.so libjsoncpp.so PATHS /usr/lib /usr/local/lib)
+
 add_library(liferayplugin SHARED plugin.cpp handlers.cpp logger.cpp socket.cpp requests.cpp content.cpp sync.cpp)
-target_link_libraries(liferayplugin gobject-2.0 nautilus-extension glib-2.0 pthread ${GTK2_LIBRARIES})
 
-
+target_link_libraries(liferayplugin gobject-2.0 nautilus-extension glib-2.0 pthread ${GTK2_LIBRARIES} ${JSONCPP_LIBRARY})

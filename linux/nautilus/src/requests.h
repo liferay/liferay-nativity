@@ -10,13 +10,14 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- */ 
+ */
 #ifndef __REQUESTS_H__
 #define __REQUESTS_H__
 
 #include "socket.h"
 #include <string>
 #include <vector>
+#include <json/json.h>
 
 class RequestManager :
 	public ISocketCallback
@@ -29,6 +30,7 @@ public:
 
 protected:
 	virtual void onStringReceived(int serverId, const std::string& text);
+
 private:
 	SocketServer callbackSocket_;
 	SocketServer commandSocket_;
@@ -36,14 +38,14 @@ private:
 	RequestManager();
 	~RequestManager();
 
-	void execSetFileIconCmd(const std::vector<std::string>& cmdData);
-	void execSetFileIconsCmd(const std::vector<std::string>& cmdData);
-	void execRemoveFileIconCmd(const std::vector<std::string>& cmdData);
-	void execRemoveFileIconsCmd(const std::vector<std::string>& cmdData);
-	void execEnableOverlaysCmd(const std::vector<std::string>& cmdData);
-	void execRegisterIconCmd(const std::vector<std::string>& cmdData);
-	void execUnregisterIconCmd(const std::vector<std::string>& cmdData);
-	void execSetMenuTitleCmd(const std::vector<std::string>& cmdData);
+	void execSetFileIconsCmd(const Json::Value& jsonValue);
+	void execRemoveFileIconsCmd(const Json::Value& jsonValue);
+	void execRemoveAllFileIconsCmd(const Json::Value& jsonValue);
+	void execEnableOverlaysCmd(const Json::Value& jsonValue);
+	void execRegisterIconCmd(const Json::Value& jsonValue);
+	void execUnregisterIconCmd(const Json::Value& jsonValue);
+	void execSetMenuTitleCmd(const Json::Value& jsonValue);
+	void execSetRootFolderCmd(const Json::Value& jsonValue);
 };
 
 #endif

@@ -10,10 +10,14 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- */ 
+ */
 #include "logger.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <string>
 
 #ifdef ENABLE_LOG
 
@@ -21,17 +25,28 @@ void writeLog(const char* format, ...)
 {
 	va_list args;
 	FILE* file = NULL;
-	va_start (args, format);
-	
-	file = fopen("/home/user/LiferayPlugin.log","a+");	
-	
+
+	va_start(args, format);
+
+	char* homedir = getenv("HOME");
+
+	if (!homedir)
+	{
+		uid_t uid = getuid();
+		struct passwd* pw = getpwuid(uid);
+
+		homedir = pw->pw_dir;
+	}
+
+	file = fopen((std::string(homedir) + std::string("/LiferayPlugin.log")).c_str(), "a+");
+
 	if (file)
 	{
-		vfprintf (file, format, args);
+		vfprintf(file, format, args);
 		fclose(file);
 	}
-	
-	va_end (args); 
+
+	va_end(args);
 }
 
 

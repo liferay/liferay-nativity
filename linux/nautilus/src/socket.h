@@ -10,7 +10,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- */ 
+ */
 #ifndef __SOCKET_SERVER_H__
 #define __SOCKET_SERVER_H__
 
@@ -35,6 +35,7 @@ public:
 	bool readString(std::string& data);
 
 	bool isConnected();
+
 private:
 	int id_;
 

@@ -10,7 +10,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- */ 
+ */
 #ifndef __CONTENT_H__
 #define __CONTENT_H__
 
@@ -24,26 +24,27 @@ public:
 	static ContentManager& instance();
 
 	std::string getFileIconName(const std::string& fileName) const;
-
-	void setIconForFile(const std::string& fileName, int icon);
+	void setFileIcon(const std::string& fileName, int icon);
 	void removeFileIcon(const std::string& fileName);
+	void removeAllFileIcons();
 	int registerIcon(const std::string& fileName);
 	void unregisterIcon(int iconId);
-
 	void enableOverlays(bool enable);
 	bool isOverlaysEnabled();
-
 	void setMenuTitle(const std::string& title);
 	const std::string& getMenuTitle() const;
+	void setRootFolder(std::string const& rootFolder);
+	const std::string& getRootFolder() const;
+
 private:
 	std::map<std::string, int> iconsForFiles_;
 	int lastIconId_;
 	std::map<int, std::string> icons_;
-
 	bool overlaysEnabled_;
 	std::string menuTitle_;
+	std::string rootFolder_;
 	mutable std::set<std::string> registeredFolders_;
-	
+
 	ContentManager();
 	~ContentManager();
 };

@@ -10,7 +10,7 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
- */ 
+ */
 #include "config.h"
 #include "content.h"
 #include <glib-object.h>
@@ -20,6 +20,7 @@
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
+#include <boost/algorithm/string.hpp>
 #include "logger.h"
 
 ContentManager::ContentManager() :
@@ -36,26 +37,34 @@ ContentManager::~ContentManager()
 ContentManager& ContentManager::instance()
 {
 	static ContentManager inst;
+
 	return inst;
 }
 
 std::string ContentManager::getFileIconName(const std::string& fileName) const
 {
 	std::map<std::string, int>::const_iterator itIcon = iconsForFiles_.find(fileName);
+
 	if (itIcon == iconsForFiles_.end())
+	{
 		return "";
+	}
 
 	std::map<int, std::string>::const_iterator itName = icons_.find(itIcon->second);
+
 	if (itName == icons_.end())
+	{
 		return "";
+	}
 
 	std::string folder(itName->second);
 	std::string icon(itName->second);
 
 	size_t pos = folder.find_last_of("/");
+
 	if (pos != folder.npos)
 	{
-		folder.erase(pos,folder.npos);
+		folder.erase(pos, folder.npos);
 		icon.erase(0, pos + 1);
 	}
 
@@ -63,7 +72,7 @@ std::string ContentManager::getFileIconName(const std::string& fileName) const
 	{
 		if (registeredFolders_.find(folder) == registeredFolders_.end())
 		{
-			GtkIconTheme *theme = gtk_icon_theme_get_default();
+			GtkIconTheme* theme = gtk_icon_theme_get_default();
 
 			writeLog("add folder to gtk theme (%x) paths: %s", theme, folder.c_str());
 			gtk_icon_theme_append_search_path(theme, folder.c_str());
@@ -73,21 +82,34 @@ std::string ContentManager::getFileIconName(const std::string& fileName) const
 	}
 
 	pos = icon.find_last_of(".");
-	if (pos != icon.npos)
-		icon.erase(pos, icon.npos);
 
+	if (pos != icon.npos)
+	{
+		icon.erase(pos, icon.npos);
+	}
 
 	return icon;
 }
 
-void ContentManager::setIconForFile(const std::string& fileName, int icon)
+void ContentManager::setFileIcon(const std::string& fileName, int icon)
 {
+	std::string rootFolder = ContentManager::instance().getRootFolder();
+
+	if (!rootFolder.empty() && !boost::starts_with(fileName, rootFolder)) {
+		return;
+	}
+
 	iconsForFiles_[fileName] = icon;
 }
 
 void ContentManager::removeFileIcon(const std::string& fileName)
 {
 	iconsForFiles_.erase(fileName);
+}
+
+void ContentManager::removeAllFileIcons()
+{
+	iconsForFiles_.clear();
 }
 
 int ContentManager::registerIcon(const std::string& fileName)
@@ -123,3 +145,12 @@ const std::string& ContentManager::getMenuTitle() const
 	return menuTitle_;
 }
 
+void ContentManager::setRootFolder(const std::string& rootFolder)
+{
+	rootFolder_ = rootFolder;
+}
+
+const std::string& ContentManager::getRootFolder() const
+{
+	return rootFolder_;
+}

@@ -1,6 +1,6 @@
 #include "sync.h"
 
-Mutex::Mutex() 
+Mutex::Mutex()
 {
 	mutex_ = PTHREAD_MUTEX_INITIALIZER;
 	pthread_mutexattr_t mta;
@@ -25,5 +25,3 @@ void Mutex::unlock()
 {
 	pthread_mutex_unlock(&mutex_);
 }
-
-
