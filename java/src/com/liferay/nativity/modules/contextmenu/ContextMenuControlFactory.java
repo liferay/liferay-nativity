@@ -42,7 +42,7 @@ public class ContextMenuControlFactory {
 					contextMenuControlFactory.createWindowsContextMenuControl();
 			}
 			else if (OSDetector.isLinux()) {
-			_contextMenuControl =
+				_contextMenuControl =
 					contextMenuControlFactory.createLinuxContextMenuControl();
 			}
 		}
