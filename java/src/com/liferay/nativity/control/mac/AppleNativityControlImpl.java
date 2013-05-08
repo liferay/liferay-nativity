@@ -14,22 +14,17 @@
 
 package com.liferay.nativity.control.mac;
 
-import com.liferay.nativity.Constants;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.listeners.SocketCloseListener;
-
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-import flexjson.ObjectBinder;
-import flexjson.ObjectFactory;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import java.lang.reflect.Type;
 
 import java.net.Socket;
 
@@ -119,13 +114,10 @@ public class AppleNativityControlImpl extends NativityControl {
 
 	@Override
 	public String sendMessage(NativityMessage message) {
-		String command = _jsonSerializer.exclude("*.class").deepSerialize(
-			message);
-
 		try {
-			command += _RETURN_NEW_LINE;
+			_objectMapper.writeValue(_serviceOutputStream, message);
 
-			_serviceOutputStream.write(command.getBytes("UTF-8"));
+			_serviceOutputStream.write(_RETURN_NEW_LINE.getBytes("UTF-8"));
 
 			String reply = _serviceBufferedReader.readLine();
 
@@ -148,14 +140,6 @@ public class AppleNativityControlImpl extends NativityControl {
 
 			return "";
 		}
-	}
-
-	@Override
-	public void setRootFolder(String folder) {
-		NativityMessage message = new NativityMessage(
-			Constants.SET_ROOT_FOLDER, folder);
-
-		sendMessage(message);
 	}
 
 	@Override
@@ -232,36 +216,17 @@ public class AppleNativityControlImpl extends NativityControl {
 					break;
 				}
 
-				ObjectFactory objectFactory = new ObjectFactory() {
-					@Override
-					public Object instantiate(
-						ObjectBinder context, Object value, Type targetType,
-						Class targetClass) {
-
-						return value;
-					}
-				};
-
-				JSONDeserializer<NativityMessage> _messageJSONDeserializer =
-					new JSONDeserializer<NativityMessage>().use(
-						"value", objectFactory);
-
-				NativityMessage message = _messageJSONDeserializer.deserialize(
+				NativityMessage message = _objectMapper.readValue(
 					data, NativityMessage.class);
 
 				NativityMessage responseMessage = fireOnMessage(message);
 
-				String response;
-
-				if (responseMessage == null) {
-					response = _RETURN_NEW_LINE;
-				}
-				else {
-					response = _jsonSerializer.exclude("*.class")
-						.deepSerialize(responseMessage) + _RETURN_NEW_LINE;
+				if (responseMessage != null) {
+					_objectMapper.writeValue(
+						_callbackOutputStream, responseMessage);
 				}
 
-				_callbackOutputStream.write(response.getBytes("UTF-8"));
+				_callbackOutputStream.write(_RETURN_NEW_LINE.getBytes("UTF-8"));
 			}
 			catch (IOException ioe) {
 				_logger.error(ioe.getMessage(), ioe);
@@ -276,10 +241,13 @@ public class AppleNativityControlImpl extends NativityControl {
 	private static final String _RETURN_NEW_LINE = "\r\n";
 
 	private static int _callbackSocketPort = 33002;
-	private static JSONSerializer _jsonSerializer = new JSONSerializer();
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		AppleNativityControlImpl.class.getName());
+
+	private static ObjectMapper _objectMapper =
+		new ObjectMapper().configure(
+			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 
 	private static int _serviceSocketPort = 33001;
 

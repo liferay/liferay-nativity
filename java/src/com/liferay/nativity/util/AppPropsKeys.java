@@ -12,20 +12,21 @@
  * details.
  */
 
-package com.liferay.nativity.modules.contextmenu.listeners;
+package com.liferay.nativity.util;
 
 /**
- * @author Dennis Ju
+ * @author Gail Hernandez
  */
-public abstract class MenuItemListener {
+public class AppPropsKeys {
 
-	/**
-	 * Called when a context menu item is selected
-	 *
-	 * @param text value of the selected menu item
-	 *
-	 * @param array of selected file paths
-	 */
-	public abstract void onMenuItemSelected(String menuText, String[] paths);
+	public static final String NVTY_APPLICATION_PATH = "application-path";
+
+	public static final String NVTY_LIFERAY_NATIVITY_UTIL_64 =
+		"LiferayNativityWindowsUtil_x64.dll";
+	public static final String NVTY_LIFERAY_NATIVITY_UTIL_86 =
+		"LiferayNativityWindowsUtil_x86.dll";
+
+	public static final String NVTY_LIFERAY_NATIVITY_UTIL_DEFAULT =
+		"LiferayNativityWindowsUtil_x64";
 
 }

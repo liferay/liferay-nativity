@@ -22,58 +22,49 @@ import com.liferay.nativity.util.OSDetector;
 /**
  * @author Dennis Ju
  */
-public class ContextMenuControlFactory {
+public class ContextMenuControlUtil {
 
-	public static ContextMenuControl getContextMenuControl(
+	public static void registerContextMenuControlCallback(
 		NativityControl nativityControl,
 		ContextMenuControlCallback contextMenuControlCallback) {
 
-		if (_contextMenuControl == null) {
-			ContextMenuControlFactory contextMenuControlFactory =
-				new ContextMenuControlFactory(
-					nativityControl, contextMenuControlCallback);
+		ContextMenuControlUtil contextMenuControlUtil =
+			new ContextMenuControlUtil(
+				nativityControl, contextMenuControlCallback);
 
-			if (OSDetector.isApple()) {
-				_contextMenuControl =
-					contextMenuControlFactory.createAppleContextMenuControl();
-			}
-			else if (OSDetector.isWindows()) {
-				_contextMenuControl =
-					contextMenuControlFactory.createWindowsContextMenuControl();
-			}
-			else if (OSDetector.isLinux()) {
-				_contextMenuControl =
-					contextMenuControlFactory.createLinuxContextMenuControl();
-			}
+		if (OSDetector.isApple()) {
+			contextMenuControlUtil.createAppleContextMenuControl();
 		}
-
-		return _contextMenuControl;
+		else if (OSDetector.isWindows()) {
+			contextMenuControlUtil.createWindowsContextMenuControl();
+		}
+		else if (OSDetector.isLinux()) {
+			contextMenuControlUtil.createLinuxContextMenuControl();
+		}
 	}
 
-	protected ContextMenuControl createAppleContextMenuControl() {
-		return new AppleContextMenuControlImpl(
+	protected void createAppleContextMenuControl() {
+		new AppleContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 
-	protected ContextMenuControl createLinuxContextMenuControl() {
-		return new AppleContextMenuControlImpl(
+	protected void createLinuxContextMenuControl() {
+		new AppleContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 
-	protected ContextMenuControl createWindowsContextMenuControl() {
-		return new WindowsContextMenuControlImpl(
+	protected void createWindowsContextMenuControl() {
+		new WindowsContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 
-	private ContextMenuControlFactory(
+	private ContextMenuControlUtil(
 		NativityControl nativityControl,
 		ContextMenuControlCallback contextMenuControlCallback) {
 
 		_nativityControl = nativityControl;
 		_contextMenuControlCallback = contextMenuControlCallback;
 	}
-
-	private static ContextMenuControl _contextMenuControl;
 
 	private ContextMenuControlCallback _contextMenuControlCallback;
 	private NativityControl _nativityControl;

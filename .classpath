@@ -6,6 +6,8 @@
 	<classpathentry kind="lib" path="java/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="java/lib/slf4j-log4j12-1.6.1.jar"/>
 	<classpathentry kind="lib" path="java/lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="java/lib/flexjson-2.1.jar"/>
+	<classpathentry kind="lib" path="java/lib/jackson-core-2.1.4.jar"/>
+	<classpathentry kind="lib" path="java/lib/jackson-databind-2.1.4.jar"/>
+	<classpathentry kind="lib" path="java/lib/jackson-annotations-2.1.4.jar"/>
 	<classpathentry kind="output" path="java/bin"/>
 </classpath>

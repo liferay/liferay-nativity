@@ -12,26 +12,25 @@
  * details.
  */
 
-package com.liferay.nativity.modules.contextmenu;
-
-import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
-
-import java.util.List;
+package com.liferay.nativity.util.windows;
 
 /**
- * @author Dennis Ju
+ * @author Gail Hernandez
  */
-public interface ContextMenuControlCallback {
+public enum ExplorerConstants {
 
-	/**
-	 * Called by the native service to request the menu items for a context
-	 * menu popup
-	 *
-	 * @param the files selected for this context menu popup
-	 *
-	 * @return each ContextMenuItem instance in the list will appear at the
-	 * context menu's top level
-	 */
-	public abstract List<ContextMenuItem> getMenuItem(String[] paths);
+	SHCNE_CREATE(0), SHCNE_DELETE(1), SHCNE_MKDIR(2), SHCNE_RENAMEFOLDER(3),
+	SHCNE_RENAMEITEM(4), SHCNE_RMDIR(5), SHCNE_UPDATEDIR(6),
+	SHCNE_UPDATEITEM(7);
+
+	ExplorerConstants(int value) {
+		_value = value;
+	}
+
+	public int getValue() {
+		return _value;
+	}
+
+	private final int _value;
 
 }

@@ -65,14 +65,6 @@ public class WindowsNativityControlImpl extends NativityControl {
 	}
 
 	@Override
-	public void setRootFolder(String folder) {
-		NativityMessage message = new NativityMessage(
-			Constants.SET_ROOT_FOLDER, folder);
-
-		sendMessage(message);
-	}
-
-	@Override
 	public void setSystemFolder(String folder) {
 		NativityMessage message = new NativityMessage(
 			Constants.SET_SYSTEM_FOLDER, folder);

@@ -118,17 +118,6 @@ public abstract class NativityControl {
 	public abstract String sendMessage(NativityMessage message);
 
 	/**
-	 * Optionally set the root folder filter path for requests made
-	 * to the native service. For example, setting a value of "/test/folder"
-	 * indicates that any requests (like custom context menus) for files that
-	 * are not a child of "/test/folder" will be ignored. This can improve
-	 * native performance.
-	 *
-	 * @param root folder path to filter by (inclusive)
-	 */
-	public abstract void setRootFolder(String folder);
-
-	/**
 	 * Windows only
 	 *
 	 * Marks the specified folder as a system folder so that Desktop.ini values

@@ -14,9 +14,11 @@
 
 package com.liferay.nativity.control.win;
 
-import com.liferay.nativity.control.NativityMessage;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import flexjson.JSONSerializer;
+import com.liferay.nativity.control.NativityMessage;
 
 import java.io.IOException;
 
@@ -40,10 +42,14 @@ public class WindowsSendSocket extends WindowsSocketBase {
 	}
 
 	public void send(NativityMessage message) {
-		String command = _jsonSerializer.exclude("*.class").deepSerialize(
-			message);
+		try {
+			String command = _objectMapper.writeValueAsString(message);
 
-		_commands.add(command);
+			_commands.add(command);
+		}
+		catch (JsonProcessingException jpe) {
+			_logger.error("Failed to serialize message", jpe);
+		}
 	}
 
 	@Override
@@ -93,10 +99,12 @@ public class WindowsSendSocket extends WindowsSocketBase {
 	private static ConcurrentLinkedQueue<String> _commands =
 		new ConcurrentLinkedQueue<String>();
 
-	private static JSONSerializer _jsonSerializer = new JSONSerializer();
-
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsSendSocket.class.getName());
+
+	private static ObjectMapper _objectMapper =
+		new ObjectMapper().configure(
+			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 
 	private ExecutorService _messageSender =
 		Executors.newSingleThreadExecutor();

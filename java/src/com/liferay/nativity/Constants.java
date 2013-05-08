@@ -23,19 +23,23 @@ public class Constants {
 
 	public static final String ENABLE_FILE_ICONS = "enableFileIcons";
 
-	public static final String ENABLE_OVERLAYS = "enableOverlays";
+	public static final String FILES = "files";
 
-	public static final String GET_FILE_OVERLAY_ID = "getFileOverlayId";
+	public static final String GET_CONTEXT_MENU_LIST = "getContextMenuList";
 
-	public static final String GET_HELP_ITEMS = "getHelpItemsForMenus";
+	public static final String GET_FILE_ICON_ID = "getFileIconId";
 
-	public static final String GET_MENU_LIST = "getMenuList";
+	public static final String ID = "id";
 
 	public static final String MENU_EXEC = "menuExec";
+
+	public static final String MENU_INDEX = "menuIndex";
 
 	public static final String MENU_ITEMS = "menuItems";
 
 	public static final String MENU_QUERY = "menuQuery";
+
+	public static final String MENU_TEXT = "menuText";
 
 	public static final String PERFORM_ACTION = "performAction";
 
@@ -45,9 +49,7 @@ public class Constants {
 
 	public static final String SET_FILE_ICONS = "setFileIcons";
 
-	public static final String SET_MENU_TITLE = "setMenuTitle";
-
-	public static final String SET_ROOT_FOLDER = "setRootFolder";
+	public static final String SET_FILTER_PATH = "setFilterPath";
 
 	public static final String SET_SYSTEM_FOLDER = "setSystemFolder";
 

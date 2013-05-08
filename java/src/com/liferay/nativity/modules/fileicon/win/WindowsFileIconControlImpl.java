@@ -24,9 +24,12 @@ import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * @author Dennis Ju
- */
+* @author Dennis Ju
+*/
 public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	public WindowsFileIconControlImpl(
@@ -36,23 +39,29 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 		super(nativityControl, fileIconControlCallback);
 
 		MessageListener messageListener = new MessageListener(
-			Constants.GET_FILE_OVERLAY_ID) {
+				Constants.GET_FILE_ICON_ID) {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
-				List<String> args = (List<String>)message.getValue();
+				_logger.debug(message.getValue().toString());
 
-				if (args.size() > 0) {
-					String arg = args.get(0);
+				String filePath = null;
 
-					int icon = getIconForFile(arg);
+				if (message.getValue() instanceof List<?>) {
 
-					return new NativityMessage(
-						Constants.GET_FILE_OVERLAY_ID, icon);
+					List<?> args = (List<?>)message.getValue();
+
+					if (args.size() > 0) {
+						filePath = args.get(0).toString();
+					}
 				}
 				else {
-					return null;
+					filePath = message.getValue().toString();
 				}
+
+				int icon = getIconForFile(filePath);
+
+				return new NativityMessage(Constants.GET_FILE_ICON_ID, icon);
 			}
 		};
 
@@ -62,7 +71,7 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	@Override
 	public void disableFileIcons() {
 		NativityMessage message = new NativityMessage(
-			Constants.ENABLE_FILE_ICONS, String.valueOf(false));
+		Constants.ENABLE_FILE_ICONS, String.valueOf(false));
 
 		nativityControl.sendMessage(message);
 	}
@@ -70,7 +79,7 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	@Override
 	public void enableFileIcons() {
 		NativityMessage message = new NativityMessage(
-			Constants.ENABLE_FILE_ICONS, String.valueOf(true));
+		Constants.ENABLE_FILE_ICONS, String.valueOf(true));
 
 		nativityControl.sendMessage(message);
 	}
@@ -117,8 +126,19 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	}
 
 	@Override
+	public void setFilterPath(String folder) {
+		NativityMessage message = new NativityMessage(
+			Constants.SET_FILTER_PATH, folder);
+
+		nativityControl.sendMessage(message);
+	}
+
+	@Override
 	public void unregisterIcon(int id) {
 		return;
 	}
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		WindowsFileIconControlImpl.class.getName());
 
 }

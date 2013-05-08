@@ -14,15 +14,16 @@
 
 package com.liferay.nativity.test;
 
-import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.control.NativityControlFactory;
-import com.liferay.nativity.control.NativityMessage;
-import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
-import com.liferay.nativity.modules.contextmenu.ContextMenuControlFactory;
-import com.liferay.nativity.modules.fileicon.FileIconControl;
-import com.liferay.nativity.modules.fileicon.FileIconControlFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import flexjson.JSONSerializer;
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityControlUtil;
+import com.liferay.nativity.control.NativityMessage;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlUtil;
+import com.liferay.nativity.modules.fileicon.FileIconControl;
+import com.liferay.nativity.modules.fileicon.FileIconControlUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,31 +48,29 @@ public class TestDriver {
 	public static void main(String[] args) {
 		_intitializeLogging();
 
-		NativityMessage message =  new NativityMessage();
-
-		message.setCommand("BLAH");
-
 		List<String> items = new ArrayList<String>();
 
 		items.add("ONE");
 
-		message.setValue(items);
+		NativityMessage message = new NativityMessage("BLAH", items);
 
-		JSONSerializer serializer = new JSONSerializer();
-
-		_logger.debug(serializer.deepSerialize(message));
+		try {
+			_logger.debug(_objectMapper.writeValueAsString(message));
+		}
+		catch (JsonProcessingException jpe) {
+			_logger.error(jpe.getMessage(), jpe);
+		}
 
 		_logger.debug("main");
 
 		NativityControl nativityControl =
-			NativityControlFactory.getNativityControl();
+			NativityControlUtil.getNativityControl();
 
 		FileIconControl fileIconControl =
-			FileIconControlFactory.getFileIconControl(
+			FileIconControlUtil.getFileIconControl(
 				nativityControl, new TestFileIconControlCallback());
 
-		ContextMenuControl contextMenuControl =
-			ContextMenuControlFactory.getContextMenuControl(
+		ContextMenuControlUtil.registerContextMenuControlCallback(
 			nativityControl, new TestContextMenuControlCallback());
 
 		BufferedReader bufferedReader = new BufferedReader(
@@ -94,11 +93,8 @@ public class TestDriver {
 				_logger.debug("_registerFileIcon");
 				_registerFileIcon(fileIconControl);
 
-				_logger.debug("_setMenuTitle");
-				_setMenuTitle(contextMenuControl);
-
-				_logger.debug("_setRootFolder");
-				_setRootFolder(nativityControl);
+				_logger.debug("_setFilterPath");
+				_setFilterPath(fileIconControl);
 
 				_logger.debug("_setSystemFolder");
 				_setSystemFolder(nativityControl);
@@ -181,19 +177,8 @@ public class TestDriver {
 		}
 	}
 
-	private static void _setMenuTitle(ContextMenuControl contextMenuControl) {
-		contextMenuControl.setContextMenuTitle("Test");
-
-		try {
-			Thread.sleep(_waitTime);
-		}
-		catch (InterruptedException e) {
-			_logger.error(e.getMessage(), e);
-		}
-	}
-
-	private static void _setRootFolder(NativityControl nativityControl) {
-		nativityControl.setRootFolder(_testRootFolder);
+	private static void _setFilterPath(FileIconControl fileIconControl) {
+		fileIconControl.setFilterPath(_testRootFolder);
 
 		try {
 			Thread.sleep(_waitTime);
@@ -243,6 +228,10 @@ public class TestDriver {
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		TestDriver.class.getName());
+
+	private static ObjectMapper _objectMapper =
+		new ObjectMapper().configure(
+			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 
 	private static String _testFile =
 		"C:/Users/liferay/Documents/liferay-sync/Sync.pptx";

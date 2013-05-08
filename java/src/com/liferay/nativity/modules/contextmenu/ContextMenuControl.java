@@ -14,50 +14,66 @@
 
 package com.liferay.nativity.modules.contextmenu;
 
-import com.liferay.nativity.modules.contextmenu.listeners.MenuItemListener;
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Dennis Ju
  */
-public interface ContextMenuControl extends ContextMenuControlCallback {
+public abstract class ContextMenuControl implements ContextMenuControlCallback {
 
-	/**
-	 * Adds a MenuItemListener to respond to menu item selections.
-	 * Multiple listeners can be added.
-	 *
-	 * @param listener to respond to menu item selections
-	 */
-	public void addMenuItemListener(MenuItemListener menuItemListener);
+	public ContextMenuControl(
+		NativityControl nativityControl,
+		ContextMenuControlCallback contextMenuControlCallback) {
 
-	/**
-	 * Notifies all MenuItemListener instances when a menu item is selected
-	 *
-	 * @param index value of the selected menu item
-	 *
-	 * @param text value of the selected menu item
-	 *
-	 * @param array of selected file paths
-	 */
-	public void fireMenuItemListeners(String menuText, String[] paths);
+		this.nativityControl = nativityControl;
+		this.contextMenuControlCallback = contextMenuControlCallback;
 
-	/**
-	 * Removes all MenuItemListeners
-	 */
-	public void removeAllMenuItemListeners();
+		_contextMenuItems = new ArrayList<ContextMenuItem>();
+	}
 
-	/**
-	 * Removes a MenuItemListener
-	 *
-	 * @param the MenuItemListener to remove
-	 */
-	public void removeMenuItemListener(MenuItemListener menuItemListener);
+	public void fireAction(long id, String[] paths) {
+		for (ContextMenuItem contextMenuItem : _contextMenuItems) {
+			if (contextMenuItem.getId() == id) {
+				_logger.debug("Firing action id: {}, for: {}", id, paths);
 
-	/**
-	 * Set title of root context menu item, all other items will be added as
-	 * children of it
-	 *
-	 * @param title of context menu
-	 */
-	public void setContextMenuTitle(String title);
+				contextMenuItem.fireActions(paths);
+
+				break;
+			}
+		}
+	}
+
+	@Override
+	public List<ContextMenuItem> getMenuItem(String[] paths) {
+		List<ContextMenuItem> contextMenuItems =
+			contextMenuControlCallback.getMenuItem(paths);
+
+		_contextMenuItems.clear();
+
+		if (contextMenuItems == null) {
+			return null;
+		}
+
+		for (ContextMenuItem contextMenuItem : contextMenuItems) {
+			_contextMenuItems.addAll(contextMenuItem.getAllContextMenuItems());
+		}
+
+		return contextMenuItems;
+	}
+
+	protected ContextMenuControlCallback contextMenuControlCallback;
+	protected NativityControl nativityControl;
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		ContextMenuControl.class.getName());
+
+	private List<ContextMenuItem> _contextMenuItems;
 
 }

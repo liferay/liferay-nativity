@@ -42,7 +42,7 @@ public class AppleFileIconControlImpl extends FileIconControlBase {
 	@Override
 	public void disableFileIcons() {
 		NativityMessage message = new NativityMessage(
-			Constants.ENABLE_OVERLAYS, Boolean.FALSE);
+			Constants.ENABLE_FILE_ICONS, Boolean.FALSE);
 
 		nativityControl.sendMessage(message);
 	}
@@ -50,7 +50,7 @@ public class AppleFileIconControlImpl extends FileIconControlBase {
 	@Override
 	public void enableFileIcons() {
 		NativityMessage message = new NativityMessage(
-			Constants.ENABLE_OVERLAYS, Boolean.TRUE);
+			Constants.ENABLE_FILE_ICONS, Boolean.TRUE);
 
 		nativityControl.sendMessage(message);
 	}
@@ -62,7 +62,7 @@ public class AppleFileIconControlImpl extends FileIconControlBase {
 
 		String reply = nativityControl.sendMessage(message);
 
-		if (reply == null) {
+		if ((reply == null) || reply.isEmpty()) {
 			return -1;
 		}
 
@@ -126,6 +126,14 @@ public class AppleFileIconControlImpl extends FileIconControlBase {
 
 			nativityControl.sendMessage(message);
 		}
+	}
+
+	@Override
+	public void setFilterPath(String folder) {
+		NativityMessage message = new NativityMessage(
+			Constants.SET_FILTER_PATH, folder);
+
+		nativityControl.sendMessage(message);
 	}
 
 	@Override

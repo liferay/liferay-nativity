@@ -12,26 +12,18 @@
  * details.
  */
 
-package com.liferay.nativity.modules.contextmenu;
-
-import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
-
-import java.util.List;
+package com.liferay.nativity.modules.contextmenu.model;
 
 /**
  * @author Dennis Ju
  */
-public interface ContextMenuControlCallback {
+public abstract class Action {
 
 	/**
-	 * Called by the native service to request the menu items for a context
-	 * menu popup
+	 * Called when a context menu item is selected
 	 *
-	 * @param the files selected for this context menu popup
-	 *
-	 * @return each ContextMenuItem instance in the list will appear at the
-	 * context menu's top level
+	 * @param array of selected file paths
 	 */
-	public abstract List<ContextMenuItem> getMenuItem(String[] paths);
+	public abstract void onSelection(String[] paths);
 
 }

@@ -15,6 +15,8 @@
 package com.liferay.nativity.test;
 
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
+import com.liferay.nativity.modules.contextmenu.model.Action;
+import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,33 +32,43 @@ public class TestContextMenuControlCallback
 	implements ContextMenuControlCallback {
 
 	@Override
-	public String[] getHelpItemsForMenus(String[] paths) {
-		_logger.debug("getHelpItemsForMenus {}", paths);
-
-		int count = _random.nextInt(20) + 3;
-
-		List<String> items = new ArrayList<String>();
-
-		for (int i = 0; i < count; i++) {
-			items.add("Help " + i);
-		}
-
-		return items.toArray(new String[0]);
-	}
-
-	@Override
-	public String[] getMenuItems(String[] paths) {
+	public List<ContextMenuItem> getMenuItem(String[] paths) {
 		_logger.debug("getMenuItems {}", paths);
 
 		int count = _random.nextInt(20) + 3;
 
-		List<String> items = new ArrayList<String>();
+		ContextMenuItem parentMenuItem = new ContextMenuItem("Parent Menu");
 
 		for (int i = 0; i < count; i++) {
-			items.add("Menu " + i);
+			ContextMenuItem childMenu = new ContextMenuItem(
+				"Menu " + i, parentMenuItem);
+
+			childMenu.setHelpText("Help " + i);
+
+			Action action = new Action() {
+				@Override
+				public void onSelection(String[] paths) {
+					_logger.info("item clicked");
+				}
+			};
+
+			childMenu.addAction(action);
+
+			if ((i % 2) == 1) {
+				childMenu.setEnabled(false);
+			}
+
+			if ((i > 0) && ((i % 3) == 0)) {
+				parentMenuItem.addSeparator();
+			}
 		}
 
-		return items.toArray(new String[0]);
+		List<ContextMenuItem> contextMenuItems =
+			new ArrayList<ContextMenuItem>();
+
+		contextMenuItems.add(parentMenuItem);
+
+		return contextMenuItems;
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

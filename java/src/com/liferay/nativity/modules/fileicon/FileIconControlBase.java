@@ -17,13 +17,13 @@ package com.liferay.nativity.modules.fileicon;
 import com.liferay.nativity.control.NativityControl;
 
 /**
- * @author Michael Young
- */
+* @author Michael Young
+*/
 public abstract class FileIconControlBase implements FileIconControl {
 
 	public FileIconControlBase(
-		NativityControl nativityControl,
-		FileIconControlCallback fileIconControlCallback) {
+			NativityControl nativityControl,
+			FileIconControlCallback fileIconControlCallback) {
 
 		this.nativityControl = nativityControl;
 		this.fileIconControlCallback = fileIconControlCallback;

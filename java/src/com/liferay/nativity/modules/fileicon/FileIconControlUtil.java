@@ -22,28 +22,28 @@ import com.liferay.nativity.util.OSDetector;
 /**
  * @author Dennis Ju
  */
-public class FileIconControlFactory {
+public class FileIconControlUtil {
 
 	public static FileIconControl getFileIconControl(
 		NativityControl nativityControl,
 		FileIconControlCallback fileIconControlCallback) {
 
 		if (_fileIconControl == null) {
-			FileIconControlFactory fileIconControlFactory =
-				new FileIconControlFactory(
+			FileIconControlUtil fileIconControlUtil =
+				new FileIconControlUtil(
 					nativityControl, fileIconControlCallback);
 
 			if (OSDetector.isApple()) {
 				_fileIconControl =
-					fileIconControlFactory.createAppleFileIconControl();
+					fileIconControlUtil.createAppleFileIconControl();
 			}
 			else if (OSDetector.isWindows()) {
 				_fileIconControl =
-					fileIconControlFactory.createWindowsFileIconControl();
+					fileIconControlUtil.createWindowsFileIconControl();
 			}
 			else if (OSDetector.isLinux()) {
 				_fileIconControl =
-					fileIconControlFactory.createLinuxFileIconControl();
+					fileIconControlUtil.createLinuxFileIconControl();
 			}
 		}
 
@@ -65,7 +65,7 @@ public class FileIconControlFactory {
 			_nativityControl, _fileIconControlCallback);
 	}
 
-	private FileIconControlFactory(
+	private FileIconControlUtil(
 		NativityControl nativityControl,
 		FileIconControlCallback fileIconControlCallback) {
 

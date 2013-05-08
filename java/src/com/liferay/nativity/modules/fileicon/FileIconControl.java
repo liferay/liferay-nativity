@@ -84,6 +84,16 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void setFileIcons(Map<String, Integer> fileIconsMap);
 
 	/**
+	 * Optionally set the root folder filter path for requests made
+	 * to the native service. For example, setting a value of "/test/folder"
+	 * indicates that any requests for files that are not a child of
+	 * "/test/folder" will be ignored. This can improve native performance.
+	 *
+	 * @param root folder path to filter by (inclusive)
+	 */
+	public abstract void setFilterPath(String folder);
+
+	/**
 	 * Mac only
 	 *
 	 * Unregister an overlay icon
