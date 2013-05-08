@@ -28,10 +28,10 @@ public:
 
 	~CommunicationSocket();
 
-	bool ReceiveResponseOnly(std::wstring* message);
+	bool ReceiveResponseOnly(std::wstring*);
 
-	bool SendMessageReceiveResponse(const wchar_t* message, std::wstring* response);
-	
+	bool SendMessageReceiveResponse(const wchar_t*, std::wstring*);
+
 private:	
 	bool ConvertData(wchar_t* buf, int bytesRead, char* rec_buf);
 

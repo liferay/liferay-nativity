@@ -20,6 +20,8 @@
 #include <iostream>
 #include <vector>
 
+#include <fstream>
+
 using namespace std;
 
 #define DEFAULT_BUFLEN 4096

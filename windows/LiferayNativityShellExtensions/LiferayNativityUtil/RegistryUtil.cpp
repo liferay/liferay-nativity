@@ -15,8 +15,6 @@
 #include "RegistryUtil.h"
 
 #include <windows.h>
-#include <fstream>
-#include <iostream>
 
 using namespace std;
 
@@ -97,7 +95,7 @@ bool RegistryUtil::WriteRegistry(const wchar_t* key, const wchar_t* name, int va
 		return false;
 	}
 
-	hResult = RegSetValueEx(rootKey, (LPCWSTR)name, 0, REG_DWORD, (LPBYTE)value, 1);
+	hResult = RegSetValueEx(rootKey, (LPCWSTR)name, 0, REG_DWORD, (CONST BYTE*)&value, sizeof(DWORD));
 
 	if (!SUCCEEDED(hResult))
 	{

@@ -28,16 +28,15 @@ public:
 
 	~ServiceWorker();
 
-	bool ProcessMessages(std::map<std::wstring*, std::vector<std::wstring*>*>*);
+	bool ProcessMessages(std::vector<NativityMessage*>*);
 	
 private:
-	
-	bool _ClearFileIcons(std::vector<std::wstring*>*);
-	bool _EnableFileIcons(std::vector<std::wstring*>*);
-	bool _MarkSystem(std::vector<std::wstring*>*);
-	bool _SetMenuTitle(std::vector<std::wstring*>*);
-	bool _SetRootFolder(std::vector<std::wstring*>*);
-	bool _UpdateOverlay(std::vector<std::wstring*>*);
+	bool _ClearFileIcon(std::wstring*);
+	bool _EnableFileIcons(std::wstring*);
+	bool _SetSystemFolder(std::wstring*);
+	bool _SetFilterPath(std::wstring*);
+	bool _UpdateFileIcons(std::wstring*);
+	bool _UpdateFileIcon(const wchar_t*);
 };
 
 #endif

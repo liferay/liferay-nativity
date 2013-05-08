@@ -150,15 +150,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ContextMenuAction.cpp" />
     <ClCompile Include="ContextMenuFactory.cpp" />
+    <ClCompile Include="ContextMenuItem.cpp" />
     <ClCompile Include="ContextMenuUtil.cpp" />
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="LiferayNativityContextMenus.cpp" />
     <ClCompile Include="NativityContextMenuRegistrationHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ContextMenuAction.h" />
     <ClInclude Include="ContextMenuContants.h" />
     <ClInclude Include="ContextMenuFactory.h" />
+    <ClInclude Include="ContextMenuItem.h" />
     <ClInclude Include="ContextMenuUtil.h" />
     <ClInclude Include="LiferayNativityContextMenus.h" />
     <ClInclude Include="NativityContextMenuRegistrationHandler.h" />

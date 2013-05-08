@@ -12,7 +12,8 @@
  * details.
  */
 
- #define CONTEXT_MENU_GUID				L"{0DD5B4B0-25AF-4e09-A46B-9F274F3D7000}"
+#define PORT							33001
+#define CONTEXT_MENU_GUID				L"{0DD5B4B0-25AF-4e09-A46B-9F274F3D7000}"
 
 //DLL Registration information
 #define REGISTRY_ALL_CONTEXT_MENU		L"*\\shellex\\ContextMenuHandlers\\LiferayNativityContextMenus"
@@ -25,10 +26,20 @@
 #define REGISTRY_VERSION_NUMBER			L"1.0"
 
 //Menu Util
-#define SEPARATOR						L"-"
+#define SEPARATOR						L"_SEPARATOR_"
 
 //Remote Functions
-#define GET_MENU_LIST					L"getMenuList"
+#define GET_CONTEXT_MENU_LIST			L"getContextMenuList"
 #define PERFORM_ACTION					L"performAction"
-#define GET_HELP_ITEMS					L"getHelpItemsForMenus"
-#define PORT							33001
+
+//Model
+#define ID								L"id"
+#define FILES							L"files"
+
+#define SEPARATOR						L"_SEPARATOR_"
+#define CONTEXT_MENU_ITEMS				L"contextMenuItems"
+#define ENABLED							L"enabled"
+#define HELP_TEXT						L"helpText"
+#define TITLE							L"title"
+
+#define TRUE_TEXT						L"true"

@@ -15,6 +15,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "CommunicationSocket.h"
+#include "NativityMessage.h"
 #include <iostream>
 #include <map>
 #include <vector>

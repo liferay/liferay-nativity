@@ -15,7 +15,8 @@
 #include "LiferayNativityExtensionService.h"
 #include "ThreadPool.h"
 #include "ConfigurationConstants.h"
-#include "CommunicationProcessor.h"
+#include "ParserUtil.h"
+#include "NativityMessage.h"
 
 using namespace std;
 
@@ -63,17 +64,17 @@ void LiferayNativityExtensionService::ServiceWorkerThread(void)
 	{
 		cout<<"Not stopped"<<endl;
 
-		wstring* command = new wstring();
+		wstring* message = new wstring();
 
-		if(_receiveFromPlugInSocketClient->ReceiveResponseOnly(command))
+		if(_receiveFromPlugInSocketClient->ReceiveResponseOnly(message))
 		{
-			wcout<<"Received response "<<command->c_str()<<endl;
+			wcout<<"Received response "<<message->c_str()<<endl;
 
-			map<wstring*, vector<wstring*>*>* messages = new map<wstring*, vector<wstring*>*>();
+			vector<NativityMessage*>* messages = new vector<NativityMessage*>();
 
-			if(CommunicationProcessor::ProcessMessage(command, messages))
+			if(ParserUtil::ParseNativityMessageList(message, messages))
 			{
-				cout<<"Processed response"<<endl;
+				wcout<<"Parsed nativity messages "<<messages->size()<<endl;
 
 				if(!_serviceWorker->ProcessMessages(messages))
 				{
@@ -82,9 +83,9 @@ void LiferayNativityExtensionService::ServiceWorkerThread(void)
 					WriteEventLogEntry(L"Unable to process message", EVENTLOG_INFORMATION_TYPE);
 				}
 			}
-			delete messages;
 		}
-		delete command;
+
+		delete message;
     }
 
 	WriteEventLogEntry(L"Liferay Nativity Extension Service worker thread stopping", EVENTLOG_INFORMATION_TYPE);

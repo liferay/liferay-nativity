@@ -18,9 +18,6 @@
     <ClInclude Include="CommunicationSocket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommunicationProcessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RegistryUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -30,18 +27,27 @@
     <ClInclude Include="UtilConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NativityMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParserUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommunicationSocket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommunicationProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RegistryUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NativityMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParserUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

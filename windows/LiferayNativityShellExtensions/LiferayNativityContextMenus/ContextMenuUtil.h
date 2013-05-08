@@ -17,6 +17,10 @@
 
 #pragma once
 
+#include "ContextMenuItem.h"
+#include "ContextMenuAction.h"
+#include "NativityMessage.h"
+
 #include "stdafx.h"
 
 class __declspec(dllexport) ContextMenuUtil
@@ -26,17 +30,15 @@ public:
 
 	~ContextMenuUtil(void);
 
-	bool AddFile(std::wstring*);
+	bool AddFile(std::wstring);
 
-	int GetActionIndex(std::wstring*);
+	bool GetMenus(std::vector<ContextMenuItem*>*);
 
-	bool GetHelpText(unsigned int, std::wstring*);
+	bool GetContextMenuItem(int, ContextMenuItem**);
 
-	bool GetMenus(std::vector<std::wstring*>*);
+	bool GetContextMenuAction(std::wstring*, ContextMenuAction**);
 
-	bool GetRootText(std::wstring*);
-
-	bool GetVerbText(int, std::wstring&);
+	bool GetContextMenuAction(int action, ContextMenuAction**);
 
 	bool IsMenuNeeded(void);
 
@@ -45,21 +47,17 @@ public:
 	bool PerformAction(int);
 
 private:
-	bool _GetMenuList(void);
+	bool _GetContextMenuItem(int, std::vector<ContextMenuItem*>*, ContextMenuItem**);
 
-	bool _GetCommandText(unsigned int,std::wstring&);
-	
-	bool _GetHelpText(void);
+	bool _ParseContextMenu(std::wstring*, ContextMenuItem*);
 
-	//bool _GenerateMessage(const wchar_t* , int cmdIndex, std::wstring*);
-	
+	bool _ParseContextMenuList(std::wstring*, std::vector<ContextMenuItem*>*);
+
+	bool _ProcessContextMenus(NativityMessage*);
+
 	CommunicationSocket* _communicationSocket;
 	
-	std::vector<std::wstring*>* _helpTextList;
-
-	std::vector<std::wstring*>* _menuList;
-
-	std::wstring* _rootMenu;
+	std::vector<ContextMenuItem*>* _menuList;
 
 	std::vector<std::wstring>* _selectedFiles;
 

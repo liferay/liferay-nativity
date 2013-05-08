@@ -12,11 +12,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityExtensionSer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityUtil", "LiferayNativityUtil\LiferayNativityUtil.vcxproj", "{E4F63E19-808D-4234-8DF0-69C5F47C9CD3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativityTest", "NativityTest\NativityTest.vcxproj", "{6266ADCC-2B28-4C65-91E5-474B95784293}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E9BC5587-A688-4C36-8B15-DAFBAAAADCAE} = {E9BC5587-A688-4C36-8B15-DAFBAAAADCAE}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -57,14 +52,6 @@ Global
 		{E4F63E19-808D-4234-8DF0-69C5F47C9CD3}.Release|Win32.Build.0 = Release|Win32
 		{E4F63E19-808D-4234-8DF0-69C5F47C9CD3}.Release|x64.ActiveCfg = Release|x64
 		{E4F63E19-808D-4234-8DF0-69C5F47C9CD3}.Release|x64.Build.0 = Release|x64
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Debug|Win32.Build.0 = Debug|Win32
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Debug|x64.ActiveCfg = Debug|x64
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Debug|x64.Build.0 = Debug|x64
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Release|Win32.ActiveCfg = Release|Win32
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Release|Win32.Build.0 = Release|Win32
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Release|x64.ActiveCfg = Release|x64
-		{6266ADCC-2B28-4C65-91E5-474B95784293}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

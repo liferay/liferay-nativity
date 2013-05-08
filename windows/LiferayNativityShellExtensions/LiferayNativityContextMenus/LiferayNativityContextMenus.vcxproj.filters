@@ -30,6 +30,12 @@
     <ClCompile Include="NativityContextMenuRegistrationHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ContextMenuItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenuAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContextMenuFactory.h">
@@ -51,6 +57,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextMenuItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextMenuAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

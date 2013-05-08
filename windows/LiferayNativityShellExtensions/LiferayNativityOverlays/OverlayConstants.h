@@ -25,10 +25,8 @@
 #define REGISTRY_VERSION_NUMBER		L"1.0"
 
 //Registry values for running
-#define REGISTRY_ROOT_KEY		L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
 #define REGISTRY_ENABLE_OVERLAY		L"EnableOverlay"
-#define REGISTRY_ROOT_FOLDER	  	L"RootFolder"
 
-#define GET_FILE_OVERLAY_ID		L"getFileOverlayId"
+#define GET_FILE_OVERLAY_ID		L"getFileIconId"
 
 #define PORT				33001

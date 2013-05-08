@@ -14,19 +14,18 @@
 
 #include "ContextMenuUtil.h"
 #include "ContextMenuContants.h"
+#include "ContextMenuItem.h"
 
-#include "CommunicationProcessor.h"
 #include "RegistryUtil.h"
 #include "FileUtil.h"
 #include "UtilConstants.h"
+#include "ParserUtil.h"
 
-#include <fstream>
-#include <iostream>
 #include <vector>
 
 using namespace std;
 
-ContextMenuUtil::ContextMenuUtil() : _helpTextList(0), _menuList(0), _rootMenu(0)
+ContextMenuUtil::ContextMenuUtil() : _menuList(0)
 {
 	_communicationSocket = new CommunicationSocket(PORT);
 	_selectedFiles = new vector<wstring>;
@@ -38,179 +37,108 @@ ContextMenuUtil::~ContextMenuUtil(void)
 	{
 		delete _communicationSocket;
 	}
-
-	if(_helpTextList != 0)
-	{
-		delete _helpTextList;
-	}
-
+		
 	if(_menuList != 0)
 	{
 		delete _menuList;
 	}
 
-	if(_rootMenu != 0)
-	{
-		delete _rootMenu;
-	}
-
 	_selectedFiles = 0;
 }
 
-bool ContextMenuUtil::AddFile(wstring* file)
+bool ContextMenuUtil::AddFile(wstring file)
 {
-	_selectedFiles->push_back(*file);
+	_selectedFiles->push_back(file);
 
 	return true;
 }
 
-int ContextMenuUtil::GetActionIndex(wstring* command)
+bool ContextMenuUtil::GetContextMenuItem(int index, ContextMenuItem** item)
 {
-	vector<wstring*>::iterator menuIterator = _menuList->begin();
+	return _GetContextMenuItem(index, _menuList, item);
+}
 
-	int index = 0;
-
-	while(menuIterator != _menuList->end()) 
+bool ContextMenuUtil::_GetContextMenuItem(int index, vector<ContextMenuItem*>* menus, ContextMenuItem** item)
+{
+	for(vector<ContextMenuItem*>::iterator it = menus->begin(); it != menus->end(); it++)
 	{
-		wstring* menuName = *menuIterator;
-
-		if(menuName->compare(*command) == 0)
+		ContextMenuItem* temp = *it;
+		if(temp->GetIndex() == index)
 		{
-			return index;
+			*item = temp;
+			return true;
 		}
 
-		menuIterator++;
-		index++;
+		if(temp->GetContextMenuItems() != 0 && temp->GetContextMenuItems()->size() > 0)
+		{
+			if(_GetContextMenuItem(index, temp->GetContextMenuItems(), item))
+			{
+				return true;
+			}
+		}
 	}
 
-	return -1;
+	return false;
 }
 
-bool ContextMenuUtil::GetHelpText(unsigned int index, wstring* helpText)
-{
-	if(_helpTextList == 0)
-	{
-		return false;
-	}
-
-	if(index >= _helpTextList->size())
-	{
-		return false;
-	}
-
-	helpText = _helpTextList->at(index);
-	return true;
-}
-
-bool ContextMenuUtil::GetMenus(vector<std::wstring*> *menuList)
+bool ContextMenuUtil::GetMenus(vector<ContextMenuItem*> *menuList)
 {
 	if(_menuList == 0)
 	{
 		return false;
 	}
 
-	*menuList = *_menuList;
+	menuList->insert(menuList->end(), _menuList->begin(), _menuList->end());
+
 	return true;
-}
-
-bool ContextMenuUtil::GetRootText(wstring* rootText)
-{
-	if(_rootMenu == 0)
-	{
-		return false;
-	}
-
-	*rootText = *_rootMenu;
-	return true;
-}
-
-bool ContextMenuUtil::GetVerbText(int index, wstring& verbText)
-{
-	return _GetCommandText(index, verbText);
 }
 
 bool ContextMenuUtil::IsMenuNeeded(void)
 {  
-	bool needed = false;
-	
 	if(FileUtil::IsChildFileOfRoot(_selectedFiles))
 	{
-		needed = true;
+		return true;
 	}
 
-	return needed;
+	return false;
 }
 
 bool ContextMenuUtil::InitMenus(void)
 {
-	_rootMenu = new wstring();
-
-	if(!RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_MENU_TITLE, _rootMenu))
-	{
-		return false;
-	}
-
-	if(!_GetMenuList())
-	{
-		return false;
-	}
-
-	if(!_GetHelpText())
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool ContextMenuUtil::PerformAction(int index)
-{
-	wstring* message = new wstring();
-	wstring* response = new wstring();
-	bool success = false;
-
-	vector<wstring>* args = new vector<wstring>;
-	wchar_t* buf =  new wchar_t(10);
-	_itow_s(index, buf, 10, 10);
-	wstring* temp = new wstring(buf);
-	
-	wstring* command = new wstring();
-
-	command = _menuList->at(index);
-
-
-	args->push_back(*temp);
-	args->push_back(*command);
-
-	if(CommunicationProcessor::CreateMessage(PERFORM_ACTION, args, message))
-	{
-		if(_communicationSocket->SendMessageReceiveResponse(message->c_str(), response))
-		{
-			success = true;
-		}
-	}
-
-	delete temp;
-	delete response;
-	delete command;
-	delete args;
-
-	return success;
-}
-
-bool ContextMenuUtil::_GetMenuList(void)
-{
 	wstring* getMenuMessage = new wstring();
 	wstring* getMenuReceived = new wstring();
-	_menuList = new vector<wstring*>();
+	_menuList = new vector<ContextMenuItem*>();
 
 	bool success = false;
 
-	if(CommunicationProcessor::CreateMessage(GET_MENU_LIST, _selectedFiles, getMenuMessage))
+	wstring* files = new wstring();
+	if(!ParserUtil::SerializeList(_selectedFiles, files, false))
 	{
-		if(_communicationSocket->SendMessageReceiveResponse(getMenuMessage->c_str(), getMenuReceived))
+		delete files;
+
+		return false;
+	}
+
+	NativityMessage* nativityMessage = new NativityMessage();
+	nativityMessage->SetCommand(new wstring(GET_CONTEXT_MENU_LIST));
+	nativityMessage->SetValue(files);
+
+	if(!ParserUtil::SerializeMessage(nativityMessage, getMenuMessage))
+	{
+		delete getMenuMessage;
+		delete nativityMessage;
+		delete files;
+
+		return false;
+	}
+
+	if(_communicationSocket->SendMessageReceiveResponse(getMenuMessage->c_str(), getMenuReceived))
+	{
+		NativityMessage* nativityMessage = new NativityMessage();
+
+		if(nativityMessage->InitFromMessage(getMenuReceived))
 		{
-			if(CommunicationProcessor::ProcessResponse(getMenuReceived, _menuList))
+			if(_ProcessContextMenus(nativityMessage))
 			{
 				success = true;
 			}
@@ -223,43 +151,211 @@ bool ContextMenuUtil::_GetMenuList(void)
 	return success;
 }
 
-bool ContextMenuUtil::_GetCommandText(unsigned int index, wstring& commandText)
+bool ContextMenuUtil::GetContextMenuAction(std::wstring* title, ContextMenuAction** item)
 {
-	if(index < _selectedFiles->size())
+	for(vector<ContextMenuItem*>::iterator it = _menuList->begin(); it != _menuList->end(); it++)
+	{
+		ContextMenuItem* temp = *it;
+		wstring* currentTitle = temp->GetTitle();
+
+		if(currentTitle->compare(*title) == 0)
+		{
+			ContextMenuAction* action = new ContextMenuAction();
+			action->SetId(temp->GetId());
+			action->SetFiles(_selectedFiles);
+
+			item = &action;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ContextMenuUtil::GetContextMenuAction(int action, ContextMenuAction** item)
+{
+	ContextMenuItem* contextMenuItem;
+
+	if(GetContextMenuItem(action, &contextMenuItem))
+	{
+			ContextMenuAction* action = new ContextMenuAction();
+			action->SetId(contextMenuItem->GetId());
+			action->SetFiles(_selectedFiles);
+
+			item = &action;
+			
+			return true;
+	}
+
+	return false;
+}
+
+bool ContextMenuUtil::PerformAction(int command)
+{
+	ContextMenuItem*  item;
+	
+	if(!GetContextMenuItem(command, &item))
 	{
 		return false;
 	}
 
-	vector<wstring>::iterator commandIterator = _selectedFiles->begin();
+	wstring* list = new wstring();
 
-    std::advance(commandIterator, index);
+	if(!ParserUtil::SerializeList(_selectedFiles, list, true))
+	{
+		return false;
+	}
+	
+	wchar_t* buffer = new wchar_t(10);
 
-	commandText = *commandIterator;
+	_itow_s(item->GetId(), buffer, 10, 10);
+
+	wstring* idString = new wstring(buffer);
+
+	map<wstring*, wstring*>* message = new map<wstring*, wstring*>();
+	wstring* id = new wstring(ID);
+	wstring* files = new wstring(FILES);
+
+	message->insert(make_pair(id, idString));
+	message->insert(make_pair(files, list));
+
+	wstring* messageString = new wstring();
+
+	if(!ParserUtil::SerializeMessage(message, messageString, true))
+	{
+		return false;
+	}
+
+	NativityMessage* nativityMessage = new NativityMessage();
+	
+	wstring* title = new wstring(PERFORM_ACTION);
+	nativityMessage->SetCommand(title);
+	nativityMessage->SetValue(messageString);
+
+	wstring* nativityMessageString = new wstring();
+
+	if(!ParserUtil::SerializeMessage(nativityMessage, nativityMessageString))
+	{
+		return false;
+	}
+
+	wstring* response = new wstring();
+
+	if(!_communicationSocket->SendMessageReceiveResponse(nativityMessageString->c_str(), response))
+	{
+		return false;
+	}
 
 	return true;
 }
 
-bool ContextMenuUtil::_GetHelpText(void)
+bool ContextMenuUtil::_ParseContextMenu(wstring* contextMenu, ContextMenuItem* contextMenuItem)
 {
-	wstring* getHelpMessage = new wstring();
-	wstring* getHelpReceived = new wstring();
-	_helpTextList = new vector<wstring*>();
+	wstring* id = new wstring();
 
-	bool success = false;
-
-	if(CommunicationProcessor::CreateMessage(GET_HELP_ITEMS, _selectedFiles, getHelpMessage))
+	if(!ParserUtil::GetItem(ID, contextMenu, id))
 	{
-		if(_communicationSocket->SendMessageReceiveResponse(getHelpMessage->c_str(), getHelpReceived))
-		{
-			if(CommunicationProcessor::ProcessResponse(getHelpReceived, _helpTextList))
-			{
-				success = true;
-			}
-		}
+		return false;
 	}
 
-	delete getHelpMessage;
-	delete getHelpReceived;
+	int id_i = _wtoi(id->c_str());
 
-	return success;
+	contextMenuItem->SetId(id_i);
+
+	wstring* enabled = new wstring();
+	
+	if(!ParserUtil::GetItem(ENABLED, contextMenu, enabled))
+	{
+		return false;
+	}
+
+	if(enabled->compare(TRUE_TEXT) == 0)
+	{
+		contextMenuItem->SetEnabled(true);
+	}
+	else
+	{
+		contextMenuItem->SetEnabled(false);
+	}
+
+	wstring* title =  new wstring();
+
+	if(!ParserUtil::GetItem(TITLE, contextMenu, title))
+	{
+		return false;
+	}
+
+	contextMenuItem->SetTitle(title);
+
+	wstring* helpText = new wstring();
+
+	if(!ParserUtil::GetItem(HELP_TEXT, contextMenu, helpText))
+	{
+		return false;
+	}
+
+	contextMenuItem->SetHelpText(helpText);
+
+	wstring* contextMenuItems = new wstring();
+
+	if(!ParserUtil::GetItem(CONTEXT_MENU_ITEMS, contextMenu, contextMenuItems))
+	{
+		return false;
+	}
+
+	vector<ContextMenuItem*>* contextMenus = new vector<ContextMenuItem*>();
+	if(!_ParseContextMenuList(contextMenuItems, contextMenus))
+	{
+		return false;
+	}
+
+	contextMenuItem->SetContextMenuItems(contextMenus);
+
+	return true;
+}
+
+bool ContextMenuUtil::_ParseContextMenuList(wstring* contextMenuList, vector<ContextMenuItem*>* contextMenus)
+{
+	size_t currentLocation = contextMenuList->find(OPEN_CURLY_BRACE, 0);
+
+	vector<wstring*>* menus = new vector<wstring*>();
+
+	while(currentLocation < contextMenuList->size())
+	{
+		wstring* contextMenu = new wstring();
+
+		currentLocation = ParserUtil::GetNextItemInList(contextMenuList, currentLocation, contextMenu);
+
+		currentLocation++;
+
+		menus->push_back(contextMenu);
+	}
+
+	for(vector<wstring*>::iterator it = menus->begin(); it != menus->end(); it++)
+	{
+		wstring* temp = *it;
+
+		ContextMenuItem* contextMenuItem = new ContextMenuItem();
+		
+		if(!_ParseContextMenu(temp, contextMenuItem))
+		{
+			return false;
+		}
+
+		contextMenus->push_back(contextMenuItem);
+	}
+
+	return true;
+}
+
+bool ContextMenuUtil::_ProcessContextMenus(NativityMessage* message)
+{
+	wstring* value = message->GetValue();
+
+	if(!_ParseContextMenuList(value, _menuList))
+	{
+		return false;
+	}
+
+	return true;
 }

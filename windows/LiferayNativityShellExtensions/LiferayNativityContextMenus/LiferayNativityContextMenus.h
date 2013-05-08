@@ -48,9 +48,8 @@ protected:
     ~LiferayNativityContextMenus(void);
 
 private:
-	HRESULT _GetHelpText(UINT_PTR idCommand, LPSTR pszName, UINT cchMax);
 
-	HRESULT _GetVerb(UINT_PTR idCommand, LPSTR pszName, UINT cchMax);
+	int _AddMenu(HMENU, ContextMenuItem*, int, int, UINT);
 
 	void _HandleCommand(LPCMINVOKECOMMANDINFO pici);
 
@@ -62,9 +61,9 @@ private:
 
 	bool _InsertSeparator(HMENU, int);
 
-	bool _InsertRootMenu(HMENU, HMENU, int);
+	bool _InsertMenu(HMENU, HMENU, int, const wchar_t*);
 
-	bool _InsertMenu(HMENU, int location, int command, const wchar_t*);
+	bool _InsertMenu(HMENU, int, int, const wchar_t*);
 
 	ContextMenuUtil* _contextMenuUtil;
 

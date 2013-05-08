@@ -15,7 +15,8 @@
 #include "LiferayNativityOverlay.h"
 #include "RegistryUtil.h"
 #include "UtilConstants.h"
-#include "CommunicationProcessor.h"
+#include "ParserUtil.h"
+
 
 #include <iostream>
 #include <fstream>
@@ -142,7 +143,7 @@ bool LiferayNativityOverlay::_IsMonitoredFile(const wchar_t* filePath)
 	wstring* rootFolder = new wstring();
 	bool needed = false;
 	
-	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_ROOT_FOLDER, rootFolder))
+	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_PATH, rootFolder))
 	{
 		if(FileUtil::IsChildFile(rootFolder->c_str(), filePath))
 		{
@@ -165,12 +166,14 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 
 	wstring* message = new wstring();
 
-	vector<wstring>* file = new vector<wstring>();
-	file->push_back(filePath);
+	NativityMessage* nativityMessage = new NativityMessage();
+	nativityMessage->SetCommand(new wstring(GET_FILE_OVERLAY_ID));
+	nativityMessage->SetValue(new wstring(filePath));
 
-	if(!CommunicationProcessor::CreateMessage(GET_FILE_OVERLAY_ID, file, message))
+	if(!ParserUtil::SerializeMessage(nativityMessage, message))
 	{
 		delete message;
+		delete nativityMessage;
 
 		return false;
 	}
@@ -185,29 +188,27 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 		return false;
 	}
 
-	vector<wstring*>* responseMessage = new vector<wstring*>();
+	wstring* valueString = new wstring();
 
-	if(!CommunicationProcessor::ProcessResponse(response, responseMessage))
+	if(!ParserUtil::GetItem(VALUE, response, valueString))
 	{
 		delete message;
 		delete response;
-		delete responseMessage;
+		delete valueString;
 
 		return false;
 	}
 
-	if(responseMessage->size() == 0)
+	if(valueString->size() == 0)
 	{
 		delete message;
 		delete response;
-		delete responseMessage;
+		delete valueString;
 
 		return false;
 	}
 
-	wstring* idString = responseMessage->at(0);
-
-	int state = _wtoi(idString->c_str());
+	int state = _wtoi(valueString->c_str());
 
 	if(state == OVERLAY_ID)
 	{
@@ -216,7 +217,7 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 
 	delete message;
 	delete response;
-	delete responseMessage;
+	delete valueString;
 
 	return needed;
 }

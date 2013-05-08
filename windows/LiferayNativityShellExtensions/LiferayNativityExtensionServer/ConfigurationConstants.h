@@ -23,14 +23,12 @@
 #define SOCKET_PORT_SEND			 33001
 #define SOCKET_PORT_RECEIVE			 33002
 
-#define CMD_PI_ENABLE_FILE_ICONS	 L"enableFileIcons"
-#define CMD_PI_SET_MENU_TITLE		 L"setMenuTitle"
-#define CMD_PI_SET_ROOT_FOLDER		 L"setRootFolder"
-#define CMD_PI_SET_SYSTEM_FOLDER	 L"setSystemFolder"
-#define CMD_PI_UPDATE_FILE_ICON		 L"updateFileIcon"
-#define CMD_PI_CLEAR_FILE_ICON		 L"clearFileIcon"
+#define CMD_ENABLE_FILE_ICONS		 L"enableFileIcons"
+#define CMD_CLEAR_FILE_ICON			 L"clearFileIcon"
+#define CMD_UPDATE_FILE_ICON		 L"updateFileIcon"
+#define CMD_SET_FILTER_PATH			 L"setFilterPath"
+#define CMD_SET_SYSTEM_FOLDER		 L"setSystemFolder"
 
 #define REGISTRY_ROOT_KEY			 L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
 #define REGISTRY_ENABLE_OVERLAY		 L"EnableOverlay"
-#define REGISTRY_MENU_TITLE		  	 L"MenuTitle"
-#define REGISTRY_ROOT_FOLDER	  	 L"RootFolder"
+#define REGISTRY_FILTER_PATH		 L"FilterPath"

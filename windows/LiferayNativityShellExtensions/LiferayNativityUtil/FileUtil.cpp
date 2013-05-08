@@ -16,16 +16,11 @@
 #include "RegistryUtil.h"
 #include "UtilConstants.h"
 
-#include <iostream>
-#include <fstream>
-
 using namespace std;
 
 bool FileUtil::IsChildFile(const wchar_t* rootFolder, vector<wstring>* files)
 {
-	vector<wstring>::iterator it = files->begin();
-
-	while(it != files->end())
+	for(vector<wstring>::iterator it = files->begin(); it != files->end(); it++)
 	{
 		wstring file = *it;
 
@@ -35,8 +30,6 @@ bool FileUtil::IsChildFile(const wchar_t* rootFolder, vector<wstring>* files)
 		{
 			return true;	
 		}
-
-		it++;
 	}
 
 	return false;
@@ -61,7 +54,7 @@ bool FileUtil::IsChildFileOfRoot(std::vector<std::wstring>* files)
 	wstring* rootFolder = new wstring();
 	bool needed = false;
 
-	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_ROOT_FOLDER, rootFolder))
+	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_PATH, rootFolder))
 	{
 		if(IsChildFile(rootFolder->c_str(), files))
 		{
@@ -78,7 +71,7 @@ bool FileUtil::IsChildFileOfRoot(const wchar_t* filePath)
 	wstring* rootFolder = new wstring();
 	bool needed = false;
 	
-	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_ROOT_FOLDER, rootFolder))
+	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_PATH, rootFolder))
 	{
 		if(FileUtil::IsChildFile(rootFolder->c_str(), filePath))
 		{

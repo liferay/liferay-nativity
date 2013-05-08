@@ -133,16 +133,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ParserUtil.h" />
+    <ClInclude Include="NativityMessage.h" />
     <ClInclude Include="UtilConstants.h" />
-    <ClInclude Include="CommunicationProcessor.h" />
     <ClInclude Include="CommunicationSocket.h" />
     <ClInclude Include="FileUtil.h" />
     <ClInclude Include="RegistryUtil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommunicationProcessor.cpp" />
     <ClCompile Include="CommunicationSocket.cpp" />
     <ClCompile Include="FileUtil.cpp" />
+    <ClCompile Include="NativityMessage.cpp" />
+    <ClCompile Include="ParserUtil.cpp" />
     <ClCompile Include="RegistryUtil.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -15,8 +15,9 @@
 #include "ServiceWorker.h"
 #include "stdafx.h"
 #include "ConfigurationConstants.h"
-#include "CommunicationProcessor.h"
 #include "RegistryUtil.h"
+#include "ParserUtil.h"
+
 using namespace std;
 
 ServiceWorker::ServiceWorker()
@@ -27,56 +28,57 @@ ServiceWorker::~ServiceWorker()
 {
 }
 
-bool ServiceWorker::ProcessMessages(map<wstring*, vector<wstring*>*>* messages)
+bool ServiceWorker::ProcessMessages(vector<NativityMessage*>* messages)
 {
-	map<wstring*, std::vector<wstring*>*>::iterator it;
+	vector<NativityMessage*>::iterator it;
 
 	for(it=messages->begin(); it !=messages->end(); it++) 
 	{
-		wstring* command = it->first;
-		vector<wstring*>* args = it->second;
+		NativityMessage* nativityMessage = *it;
 
-		if(command->compare(CMD_PI_ENABLE_FILE_ICONS) == 0)
+		if(nativityMessage->GetCommand()->compare(CMD_ENABLE_FILE_ICONS) == 0)
 		{
-			wcout<<command->c_str()<<endl;
-			_EnableFileIcons(args);
+			_EnableFileIcons(nativityMessage->GetValue());
 		}
-		else if(command->compare(CMD_PI_SET_MENU_TITLE) == 0)
+		else if(nativityMessage->GetCommand()->compare(CMD_SET_FILTER_PATH) == 0)
 		{
-			wcout<<command->c_str()<<endl;
-			_SetMenuTitle(args);
+			_SetFilterPath(nativityMessage->GetValue());
 		}
-		else if(command->compare(CMD_PI_SET_ROOT_FOLDER) == 0)
+		else if(nativityMessage->GetCommand()->compare(CMD_SET_SYSTEM_FOLDER) == 0)
 		{
-			wcout<<command->c_str()<<endl;
-			_SetRootFolder(args);
+			_SetSystemFolder(nativityMessage->GetValue());
 		}
-		else if(command->compare(CMD_PI_SET_SYSTEM_FOLDER) == 0)
+		else if(nativityMessage->GetCommand()->compare(CMD_UPDATE_FILE_ICON) == 0)
 		{
-			wcout<<command->c_str()<<endl;
-			_MarkSystem(args);
+			_UpdateFileIcons(nativityMessage->GetValue());
 		}
-		else if(command->compare(CMD_PI_UPDATE_FILE_ICON) == 0)
+		else if(nativityMessage->GetCommand()->compare(CMD_CLEAR_FILE_ICON) == 0)
 		{
-			wcout<<command->c_str()<<endl;
-			_UpdateOverlay(args);
-		}
-		else if(command->compare(CMD_PI_CLEAR_FILE_ICON) == 0)
-		{
-			wcout<<command->c_str()<<endl;
-			_ClearFileIcons(args);
+			_ClearFileIcon(nativityMessage->GetValue());
 		}
 
-		delete command;
-		delete args;
+		delete nativityMessage;
 	}
 
 	return true;
 }
 
-bool ServiceWorker::_ClearFileIcons(std::vector<std::wstring*>* arguments)
+bool ServiceWorker::_ClearFileIcon(wstring* value)
 {
-	for (vector<wstring*>::iterator it = arguments->begin() ; it != arguments->end(); it++)
+	if(!ParserUtil::IsList(value))
+	{
+		SHChangeNotify(SHCNE_DELETE, SHCNF_PATH | SHCNF_FLUSH, value, 0);
+		return true;
+	}
+
+	vector<wstring*>* list = new vector<wstring*>();
+
+	if(!ParserUtil::ParseList(value, list))
+	{
+		return false;
+	}
+
+	for (vector<wstring*>::iterator it = list->begin() ; it != list->end(); it++)
 	{
 		SHChangeNotify(SHCNE_DELETE, SHCNF_PATH | SHCNF_FLUSH, *it, 0);
 		delete *it;
@@ -85,14 +87,12 @@ bool ServiceWorker::_ClearFileIcons(std::vector<std::wstring*>* arguments)
 	return true;
 }
 
-bool ServiceWorker::_EnableFileIcons(std::vector<std::wstring*>* arguments)
+bool ServiceWorker::_EnableFileIcons(wstring* value)
 {
-	if(arguments->size() < 1)
+	if(value->size() < 1)
 	{
 		return false;
 	}
-
-	wstring* value = arguments->at(0);
 
 	int overlays = 0;
 
@@ -114,100 +114,88 @@ bool ServiceWorker::_EnableFileIcons(std::vector<std::wstring*>* arguments)
 	}
 
 	RegistryUtil::WriteRegistry(REGISTRY_ROOT_KEY, REGISTRY_ENABLE_OVERLAY, overlays);
-	
+
 	delete value;
 
 	return true;
 }
 
-bool ServiceWorker::_MarkSystem(std::vector<std::wstring*>* arguments)
+bool ServiceWorker::_SetSystemFolder(wstring* value)
 {
-	for (vector<wstring*>::iterator it = arguments->begin() ; it != arguments->end(); it++)
+	if(!ParserUtil::IsList(value))
+	{
+		SetFileAttributes(value->c_str(), FILE_ATTRIBUTE_SYSTEM);
+		return true;
+	}
+
+	vector<wstring*>* list = new vector<wstring*>();
+
+	if(!ParserUtil::ParseList(value, list))
+	{
+		return false;
+	}
+
+	for (vector<wstring*>::iterator it = list->begin() ; it != list->end(); it++)
 	{
 		SetFileAttributes((*it)->c_str(), FILE_ATTRIBUTE_SYSTEM);
-
 		delete *it;
 	}
 
 	return true;
 }
 
-bool ServiceWorker::_SetMenuTitle(std::vector<std::wstring*>* arguments)
+bool ServiceWorker::_SetFilterPath(wstring* value)
 {
-	if(arguments->size() != 1)
+	if(value->size() < 1)
 	{
 		return false;
 	}
 
-	wstring *title = arguments->at(0);
+	while(value->find(L"\\\\", 0) != string::npos)
+	{
+		size_t temp = value->find(L"\\\\", 0);
+		
+		value->replace(temp, 2, L"\\");
+	}
 
-	RegistryUtil::WriteRegistry(REGISTRY_ROOT_KEY, REGISTRY_MENU_TITLE, title->c_str());
+	RegistryUtil::WriteRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_PATH, value->c_str());
 	
-	delete title;
-
 	return true;
 }
 
-bool ServiceWorker::_SetRootFolder(std::vector<std::wstring*>* arguments)
+bool ServiceWorker::_UpdateFileIcons(wstring* value)
 {
-	if(arguments->size() != 1)
+	if(!ParserUtil::IsList(value))
+	{
+		_UpdateFileIcon(value->c_str());
+		return true;
+	}
+
+	vector<wstring*>* list = new vector<wstring*>();
+
+	if(!ParserUtil::ParseList(value, list))
 	{
 		return false;
 	}
 
-	wstring *rootFolder = arguments->at(0);
-
-	RegistryUtil::WriteRegistry(REGISTRY_ROOT_KEY, REGISTRY_ROOT_FOLDER, rootFolder->c_str());
-	
-	delete rootFolder;
-
-	return true;
-}
-
-bool ServiceWorker::_UpdateOverlay(std::vector<std::wstring*>* arguments)
-{
-	for (vector<wstring*>::iterator it = arguments->begin() ; it != arguments->end(); it++)
+	for (vector<wstring*>::iterator it = list->begin() ; it != list->end(); it++)
 	{
-		wstring* file = *it;
-		DWORD fileAttributes = GetFileAttributes(file->c_str());
-
-		if(fileAttributes & INVALID_FILE_ATTRIBUTES)
-		{
-		}
-			//		File temp = new File(fileModel.getFilePath());
-	
-			//if (!temp.exists()) {
-			//	return;
-			//}
-	
-			//if (currentState == FileState.DELETED_REMOTE) {
-			//	if (fileModel.isDirectory()) {
-			//		WindowsUtil.updateExplorer(
-			//			windowsPath, ExplorerEventType.SHCNE_RMDIR.ordinal());
-	
-			//		try {
-			//			fileStateChanged(
-			//				PathUtil.getParentPath(path), FileState.DOWNLOADED);
-			//		}
-			//		catch (Exception e) {
-			//			_logger.error(e.getMessage(), e);
-			//		}
-	
-			//	}
-			//	else {
-			//		WindowsUtil.updateExplorer(
-			//			windowsPath, ExplorerEventType.SHCNE_DELETE.ordinal());
-			//	}
-			//}
-			//else {
-			//	WindowsUtil.updateExplorer(
-			//		windowsPath, ExplorerEventType.SHCNE_UPDATE_ITEM.ordinal());
-			//}
-
-
-		SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, *it, 0);
+		wstring* path = *it;
+		_UpdateFileIcon(path->c_str());
 		delete *it;
 	}
 
 	return true;
 }	
+
+bool ServiceWorker::_UpdateFileIcon(const wchar_t* file)
+{
+	DWORD fileAttributes = GetFileAttributes(file);
+
+	if(fileAttributes & INVALID_FILE_ATTRIBUTES)
+	{
+		SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, file, 0);
+	}
+
+	return true;
+}
