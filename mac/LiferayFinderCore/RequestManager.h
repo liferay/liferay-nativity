@@ -35,7 +35,7 @@
 
 + (RequestManager*)sharedInstance;
 
-- (void)menuItemClicked:(NSNumber*)item withTitle:(NSString*)title;
+- (void)menuItemClicked:(NSDictionary*)actionDictionary;
 - (NSArray*)menuItemsForFiles:(NSArray*)files;
 - (void)start;
 

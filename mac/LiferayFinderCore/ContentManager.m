@@ -120,7 +120,8 @@ OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
 	{
 		NSWindow* window = [windows objectAtIndex:i];
 
-		if (![window isVisible]) {
+		if (![window isVisible])
+		{
 			continue;
 		}
 
@@ -141,10 +142,10 @@ OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
 {
 	for (NSString* path in iconDictionary)
 	{
-        if (rootFolder && ![path hasPrefix:rootFolder])
-        {
-            continue;
-        }
+		if (rootFolder && ![path hasPrefix:rootFolder])
+		{
+			continue;
+		}
 
 		NSNumber* iconId = [iconDictionary objectForKey:path];
 

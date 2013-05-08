@@ -58,7 +58,7 @@
 		69931AF1165E3E6100E425BE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		69931AF3165E3E6100E425BE /* LiferayFinderPluginInstaller-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LiferayFinderPluginInstaller-Prefix.pch"; sourceTree = "<group>"; };
 		69931AF7165E3E6100E425BE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		69931AF8165E3E6100E425BE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		69931AF8165E3E6100E425BE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; usesTabs = 1; };
 		69931B07165E43AE00E425BE /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		69931B09165E43E800E425BE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		69931B0F165E46E200E425BE /* com.liferay.FinderPluginHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.liferay.FinderPluginHelper; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,6 +103,7 @@
 				69931AE2165E3E6000E425BE /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		69931AE2165E3E6000E425BE /* Products */ = {
 			isa = PBXGroup;

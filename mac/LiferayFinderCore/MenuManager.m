@@ -47,81 +47,118 @@ static MenuManager* sharedInstance = nil;
 
 - (void)addItemsToMenu:(TContextMenu*)menu forPaths:(NSArray*)selectedItems
 {
-	NSArray* items = [[RequestManager sharedInstance] menuItemsForFiles:selectedItems];
+	NSArray* menuItemsArray = [[RequestManager sharedInstance] menuItemsForFiles:selectedItems];
 
-	if (items == nil)
+	if (menuItemsArray == nil)
 	{
 		return;
 	}
 
-	if ([items count] == 0)
+	if ([menuItemsArray count] == 0)
 	{
 		return;
 	}
 
-	NSString* firstElement = [items objectAtIndex:0];
-
-	if ([firstElement isEqualToString:@""])
-	{
-		return;
-	}
-
-	NSInteger menuIndex = 2;
+	NSInteger menuIndex = 4;
 
 	BOOL hasSeparatorBefore = [[menu itemAtIndex:menuIndex - 1] isSeparatorItem];
-	BOOL hasSeparatorAfter = [[menu itemAtIndex:menuIndex] isSeparatorItem];
-
-	if (!hasSeparatorAfter)
-	{
-		[menu insertItem:[NSMenuItem separatorItem] atIndex:menuIndex];
-	}
-
-	NSMenuItem* mainMenu = [menu insertItemWithTitle:menuTitle action:nil keyEquivalent:@"" atIndex:menuIndex];
 
 	if (!hasSeparatorBefore)
 	{
 		[menu insertItem:[NSMenuItem separatorItem] atIndex:menuIndex];
 	}
 
-	NSMenu* submenu = [[NSMenu alloc] init];
-
-	for (int i = 0; i < [items count]; ++i)
+	for (int i = 0; i < [menuItemsArray count]; ++i)
 	{
-		NSString* itemTitle = [items objectAtIndex:i];
-		NSArray* titleElements = [itemTitle componentsSeparatedByString:@","];
+		NSDictionary* menuItemDictionary = [menuItemsArray objectAtIndex:i];
 
-		if ([itemTitle isEqualToString:@"_SEPARATOR_"])
+		NSString* mainMenuTitle = [menuItemDictionary objectForKey:@"title"];
+
+		if ([mainMenuTitle isEqualToString:@""])
 		{
-			[submenu addItem:[NSMenuItem separatorItem]];
+			continue;
+		}
+
+		menuIndex++;
+
+		NSArray* childrenSubMenuItems = (NSArray*)[menuItemDictionary objectForKey:@"contextMenuItems"];
+
+		if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
+		{
+			NSMenuItem* mainMenuItem = [menu insertItemWithTitle:mainMenuTitle action:nil keyEquivalent:@"" atIndex:menuIndex];
+
+			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forPaths:selectedItems];
 		}
 		else
 		{
-			NSMenuItem* menuItem = [submenu addItemWithTitle:[titleElements objectAtIndex:0] action:@selector(menuItemClicked:) keyEquivalent:@""];
+			NSMenuItem* mainMenuItem = [menu insertItemWithTitle:mainMenuTitle action:@selector(menuItemClicked:) keyEquivalent:@"" atIndex:menuIndex];
 
-			if ([titleElements count] > 1)
+			if ([[menuItemDictionary objectForKey:@"enabled"] boolValue])
 			{
-				NSString* state = [titleElements objectAtIndex:1];
-
-				if ([state isEqualToString:@"true"])
-				{
-					[menuItem setTarget:self];
-				}
-			}
-			else
-			{
-				[menuItem setTarget:self];
+				[mainMenuItem setTarget:self];
 			}
 
-			[menuItem setRepresentedObject:[NSNumber numberWithInt:i]];
+			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
+			[menuActionDictionary setValue:[menuItemDictionary objectForKey:@"id"] forKey:@"id"];
+			[menuActionDictionary setValue:selectedItems forKey:@"files"];
+
+			[mainMenuItem setRepresentedObject:menuActionDictionary];
 		}
 	}
 
-	[mainMenu setSubmenu:submenu];
+	BOOL hasSeparatorAfter = [[menu itemAtIndex:menuIndex + 1] isSeparatorItem];
+
+	if (!hasSeparatorAfter)
+	{
+		[menu insertItem:[NSMenuItem separatorItem] atIndex:menuIndex + 1];
+	}
+}
+
+- (void)addChildrenSubMenuItems:(NSMenuItem*)parentMenuItem withChildren:(NSArray*)childrenMenuItemsDictionary forPaths:(NSArray*)selectedItems
+{
+	NSMenu* submenu = [[NSMenu alloc] init];
+
+	for (int i = 0; i < [childrenMenuItemsDictionary count]; ++i)
+	{
+		NSDictionary* submenuDictionary = [childrenMenuItemsDictionary objectAtIndex:i];
+
+		NSString* submenuTitle = [submenuDictionary objectForKey:@"title"];
+
+		NSArray* childrenSubMenuItems = (NSArray*)[submenuDictionary objectForKey:@"contextMenuItems"];
+
+		if ([submenuTitle isEqualToString:@"_SEPARATOR_"])
+		{
+			[submenu addItem:[NSMenuItem separatorItem]];
+		}
+		else if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
+		{
+			NSMenuItem* submenuItem = [submenu addItemWithTitle:submenuTitle action:nil keyEquivalent:@""];
+
+			[self addChildrenSubMenuItems:submenuItem withChildren:childrenSubMenuItems forPaths:selectedItems];
+		}
+		else
+		{
+			NSMenuItem* submenuItem = [submenu addItemWithTitle:submenuTitle action:@selector(menuItemClicked:) keyEquivalent:@""];
+
+			if ([[submenuDictionary objectForKey:@"enabled"] boolValue])
+			{
+				[submenuItem setTarget:self];
+			}
+
+			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
+			[menuActionDictionary setValue:[submenuDictionary objectForKey:@"id"] forKey:@"id"];
+			[menuActionDictionary setValue:selectedItems forKey:@"files"];
+
+			[submenuItem setRepresentedObject:menuActionDictionary];
+		}
+	}
+
+	[parentMenuItem setSubmenu:submenu];
 }
 
 - (void)menuItemClicked:(id)param
 {
-	[[RequestManager sharedInstance] menuItemClicked:[param representedObject] withTitle:[param title]];
+	[[RequestManager sharedInstance] menuItemClicked:[param representedObject]];
 }
 
 - (NSArray*)pathsForNodes:(const struct TFENodeVector*)nodes
