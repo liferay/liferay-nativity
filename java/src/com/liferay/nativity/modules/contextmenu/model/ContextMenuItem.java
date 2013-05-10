@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dennis Ju
@@ -27,8 +28,7 @@ public class ContextMenuItem {
 	public ContextMenuItem(String title) {
 		_title = title;
 		_enabled = true;
-		_id = _getUniqueID();
-
+		_uuid = UUID.randomUUID().toString();
 		_actions = new ArrayList<Action>();
 		_contextMenuItems = new ArrayList<ContextMenuItem>();
 	}
@@ -91,8 +91,8 @@ public class ContextMenuItem {
 		return _helpText;
 	}
 
-	public long getId() {
-		return _id;
+	public String getUuid() {
+		return _uuid;
 	}
 
 	public String getTitle() {
@@ -116,15 +116,11 @@ public class ContextMenuItem {
 	}
 
 	public String toString() {
-		return _title + " (" + _id + ") " + _contextMenuItems.size();
+		return _title + " (" + _uuid + ") " + _contextMenuItems.size();
 	}
 
 	private static ContextMenuItem _getSeparator() {
 		return new ContextMenuItem(_SEPARATOR);
-	}
-
-	private static synchronized long _getUniqueID() {
-		return _globalId++;
 	}
 
 	private void _addChildren(
@@ -141,13 +137,12 @@ public class ContextMenuItem {
 	}
 
 	private static final String _SEPARATOR = "_SEPARATOR_";
-	private static long _globalId = 0;
 
 	private List<Action> _actions;
 	private List<ContextMenuItem> _contextMenuItems;
 	private boolean _enabled;
 	private String _helpText;
-	private long _id;
+	private String _uuid;
 	private String _title;
 
 }

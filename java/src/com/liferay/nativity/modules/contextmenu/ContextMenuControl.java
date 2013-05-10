@@ -38,10 +38,10 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 		_contextMenuItems = new ArrayList<ContextMenuItem>();
 	}
 
-	public void fireAction(long id, String[] paths) {
+	public void fireAction(String uuid, String[] paths) {
 		for (ContextMenuItem contextMenuItem : _contextMenuItems) {
-			if (contextMenuItem.getId() == id) {
-				_logger.debug("Firing action id: {}, for: {}", id, paths);
+			if (contextMenuItem.getUuid().equals(uuid)) {
+				_logger.debug("Firing action uuid: {}, for: {}", uuid, paths);
 
 				contextMenuItem.fireActions(paths);
 

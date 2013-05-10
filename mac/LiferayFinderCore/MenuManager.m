@@ -94,7 +94,7 @@ static MenuManager* sharedInstance = nil;
 			}
 
 			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
-			[menuActionDictionary setValue:[menuItemDictionary objectForKey:@"id"] forKey:@"id"];
+			[menuActionDictionary setValue:[menuItemDictionary objectForKey:@"uuid"] forKey:@"uuid"];
 			NSMutableArray* filesArray = [selectedItems copy];
 			[menuActionDictionary setValue:filesArray forKey:@"files"];
 
@@ -145,7 +145,7 @@ static MenuManager* sharedInstance = nil;
 			}
 
 			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
-			[menuActionDictionary setValue:[submenuDictionary objectForKey:@"id"] forKey:@"id"];
+			[menuActionDictionary setValue:[submenuDictionary objectForKey:@"uuid"] forKey:@"uuid"];
 			NSMutableArray* filesArray = [selectedItems copy];
 			[menuActionDictionary setValue:filesArray forKey:@"files"];
 

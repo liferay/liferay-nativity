@@ -62,14 +62,14 @@ public class AppleContextMenuControlImpl extends ContextMenuControl {
 				Map<String, Object> map =
 					(Map<String, Object>)message.getValue();
 
-				Integer id = (Integer)map.get("id");
+				String uuid = (String)map.get("uuid");
 
 				List<String> files = (List<String>)map.get("files");
 
 				String[] filesArray = (String[])files.toArray(
 					new String[files.size()]);
 
-				fireAction(id, filesArray);
+				fireAction(uuid, filesArray);
 
 				return null;
 			}

@@ -72,7 +72,7 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 						_objectMapper.readValue(value, ContextMenuAction.class);
 
 					fireAction(
-						contextMenuAction.getId(),
+						String.valueOf(contextMenuAction.getId()),
 						contextMenuAction.getFiles());
 				}
 				catch (Exception e) {
