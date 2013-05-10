@@ -19,16 +19,14 @@
 @interface RequestManager : NSObject
 {
 	GCDAsyncSocket* listenSocket;
-	GCDAsyncSocket* connectedSocket;
-
 	GCDAsyncSocket* listenSocket2;
-	GCDAsyncSocket* callbackSocket;
 
-	NSCondition* callbackCondition;
-	NSString* callbackMsg;
+	NSMutableArray* connectedSockets;
+	NSMutableArray* callbackSockets;
+	NSMutableDictionary* callbackMsgs;
+
 	NSNumberFormatter* numberFormatter;
 	NSString* rootFolder;
-	NSData* warningData;
 
 	BOOL isRunning;
 }
