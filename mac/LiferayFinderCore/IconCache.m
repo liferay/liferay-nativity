@@ -23,7 +23,9 @@ static IconCache* sharedInstance = nil;
 
 - init
 {
-	if (self == [super init])
+	self = [super init];
+
+	if (self)
 	{
 		iconIdDictionary_ = [[NSMutableDictionary alloc] init];
 		iconPathDictionary_ = [[NSMutableDictionary alloc] init];
@@ -85,7 +87,7 @@ static IconCache* sharedInstance = nil;
 
 - (void)unregisterIcon:(NSNumber*)iconId
 {
-	NSString* path;
+	NSString* path = @"";
 
 	for (NSString* key in iconPathDictionary_)
 	{

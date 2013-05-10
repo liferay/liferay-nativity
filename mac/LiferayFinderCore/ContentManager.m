@@ -20,40 +20,12 @@
 
 static ContentManager* sharedInstance = nil;
 
-OSStatus SendFinderSyncEvent(const FSRef* inObjectRef)
-{
-	AppleEvent theEvent = { typeNull, NULL };
-	AppleEvent replyEvent = { typeNull, NULL };
-	AliasHandle itemAlias = NULL;
-
-	OSStatus err = FSNewAliasMinimal(inObjectRef, &itemAlias);
-
-	if (err == noErr)
-	{
-		ProcessSerialNumber psn = { 0, kCurrentProcess };
-		pid_t pid;
-		GetProcessPID(&psn, &pid);
-
-		err = AEBuildAppleEvent(kAEFinderSuite, kAESync, typeKernelProcessID, &pid, sizeof(pid), kAutoGenerateReturnID, kAnyTransactionID, &theEvent, NULL, "'----':alis(@@)", itemAlias);
-
-		if (err == noErr)
-		{
-			err = AESendMessage(&theEvent, &replyEvent, kAENoReply, kAEDefaultTimeout);
-
-			AEDisposeDesc(&replyEvent);
-			AEDisposeDesc(&theEvent);
-		}
-
-		DisposeHandle((Handle)itemAlias);
-	}
-
-	return err;
-}
-
 @implementation ContentManager
 - init
 {
-	if (self == [super init])
+	self = [super init];
+
+	if (self)
 	{
 		fileNamesCache_ = [[NSMutableDictionary alloc] init];
 		currentId_ = 0;

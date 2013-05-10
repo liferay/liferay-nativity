@@ -18,9 +18,6 @@
 struct TFENodeVector;
 
 @interface MenuManager : NSObject
-{
-	NSString* menuTitle;
-}
 
 @property (nonatomic, strong) NSMutableArray* menuItems;
 
@@ -28,6 +25,5 @@ struct TFENodeVector;
 
 - (void)addItemsToMenu:(TContextMenu*)menu forPaths:(NSArray*)selectedItems;
 - (NSArray*)pathsForNodes:(const struct TFENodeVector*)nodes;
-- (void)setMenuTitle:(NSString*)title;
 
 @end

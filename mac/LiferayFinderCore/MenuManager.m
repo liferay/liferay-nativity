@@ -37,12 +37,7 @@ static MenuManager* sharedInstance = nil;
 
 - init
 {
-	if (self == [super init])
-	{
-		menuTitle = [[NSString alloc] initWithString:@"Liferay"];
-	}
-
-	return self;
+	return [super init];
 }
 
 - (void)addItemsToMenu:(TContextMenu*)menu forPaths:(NSArray*)selectedItems
@@ -100,9 +95,13 @@ static MenuManager* sharedInstance = nil;
 
 			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
 			[menuActionDictionary setValue:[menuItemDictionary objectForKey:@"id"] forKey:@"id"];
-			[menuActionDictionary setValue:selectedItems forKey:@"files"];
+			NSMutableArray* filesArray = [selectedItems copy];
+			[menuActionDictionary setValue:filesArray forKey:@"files"];
 
 			[mainMenuItem setRepresentedObject:menuActionDictionary];
+
+			[filesArray release];
+			[menuActionDictionary release];
 		}
 	}
 
@@ -147,13 +146,19 @@ static MenuManager* sharedInstance = nil;
 
 			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
 			[menuActionDictionary setValue:[submenuDictionary objectForKey:@"id"] forKey:@"id"];
-			[menuActionDictionary setValue:selectedItems forKey:@"files"];
+			NSMutableArray* filesArray = [selectedItems copy];
+			[menuActionDictionary setValue:filesArray forKey:@"files"];
 
 			[submenuItem setRepresentedObject:menuActionDictionary];
+
+			[filesArray release];
+			[menuActionDictionary release];
 		}
 	}
 
 	[parentMenuItem setSubmenu:submenu];
+
+	[submenu release];
 }
 
 - (void)menuItemClicked:(id)param
@@ -178,12 +183,7 @@ static MenuManager* sharedInstance = nil;
 		[selectedItems addObject:[[node previewItemURL] path]];
 	}
 
-	return selectedItems;
-}
-
-- (void)setMenuTitle:(NSString*)title
-{
-	menuTitle = [[NSString alloc] initWithString:title];
+	return [selectedItems autorelease];
 }
 
 @end

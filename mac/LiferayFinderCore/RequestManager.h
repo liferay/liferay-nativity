@@ -13,16 +13,16 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "AsyncSocket.h"
+#import "GCDAsyncSocket.h"
 #import "RequestManager.h"
 
 @interface RequestManager : NSObject
 {
-	AsyncSocket* listenSocket;
-	AsyncSocket* connectedSocket;
+	GCDAsyncSocket* listenSocket;
+	GCDAsyncSocket* connectedSocket;
 
-	AsyncSocket* listenSocket2;
-	AsyncSocket* callbackSocket;
+	GCDAsyncSocket* listenSocket2;
+	GCDAsyncSocket* callbackSocket;
 
 	NSCondition* callbackCondition;
 	NSString* callbackMsg;
