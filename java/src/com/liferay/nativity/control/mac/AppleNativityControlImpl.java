@@ -219,7 +219,7 @@ public class AppleNativityControlImpl extends NativityControl {
 				NativityMessage message = _objectMapper.readValue(
 					data, NativityMessage.class);
 
-				NativityMessage responseMessage = fireOnMessage(message);
+				NativityMessage responseMessage = fireMessage(message);
 
 				if (responseMessage != null) {
 					_objectMapper.writeValue(

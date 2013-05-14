@@ -17,7 +17,7 @@ package com.liferay.nativity.modules.contextmenu.model;
 /**
  * @author Dennis Ju
  */
-public abstract class Action {
+public abstract class ContextMenuAction {
 
 	/**
 	 * Called when a context menu item is selected

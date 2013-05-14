@@ -29,7 +29,6 @@ public class ContextMenuItem {
 		_title = title;
 		_enabled = true;
 		_uuid = UUID.randomUUID().toString();
-		_actions = new ArrayList<Action>();
 		_contextMenuItems = new ArrayList<ContextMenuItem>();
 	}
 
@@ -39,10 +38,6 @@ public class ContextMenuItem {
 		this(title);
 
 		parentContextMenuItem.addContextMenuItem(this);
-	}
-
-	public void addAction(Action action) {
-		_actions.add(action);
 	}
 
 	public boolean addContextMenuItem(ContextMenuItem menuItem) {
@@ -61,10 +56,8 @@ public class ContextMenuItem {
 		return _contextMenuItems.add(_getSeparator());
 	}
 
-	public void fireActions(String[] paths) {
-		for (Action action : _actions) {
-			action.onSelection(paths);
-		}
+	public void fireContextMenuAction(String[] paths) {
+		_contextMenuAction.onSelection(paths);
 	}
 
 	@JsonIgnore
@@ -91,16 +84,20 @@ public class ContextMenuItem {
 		return _helpText;
 	}
 
-	public String getUuid() {
-		return _uuid;
-	}
-
 	public String getTitle() {
 		return _title;
 	}
 
+	public String getUuid() {
+		return _uuid;
+	}
+
 	public boolean removeContextMenuItem(ContextMenuItem menuItem) {
 		return _contextMenuItems.remove(menuItem);
+	}
+
+	public void setAction(ContextMenuAction contextMenuAction) {
+		_contextMenuAction = contextMenuAction;
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -138,11 +135,11 @@ public class ContextMenuItem {
 
 	private static final String _SEPARATOR = "_SEPARATOR_";
 
-	private List<Action> _actions;
+	private ContextMenuAction _contextMenuAction;
 	private List<ContextMenuItem> _contextMenuItems;
 	private boolean _enabled;
 	private String _helpText;
-	private String _uuid;
 	private String _title;
+	private String _uuid;
 
 }

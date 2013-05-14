@@ -17,6 +17,7 @@ package com.liferay.nativity.control.win;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class MessageProcessor implements Runnable {
 
 	public MessageProcessor(
-		Socket clientSocket, WindowsNativityControlImpl nativityControl) {
+		Socket clientSocket, NativityControl nativityControl) {
 
 		_clientSocket = clientSocket;
 		_nativityControl = nativityControl;
@@ -93,7 +94,7 @@ public class MessageProcessor implements Runnable {
 			NativityMessage message = _objectMapper.readValue(
 				receivedMessage, NativityMessage.class);
 
-			NativityMessage responseMessage = _nativityControl.fireOnMessage(
+			NativityMessage responseMessage = _nativityControl.fireMessage(
 				message);
 
 			if (responseMessage == null) {
@@ -151,7 +152,7 @@ public class MessageProcessor implements Runnable {
 
 	private Socket _clientSocket;
 	private InputStreamReader _inputStreamReader;
-	private WindowsNativityControlImpl _nativityControl;
+	private NativityControl _nativityControl;
 	private OutputStreamWriter _outputStreamWriter;
 
 }

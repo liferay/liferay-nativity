@@ -36,8 +36,8 @@ public class AppleContextMenuControlImpl extends ContextMenuControl {
 
 		super(nativityControl, contextMenuControlCallback);
 
-		MessageListener menuQueryMessageListener = new MessageListener(
-			Constants.MENU_QUERY) {
+		MessageListener getContextMenuItemsMessageListener =
+			new MessageListener(Constants.GET_CONTEXT_MENU_ITEMS) {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
@@ -46,16 +46,19 @@ public class AppleContextMenuControlImpl extends ContextMenuControl {
 				String[] currentFilesArray = (String[])files.toArray(
 					new String[files.size()]);
 
-				List<ContextMenuItem> items = getMenuItem(currentFilesArray);
+				List<ContextMenuItem> contextMenuItems = getContextMenuItems(
+					currentFilesArray);
 
-				return new NativityMessage(Constants.MENU_ITEMS, items);
+				return new NativityMessage(
+					Constants.MENU_ITEMS, contextMenuItems);
 			}
 		};
 
-		nativityControl.registerMessageListener(menuQueryMessageListener);
+		nativityControl.registerMessageListener(
+			getContextMenuItemsMessageListener);
 
-		MessageListener menuExecMessageListener = new MessageListener(
-			Constants.MENU_EXEC) {
+		MessageListener fireContextMenuActionMessageListener =
+			new MessageListener(Constants.FIRE_CONTEXT_MENU_ACTION) {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
@@ -69,13 +72,14 @@ public class AppleContextMenuControlImpl extends ContextMenuControl {
 				String[] filesArray = (String[])files.toArray(
 					new String[files.size()]);
 
-				fireAction(uuid, filesArray);
+				fireContextMenuAction(uuid, filesArray);
 
 				return null;
 			}
 		};
 
-		nativityControl.registerMessageListener(menuExecMessageListener);
+		nativityControl.registerMessageListener(
+			fireContextMenuActionMessageListener);
 	}
 
 }

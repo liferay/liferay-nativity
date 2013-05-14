@@ -41,26 +41,27 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 
 		super(nativityControl, contextMenuControlCallback);
 
-		MessageListener getMenuListMessageListener = new MessageListener(
-			Constants.GET_CONTEXT_MENU_LIST) {
+		MessageListener getContextMenuItemsMessageListener =
+			new MessageListener(Constants.GET_CONTEXT_MENU_ITEMS) {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
 				@SuppressWarnings("unchecked")
 				List<String> args = (List<String>)message.getValue();
 
-				List<ContextMenuItem> menuItems = getMenuItem(
+				List<ContextMenuItem> contextMenuItems = getContextMenuItems(
 					args.toArray(new String[args.size()]));
 
 				return new NativityMessage(
-					Constants.GET_CONTEXT_MENU_LIST, menuItems);
+					Constants.GET_CONTEXT_MENU_ITEMS, contextMenuItems);
 			}
 		};
 
-		nativityControl.registerMessageListener(getMenuListMessageListener);
+		nativityControl.registerMessageListener(
+			getContextMenuItemsMessageListener);
 
-		MessageListener performActionMessageListener = new MessageListener(
-			Constants.PERFORM_ACTION) {
+		MessageListener fireContextMenuActionMessageListener =
+			new MessageListener(Constants.FIRE_CONTEXT_MENU_ACTION) {
 
 			public NativityMessage onMessage(NativityMessage message) {
 				String value = message.getValue().toString();
@@ -71,7 +72,7 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 					ContextMenuAction contextMenuAction =
 						_objectMapper.readValue(value, ContextMenuAction.class);
 
-					fireAction(
+					fireContextMenuAction(
 						String.valueOf(contextMenuAction.getId()),
 						contextMenuAction.getFiles());
 				}
@@ -83,7 +84,8 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 			}
 		};
 
-		nativityControl.registerMessageListener(performActionMessageListener);
+		nativityControl.registerMessageListener(
+			fireContextMenuActionMessageListener);
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

@@ -25,23 +25,19 @@ public class Constants {
 
 	public static final String FILES = "files";
 
-	public static final String GET_CONTEXT_MENU_LIST = "getContextMenuList";
+	public static final String FIRE_CONTEXT_MENU_ACTION = "contextMenuAction";
+
+	public static final String GET_CONTEXT_MENU_ITEMS = "getContextMenuList";
 
 	public static final String GET_FILE_ICON_ID = "getFileIconId";
 
 	public static final String ID = "id";
 
-	public static final String MENU_EXEC = "menuExec";
-
 	public static final String MENU_INDEX = "menuIndex";
 
 	public static final String MENU_ITEMS = "menuItems";
 
-	public static final String MENU_QUERY = "menuQuery";
-
 	public static final String MENU_TEXT = "menuText";
-
-	public static final String PERFORM_ACTION = "performAction";
 
 	public static final String REGISTER_ICON = "registerIcon";
 

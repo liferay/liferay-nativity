@@ -49,7 +49,7 @@ public class WindowsReceiveSocket extends WindowsSocketBase {
 		}
 		catch (SocketException se) {
 
-			// Expected when socket is closed.
+			// Expected when socket is closed
 
 		}
 		catch (IOException e) {

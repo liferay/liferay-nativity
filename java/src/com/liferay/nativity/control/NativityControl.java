@@ -67,7 +67,7 @@ public abstract class NativityControl {
 	 * if no registered MessageListener is found or if no response
 	 * needs to be sent back to the native service.
 	 */
-	public NativityMessage fireOnMessage(NativityMessage message) {
+	public NativityMessage fireMessage(NativityMessage message) {
 		MessageListener messageListener = _commandMap.get(message.getCommand());
 
 		if (messageListener == null) {

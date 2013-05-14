@@ -38,12 +38,12 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 		_contextMenuItems = new ArrayList<ContextMenuItem>();
 	}
 
-	public void fireAction(String uuid, String[] paths) {
+	public void fireContextMenuAction(String uuid, String[] paths) {
 		for (ContextMenuItem contextMenuItem : _contextMenuItems) {
 			if (contextMenuItem.getUuid().equals(uuid)) {
 				_logger.debug("Firing action uuid: {}, for: {}", uuid, paths);
 
-				contextMenuItem.fireActions(paths);
+				contextMenuItem.fireContextMenuAction(paths);
 
 				break;
 			}
@@ -51,9 +51,9 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 	}
 
 	@Override
-	public List<ContextMenuItem> getMenuItem(String[] paths) {
+	public List<ContextMenuItem> getContextMenuItems(String[] paths) {
 		List<ContextMenuItem> contextMenuItems =
-			contextMenuControlCallback.getMenuItem(paths);
+			contextMenuControlCallback.getContextMenuItems(paths);
 
 		_contextMenuItems.clear();
 

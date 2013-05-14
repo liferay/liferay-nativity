@@ -15,7 +15,7 @@
 package com.liferay.nativity.test;
 
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
-import com.liferay.nativity.modules.contextmenu.model.Action;
+import com.liferay.nativity.modules.contextmenu.model.ContextMenuAction;
 import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class TestContextMenuControlCallback
 	implements ContextMenuControlCallback {
 
 	@Override
-	public List<ContextMenuItem> getMenuItem(String[] paths) {
+	public List<ContextMenuItem> getContextMenuItems(String[] paths) {
 		_logger.debug("getMenuItems {}", paths);
 
 		int count = _random.nextInt(20) + 3;
@@ -45,14 +45,14 @@ public class TestContextMenuControlCallback
 
 			childMenu.setHelpText("Help " + i);
 
-			Action action = new Action() {
+			ContextMenuAction action = new ContextMenuAction() {
 				@Override
 				public void onSelection(String[] paths) {
 					_logger.info("item clicked");
 				}
 			};
 
-			childMenu.addAction(action);
+			childMenu.setAction(action);
 
 			if ((i % 2) == 1) {
 				childMenu.setEnabled(false);

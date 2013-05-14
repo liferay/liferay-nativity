@@ -32,6 +32,6 @@ public interface ContextMenuControlCallback {
 	 * @return each ContextMenuItem instance in the list will appear at the
 	 * context menu's top level
 	 */
-	public abstract List<ContextMenuItem> getMenuItem(String[] paths);
+	public abstract List<ContextMenuItem> getContextMenuItems(String[] paths);
 
 }
