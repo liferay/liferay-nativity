@@ -18,13 +18,10 @@
 
 @implementation MenuManager
 
-@synthesize menuItems = _menuItems;
-
 static MenuManager* sharedInstance = nil;
 
 + (MenuManager*)sharedInstance
 {
-
 	@synchronized(self)
 	{
 		if (sharedInstance == nil)

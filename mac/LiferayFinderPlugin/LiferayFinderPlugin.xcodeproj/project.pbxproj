@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B5EC73916A4E11700DF3CA5 /* LiferayFinderCore.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0B5EC73816A4E11700DF3CA5 /* LiferayFinderCore.bundle */; };
+		0B525335174371ED00B184DE /* LiferayFinderCore.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0B525334174371ED00B184DE /* LiferayFinderCore.bundle */; };
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		6163584516A5E9C6004DAD9D /* mach_inject_bundle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0B5EC73616A4E0CD00DF3CA5 /* mach_inject_bundle.framework */; };
 		6163584616A5E9EC004DAD9D /* mach_inject_bundle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B5EC73616A4E0CD00DF3CA5 /* mach_inject_bundle.framework */; };
@@ -31,8 +31,8 @@
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0B525334174371ED00B184DE /* LiferayFinderCore.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LiferayFinderCore.bundle; sourceTree = "<group>"; };
 		0B5EC73616A4E0CD00DF3CA5 /* mach_inject_bundle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mach_inject_bundle.framework; path = "../../../../../../Library/Developer/Xcode/DerivedData/mach_inject_bundle-eddifditmlxxadfacdsuzeswfrpk/Build/Products/Development/mach_inject_bundle.framework"; sourceTree = "<group>"; };
-		0B5EC73816A4E11700DF3CA5 /* LiferayFinderCore.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = LiferayFinderCore.bundle; path = "../../../../../../Library/Developer/Xcode/DerivedData/LiferayFinderCore-bqgqdcgafyamwnagkbcprqucwsya/Build/Products/Development/LiferayFinderCore.bundle"; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				0B5EC73816A4E11700DF3CA5 /* LiferayFinderCore.bundle */,
+				0B525334174371ED00B184DE /* LiferayFinderCore.bundle */,
 				8D1107310486CEB800E47090 /* LiferayFinderPlugin-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
@@ -180,7 +180,7 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
-				0B5EC73916A4E11700DF3CA5 /* LiferayFinderCore.bundle in Resources */,
+				0B525335174371ED00B184DE /* LiferayFinderCore.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +238,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/..";
 				PRODUCT_NAME = LiferayFinderPlugin;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
@@ -259,6 +260,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/..";
 				PRODUCT_NAME = LiferayFinderPlugin;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
@@ -272,7 +274,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -284,7 +286,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

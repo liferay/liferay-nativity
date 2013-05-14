@@ -27,9 +27,8 @@ static ContentManager* sharedInstance = nil;
 
 	if (self)
 	{
-		fileNamesCache_ = [[NSMutableDictionary alloc] init];
-		currentId_ = 0;
-		overlaysEnabled_ = FALSE;
+		_fileNamesCache = [[NSMutableDictionary alloc] init];
+		_overlaysEnabled = FALSE;
 	}
 
 	return self;
@@ -50,26 +49,26 @@ static ContentManager* sharedInstance = nil;
 
 - (void)enableOverlays:(BOOL)enable
 {
-	overlaysEnabled_ = enable;
+	_overlaysEnabled = enable;
 
 	[self repaintAllWindows];
 }
 
 - (NSNumber*)iconByPath:(NSString*)path
 {
-	if (!overlaysEnabled_)
+	if (!_overlaysEnabled)
 	{
 		return nil;
 	}
 
-	NSNumber* result = [fileNamesCache_ objectForKey:path];
+	NSNumber* result = [_fileNamesCache objectForKey:path];
 
 	return result;
 }
 
 - (void)removeAllIcons
 {
-	[fileNamesCache_ removeAllObjects];
+	[_fileNamesCache removeAllObjects];
 
 	[self repaintAllWindows];
 }
@@ -78,7 +77,7 @@ static ContentManager* sharedInstance = nil;
 {
 	for (NSString* path in paths)
 	{
-		[fileNamesCache_ removeObjectForKey:path];
+		[_fileNamesCache removeObjectForKey:path];
 	}
 
 	[self repaintAllWindows];
@@ -110,11 +109,11 @@ static ContentManager* sharedInstance = nil;
 	}
 }
 
-- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)rootFolder
+- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
 {
 	for (NSString* path in iconDictionary)
 	{
-		if (rootFolder && ![path hasPrefix:rootFolder])
+		if (filterFolder && ![path hasPrefix:filterFolder])
 		{
 			continue;
 		}
@@ -123,10 +122,10 @@ static ContentManager* sharedInstance = nil;
 
 		if ([iconId intValue] == -1)
 		{
-			[fileNamesCache_ removeObjectForKey:path];
+			[_fileNamesCache removeObjectForKey:path];
 		}
 		else {
-			[fileNamesCache_ setObject:iconId forKey:path];
+			[_fileNamesCache setObject:iconId forKey:path];
 		}
 	}
 

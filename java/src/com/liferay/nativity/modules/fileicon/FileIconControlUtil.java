@@ -28,26 +28,20 @@ public class FileIconControlUtil {
 		NativityControl nativityControl,
 		FileIconControlCallback fileIconControlCallback) {
 
-		if (_fileIconControl == null) {
-			FileIconControlUtil fileIconControlUtil =
-				new FileIconControlUtil(
-					nativityControl, fileIconControlCallback);
+		FileIconControlUtil fileIconControlUtil = new FileIconControlUtil(
+			nativityControl, fileIconControlCallback);
 
-			if (OSDetector.isApple()) {
-				_fileIconControl =
-					fileIconControlUtil.createAppleFileIconControl();
-			}
-			else if (OSDetector.isWindows()) {
-				_fileIconControl =
-					fileIconControlUtil.createWindowsFileIconControl();
-			}
-			else if (OSDetector.isLinux()) {
-				_fileIconControl =
-					fileIconControlUtil.createLinuxFileIconControl();
-			}
+		if (OSDetector.isApple()) {
+			return fileIconControlUtil.createAppleFileIconControl();
+		}
+		else if (OSDetector.isWindows()) {
+			return fileIconControlUtil.createWindowsFileIconControl();
+		}
+		else if (OSDetector.isLinux()) {
+			return fileIconControlUtil.createLinuxFileIconControl();
 		}
 
-		return _fileIconControl;
+		return null;
 	}
 
 	protected FileIconControl createAppleFileIconControl() {
@@ -72,8 +66,6 @@ public class FileIconControlUtil {
 		_nativityControl = nativityControl;
 		_fileIconControlCallback = fileIconControlCallback;
 	}
-
-	private static FileIconControl _fileIconControl;
 
 	private FileIconControlCallback _fileIconControlCallback;
 	private NativityControl _nativityControl;

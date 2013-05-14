@@ -16,9 +16,9 @@
 
 
 @interface IconCache : NSObject {
-	int currentIconId_;
-	NSMutableDictionary* iconIdDictionary_;
-    NSMutableDictionary* iconPathDictionary_;
+	int _currentIconId;
+	NSMutableDictionary* _iconIdDictionary;
+    NSMutableDictionary* _iconPathDictionary;
 }
 
 + (IconCache*)sharedInstance;
@@ -26,8 +26,5 @@
 - (NSImage*)getIcon:(NSNumber*)iconId;
 - (NSNumber*)registerIcon:(NSString*)path;
 - (void)unregisterIcon:(NSNumber*)iconId;
-
-@property(nonatomic, retain) NSMutableDictionary* iconIdDictionary_;
-@property(nonatomic, retain) NSMutableDictionary* iconPathDictionary_;
 
 @end

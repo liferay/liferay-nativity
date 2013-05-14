@@ -24,19 +24,19 @@
 {
 	if ((self = [super init]))
 	{
-		listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-		listenSocket2 = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+		_listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+		_callbackListenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
 
-		connectedSockets = [[NSMutableArray alloc] init];
-		callbackSockets = [[NSMutableArray alloc] init];
-		callbackMsgs = [[NSMutableDictionary alloc] init];
+		_connectedSockets = [[NSMutableArray alloc] init];
+		_callbackSockets = [[NSMutableArray alloc] init];
+		_callbackMsgs = [[NSMutableDictionary alloc] init];
 
-		rootFolder = nil;
+		_filterFolder = nil;
 
-		numberFormatter = [[NSNumberFormatter alloc] init];
-		[numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+		_numberFormatter = [[NSNumberFormatter alloc] init];
+		[_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 
-		isRunning = NO;
+		_isRunning = NO;
 
 		[self start];
 	}
@@ -90,9 +90,9 @@
 	{
 		[self execUnregisterIconCmd:value replyTo:sock];
 	}
-	else if ([command isEqualToString:@"setRootFolder"])
+	else if ([command isEqualToString:@"setFilterPath"])
 	{
-		[self execSetRootFolderCmd:value replyTo:sock];
+		[self execSetFilterPathCmd:value replyTo:sock];
 	}
 	else
 	{
@@ -120,7 +120,7 @@
 		index = [NSNumber numberWithInt:-1];
 	}
 
-	[self replyString:[numberFormatter stringFromNumber:index] toSocket:sock];
+	[self replyString:[_numberFormatter stringFromNumber:index] toSocket:sock];
 }
 
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
@@ -143,14 +143,14 @@
 {
 	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
 
-	[[ContentManager sharedInstance] setIcons:iconDictionary filterByFolder:rootFolder];
+	[[ContentManager sharedInstance] setIcons:iconDictionary filterByFolder:_filterFolder];
 
 	[self replyString:@"1" toSocket:sock];
 }
 
-- (void)execSetRootFolderCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+- (void)execSetFilterPathCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	rootFolder = (NSString*)cmdData;
+	[self setFilterFolder:(NSString*)cmdData];
 
 	[self replyString:@"1" toSocket:sock];
 }
@@ -166,14 +166,14 @@
 
 - (void)menuItemClicked:(NSDictionary*)actionDictionary
 {
-	if ([callbackSockets count] == 0)
+	if ([_callbackSockets count] == 0)
 	{
 		return;
 	}
 
 	NSDictionary* menuExecDictionary = [[NSMutableDictionary alloc] init];
 
-	[menuExecDictionary setValue:@"menuExec" forKey:@"command"];
+	[menuExecDictionary setValue:@"contextMenuAction" forKey:@"command"];
 
 	[menuExecDictionary setValue:actionDictionary forKey:@"value"];
 
@@ -183,7 +183,7 @@
 
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
-	for (GCDAsyncSocket* callbackSocket in callbackSockets)
+	for (GCDAsyncSocket* callbackSocket in _callbackSockets)
 	{
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
@@ -191,16 +191,16 @@
 
 - (NSArray*)menuItemsForFiles:(NSArray*)files
 {
-	if ([callbackSockets count] == 0)
+	if ([_callbackSockets count] == 0)
 	{
 		return nil;
 	}
 
-	if (rootFolder)
+	if (_filterFolder)
 	{
 		NSString* file = [files objectAtIndex:0];
 
-		if (![file hasPrefix:rootFolder])
+		if (![file hasPrefix:_filterFolder])
 		{
 			return nil;
 		}
@@ -208,7 +208,7 @@
 
 	NSDictionary* menuQueryDictionary = [[NSMutableDictionary alloc] init];
 
-	[menuQueryDictionary setValue:@"menuQuery" forKey:@"command"];
+	[menuQueryDictionary setValue:@"getContextMenuList" forKey:@"command"];
 	[menuQueryDictionary setValue:files forKey:@"value"];
 
 	NSString* jsonString = [menuQueryDictionary JSONString];
@@ -216,20 +216,20 @@
 
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
-	for (GCDAsyncSocket* callbackSocket in callbackSockets)
+	for (GCDAsyncSocket* callbackSocket in _callbackSockets)
 	{
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
 
 	NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
 
-	[callbackMsgs removeAllObjects];
+	[_callbackMsgs removeAllObjects];
 
-	while ([callbackMsgs count] < [callbackSockets count])
+	while ([_callbackMsgs count] < [_callbackSockets count])
 	{
 		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
 
-		if ([callbackSockets count] == 0)
+		if ([_callbackSockets count] == 0)
 		{
 			return nil;
 		}
@@ -237,9 +237,9 @@
 
 	NSMutableArray* menuItems = [[NSMutableArray alloc] init];
 
-	for (NSValue* key in callbackMsgs)
+	for (NSValue* key in _callbackMsgs)
 	{
-		NSString* callbackMsg = [callbackMsgs objectForKey:key];
+		NSString* callbackMsg = [_callbackMsgs objectForKey:key];
 		NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
 
 		[menuItems addObjectsFromArray:(NSArray*)[responseDictionary objectForKey:@"value"]];
@@ -251,13 +251,13 @@
 - (void)socket:(GCDAsyncSocket*)socket didAcceptNewSocket:(GCDAsyncSocket*)newSocket
 {
 
-	if (socket == listenSocket)
+	if (socket == _listenSocket)
 	{
-		[connectedSockets addObject:newSocket];
+		[_connectedSockets addObject:newSocket];
 	}
-	if (socket == listenSocket2)
+	if (socket == _callbackListenSocket)
 	{
-		[callbackSockets addObject:newSocket];
+		[_callbackSockets addObject:newSocket];
 	}
 
 	[newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
@@ -270,19 +270,19 @@
 
 - (void)socket:(GCDAsyncSocket*)socket didReadData:(NSData*)data withTag:(long)tag
 {
-	if ([connectedSockets containsObject:socket])
+	if ([_connectedSockets containsObject:socket])
 	{
 		[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:socket];
 
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 	}
 
-	if ([callbackSockets containsObject:socket])
+	if ([_callbackSockets containsObject:socket])
 	{
 		NSData* strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
 		NSString* callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 
-		[callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
+		[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
 
 		[callbackString release];
 
@@ -297,16 +297,16 @@
 
 - (void)socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)err
 {
-	if ([connectedSockets containsObject:socket])
+	if ([_connectedSockets containsObject:socket])
 	{
-		[connectedSockets removeObject:socket];
+		[_connectedSockets removeObject:socket];
 
 		[[ContentManager sharedInstance] enableOverlays:false];
 	}
 
-	if ([callbackSockets containsObject:socket])
+	if ([_callbackSockets containsObject:socket])
 	{
-		[callbackSockets removeObject:socket];
+		[_callbackSockets removeObject:socket];
 	}
 }
 
@@ -319,21 +319,21 @@
 
 - (void)start
 {
-	if (!isRunning)
+	if (!_isRunning)
 	{
 		NSError* error = nil;
 
-		if (![listenSocket acceptOnPort:33001 error:&error])
+		if (![_listenSocket acceptOnPort:33001 error:&error])
 		{
 			return;
 		}
 
-		if (![listenSocket2 acceptOnPort:33002 error:&error])
+		if (![_callbackListenSocket acceptOnPort:33002 error:&error])
 		{
 			return;
 		}
 
-		isRunning = YES;
+		_isRunning = YES;
 	}
 }
 

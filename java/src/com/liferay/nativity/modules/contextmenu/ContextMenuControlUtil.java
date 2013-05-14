@@ -24,7 +24,7 @@ import com.liferay.nativity.util.OSDetector;
  */
 public class ContextMenuControlUtil {
 
-	public static void registerContextMenuControlCallback(
+	public static ContextMenuControl getContextMenuControl(
 		NativityControl nativityControl,
 		ContextMenuControlCallback contextMenuControlCallback) {
 
@@ -33,28 +33,30 @@ public class ContextMenuControlUtil {
 				nativityControl, contextMenuControlCallback);
 
 		if (OSDetector.isApple()) {
-			contextMenuControlUtil.createAppleContextMenuControl();
+			return contextMenuControlUtil.createAppleContextMenuControl();
 		}
 		else if (OSDetector.isWindows()) {
-			contextMenuControlUtil.createWindowsContextMenuControl();
+			return contextMenuControlUtil.createWindowsContextMenuControl();
 		}
 		else if (OSDetector.isLinux()) {
-			contextMenuControlUtil.createLinuxContextMenuControl();
+			return contextMenuControlUtil.createLinuxContextMenuControl();
 		}
+
+		return null;
 	}
 
-	protected void createAppleContextMenuControl() {
-		new AppleContextMenuControlImpl(
+	protected ContextMenuControl createAppleContextMenuControl() {
+		return new AppleContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 
-	protected void createLinuxContextMenuControl() {
-		new AppleContextMenuControlImpl(
+	protected ContextMenuControl createLinuxContextMenuControl() {
+		return new AppleContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 
-	protected void createWindowsContextMenuControl() {
-		new WindowsContextMenuControlImpl(
+	protected ContextMenuControl createWindowsContextMenuControl() {
+		return new WindowsContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 

@@ -12,8 +12,7 @@
 	<string>1.7</string>
 	<key>SMAuthorizedClients</key>
 	<array>
-		<string>identifier com.liferay.FinderPluginInstaller and certificate leaf[subject.CN] = &quot;Joe Developer&quot;</string>
-		<string>identifier com.liferay.FinderPluginInstaller and certificate leaf[subject.CN] = &quot;Joe Developer Development&quot;</string>
+		<string>identifier com.liferay.FinderPluginInstaller and certificate leaf[subject.CN] = &quot;3rd Party Mac Developer Application: Liferay, Inc.&quot;</string>
 	</array>
 	<key>KeepAlive</key>
 	<true/>

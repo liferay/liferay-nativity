@@ -31,7 +31,7 @@
 	<key>SMPrivilegedExecutables</key>
 	<dict>
 		<key>com.liferay.FinderPluginHelper</key>
-		<string>identifier com.liferay.FinderPluginHelper and certificate leaf[subject.CN] = "Joe Developer"</string>
+		<string>identifier com.liferay.FinderPluginHelper and certificate leaf[subject.CN] = &quot;3rd Party Mac Developer Application: Liferay, Inc.&quot;</string>
 	</dict>
 </dict>
 </plist>

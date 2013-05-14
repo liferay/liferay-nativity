@@ -18,18 +18,20 @@
 
 @interface RequestManager : NSObject
 {
-	GCDAsyncSocket* listenSocket;
-	GCDAsyncSocket* listenSocket2;
+	GCDAsyncSocket* _listenSocket;
+	GCDAsyncSocket* _callbackListenSocket;
 
-	NSMutableArray* connectedSockets;
-	NSMutableArray* callbackSockets;
-	NSMutableDictionary* callbackMsgs;
+	NSMutableArray* _connectedSockets;
+	NSMutableArray* _callbackSockets;
+	NSMutableDictionary* _callbackMsgs;
 
-	NSNumberFormatter* numberFormatter;
-	NSString* rootFolder;
+	NSNumberFormatter* _numberFormatter;
+	NSString* _filterFolder;
 
-	BOOL isRunning;
+	BOOL _isRunning;
 }
+
+@property (nonatomic, retain) NSString* filterFolder;
 
 + (RequestManager*)sharedInstance;
 

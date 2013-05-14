@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class NativityControlUtil {
 
 	/**
-	 * Factory method to get an instance of NativityControl
+	 * Gets an instance of NativityControl
 	 *
 	 * @return implementation of NativityControl instance based on the
 	 * user's operating system. Returns null for unsupported operating systems.
@@ -45,8 +45,7 @@ public class NativityControlUtil {
 			}
 			else {
 				_logger.error(
-					"NativityControl does not support {}",
-					System.getProperty("os.name"));
+					"{} is not supported", System.getProperty("os.name"));
 
 				_nativityControl = null;
 			}

@@ -271,7 +271,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_LINK_OBJC_RUNTIME = NO;
-				CODE_SIGN_IDENTITY = "Joe Developer";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Liferay, Inc.";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -301,7 +301,7 @@
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_LINK_OBJC_RUNTIME = NO;
-				CODE_SIGN_IDENTITY = "Joe Developer";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Liferay, Inc.";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -321,7 +321,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "Joe Developer";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Liferay, Inc.";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Prefix.pch";
 				INFOPLIST_FILE = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Info.plist";
@@ -337,7 +337,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "Joe Developer";
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Liferay, Inc.";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Prefix.pch";
 				INFOPLIST_FILE = "LiferayFinderPluginInstaller/LiferayFinderPluginInstaller-Info.plist";
@@ -352,7 +352,8 @@
 		69931B17165E46E200E425BE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Joe Developer";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Liferay, Inc.";
 				INFOPLIST_FILE = "com.liferay.FinderPluginHelper/FinderPluginHelper-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
@@ -375,7 +376,8 @@
 		69931B18165E46E200E425BE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Joe Developer";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Liferay, Inc.";
 				INFOPLIST_FILE = "com.liferay.FinderPluginHelper/FinderPluginHelper-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;

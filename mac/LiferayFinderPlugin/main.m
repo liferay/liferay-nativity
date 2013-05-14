@@ -46,17 +46,36 @@ OSErr FindProcessBySignature(OSType type, OSType creator, ProcessSerialNumber* p
 
 int main(int argc, char* argv[])
 {
-	NSString* bundlePath = [[NSBundle mainBundle] pathForResource:@"LiferayFinderCore" ofType:@"bundle"];
-
 	ProcessSerialNumber psn;
+	OSErr err;
 
-	FindProcessBySignature('FNDR', 'MACS', &psn);
+	err = FindProcessBySignature('FNDR', 'MACS', &psn);
+
+	if (err != 0)
+	{
+		NSLog(@"Error getting process by signature: %i", err);
+
+		return err;
+	}
 
 	pid_t pid;
 
-	GetProcessPID(&psn, &pid);
+	err = GetProcessPID(&psn, &pid);
 
-	mach_inject_bundle_pid([bundlePath fileSystemRepresentation], pid);
+	if (err != 0)
+	{
+		NSLog(@"Error getting process pid: %i", err);
 
-	return 1;
+		return err;
+	}
+
+	NSString* bundlePath = [[NSBundle mainBundle] pathForResource:@"LiferayFinderCore" ofType:@"bundle"];
+	mach_error_t mach_error = mach_inject_bundle_pid([bundlePath fileSystemRepresentation], pid);
+
+	if (err != 0)
+	{
+		NSLog(@"mach injection error: %d", mach_error);
+	}
+
+	return err;
 }

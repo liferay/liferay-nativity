@@ -16,9 +16,8 @@
 
 @interface ContentManager : NSObject
 {
-	int currentId_;
-	NSMutableDictionary* fileNamesCache_;
-	BOOL overlaysEnabled_;
+	NSMutableDictionary* _fileNamesCache;
+	BOOL _overlaysEnabled;
 }
 
 + (ContentManager*)sharedInstance;
@@ -27,6 +26,6 @@
 - (NSNumber*)iconByPath:(NSString*)path;
 - (void)removeAllIcons;
 - (void)removeIcons:(NSArray*)paths;
-- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)rootFolder;
+- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
 
 @end

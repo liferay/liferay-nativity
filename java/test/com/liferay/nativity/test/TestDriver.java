@@ -70,7 +70,7 @@ public class TestDriver {
 			FileIconControlUtil.getFileIconControl(
 				nativityControl, new TestFileIconControlCallback());
 
-		ContextMenuControlUtil.registerContextMenuControlCallback(
+		ContextMenuControlUtil.getContextMenuControl(
 			nativityControl, new TestContextMenuControlCallback());
 
 		BufferedReader bufferedReader = new BufferedReader(
@@ -94,7 +94,7 @@ public class TestDriver {
 				_registerFileIcon(fileIconControl);
 
 				_logger.debug("_setFilterPath");
-				_setFilterPath(fileIconControl);
+				_setFilterPath(nativityControl);
 
 				_logger.debug("_setSystemFolder");
 				_setSystemFolder(nativityControl);
@@ -177,8 +177,8 @@ public class TestDriver {
 		}
 	}
 
-	private static void _setFilterPath(FileIconControl fileIconControl) {
-		fileIconControl.setFilterPath(_testRootFolder);
+	private static void _setFilterPath(NativityControl nativityControl) {
+		nativityControl.setFilterFolder(_testRootFolder);
 
 		try {
 			Thread.sleep(_waitTime);

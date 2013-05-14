@@ -18,18 +18,15 @@
 
 static IconCache* sharedInstance = nil;
 
-@synthesize iconIdDictionary_;
-@synthesize iconPathDictionary_;
-
 - init
 {
 	self = [super init];
 
 	if (self)
 	{
-		iconIdDictionary_ = [[NSMutableDictionary alloc] init];
-		iconPathDictionary_ = [[NSMutableDictionary alloc] init];
-		currentIconId_ = 0;
+		_iconIdDictionary = [[NSMutableDictionary alloc] init];
+		_iconPathDictionary = [[NSMutableDictionary alloc] init];
+		_currentIconId = 0;
 	}
 
 	return self;
@@ -49,7 +46,7 @@ static IconCache* sharedInstance = nil;
 
 - (NSImage*)getIcon:(NSNumber*)iconId
 {
-	NSImage* image = [iconIdDictionary_ objectForKey:iconId];
+	NSImage* image = [_iconIdDictionary objectForKey:iconId];
 
 	return image;
 }
@@ -68,18 +65,18 @@ static IconCache* sharedInstance = nil;
 		return [NSNumber numberWithInt:-1];
 	}
 
-	NSNumber* iconId = [iconPathDictionary_ objectForKey:path];
+	NSNumber* iconId = [_iconPathDictionary objectForKey:path];
 
 	if (iconId == nil)
 	{
-		currentIconId_++;
+		_currentIconId++;
 
-		iconId = [NSNumber numberWithInt:currentIconId_];
+		iconId = [NSNumber numberWithInt:_currentIconId];
 
-		[iconPathDictionary_ setObject:iconId forKey:path];
+		[_iconPathDictionary setObject:iconId forKey:path];
 	}
 
-	[iconIdDictionary_ setObject:image forKey:iconId];
+	[_iconIdDictionary setObject:image forKey:iconId];
 	[image release];
 
 	return iconId;
@@ -89,9 +86,9 @@ static IconCache* sharedInstance = nil;
 {
 	NSString* path = @"";
 
-	for (NSString* key in iconPathDictionary_)
+	for (NSString* key in _iconPathDictionary)
 	{
-		NSNumber* value = [iconPathDictionary_ objectForKey:key];
+		NSNumber* value = [_iconPathDictionary objectForKey:key];
 
 		if ([value isEqualToNumber:iconId])
 		{
@@ -101,9 +98,9 @@ static IconCache* sharedInstance = nil;
 		}
 	}
 
-	[iconPathDictionary_ removeObjectForKey:path];
+	[_iconPathDictionary removeObjectForKey:path];
 
-	[iconIdDictionary_ removeObjectForKey:iconId];
+	[_iconIdDictionary removeObjectForKey:iconId];
 }
 
 @end

@@ -41,10 +41,7 @@
 
 + (void)load
 {
-	NSString* iconPath = [[NSBundle bundleForClass:[FinderHook class]] pathForResource:@"TestIcon" ofType:@"icns"];
-
 	[RequestManager sharedInstance];
-	[[IconCache sharedInstance] registerIcon:iconPath];
 
 	[self hookMethod:@selector(drawImage:) inClass:@"TIconViewCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_drawImage:)]; // Lion & Mountain Lion
 
