@@ -70,7 +70,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * @param file path to set file icon overlays
 	 *
-	 * @param id of file icon overlay
+	 * @param id of file icon overlay. Value of -1 will remove the overlay
+	 * (same as calling removeFileIcon).
 	 */
 	public void setFileIcon(String path, int iconId);
 

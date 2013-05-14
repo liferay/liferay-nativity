@@ -225,7 +225,7 @@
 
 	[callbackMsgs removeAllObjects];
 
-	while ([callbackMsgs count] != [callbackSockets count])
+	while ([callbackMsgs count] < [callbackSockets count])
 	{
 		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
 

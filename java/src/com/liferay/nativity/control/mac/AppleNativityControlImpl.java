@@ -63,7 +63,7 @@ public class AppleNativityControlImpl extends NativityControl {
 			return true;
 		}
 		catch (IOException e) {
-			_logger.error(e.getMessage(), e);
+			_logger.error(e.getMessage());
 		}
 
 		return false;

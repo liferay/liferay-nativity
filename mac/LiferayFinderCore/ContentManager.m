@@ -121,7 +121,13 @@ static ContentManager* sharedInstance = nil;
 
 		NSNumber* iconId = [iconDictionary objectForKey:path];
 
-		[fileNamesCache_ setObject:iconId forKey:path];
+		if ([iconId intValue] == -1)
+		{
+			[fileNamesCache_ removeObjectForKey:path];
+		}
+		else {
+			[fileNamesCache_ setObject:iconId forKey:path];
+		}
 	}
 
 	[self repaintAllWindows];
