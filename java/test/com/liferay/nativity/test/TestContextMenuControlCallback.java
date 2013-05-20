@@ -52,7 +52,7 @@ public class TestContextMenuControlCallback
 				}
 			};
 
-			childMenu.setAction(action);
+			childMenu.setContextMenuAction(action);
 
 			if ((i % 2) == 1) {
 				childMenu.setEnabled(false);

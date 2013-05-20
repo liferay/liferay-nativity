@@ -96,7 +96,7 @@ public class ContextMenuItem {
 		return _contextMenuItems.remove(menuItem);
 	}
 
-	public void setAction(ContextMenuAction contextMenuAction) {
+	public void setContextMenuAction(ContextMenuAction contextMenuAction) {
 		_contextMenuAction = contextMenuAction;
 	}
 
