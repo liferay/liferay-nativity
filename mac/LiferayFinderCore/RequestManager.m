@@ -20,6 +20,8 @@
 
 @implementation RequestManager
 
+static double maxMenuItemsRequestWaitMilliSec = 100;
+
 - (id)init
 {
 	if ((self = [super init]))
@@ -225,6 +227,8 @@
 
 	[_callbackMsgs removeAllObjects];
 
+	NSDate *startDate = [NSDate date];
+
 	while ([_callbackMsgs count] < [_callbackSockets count])
 	{
 		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
@@ -232,6 +236,13 @@
 		if ([_callbackSockets count] == 0)
 		{
 			return nil;
+		}
+
+		if (([startDate timeIntervalSinceNow] * -1000) > maxMenuItemsRequestWaitMilliSec)
+		{
+			NSLog(@"LiferayFinderCore: menu item request timed out");
+
+			break;
 		}
 	}
 
