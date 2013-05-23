@@ -50,12 +50,12 @@ static BOOL installed = NO;
 {
 	if (installed)
 	{
-		NSLog(@"LiferayFinderCore: already installed");
+		NSLog(@"LiferayNativityFinder: already installed");
 
 		return;
 	}
 
-	NSLog(@"LiferayFinderCore: installing");
+	NSLog(@"LiferayNativityFinder: installing");
 
 	[RequestManager sharedInstance];
 
@@ -80,12 +80,12 @@ static BOOL installed = NO;
 {
 	if (!installed)
 	{
-		NSLog(@"LiferayFinderCore: not installed");
+		NSLog(@"LiferayNativityFinder: not installed");
 
 		return;
 	}
 
-	NSLog(@"LiferayFinderCore: uninstalling");
+	NSLog(@"LiferayNativityFinder: uninstalling");
 
 	[[ContentManager sharedInstance] dealloc];
 

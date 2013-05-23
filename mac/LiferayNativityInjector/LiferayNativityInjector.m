@@ -21,7 +21,7 @@
 @end
 
 static bool liferayNativityLoaded = false;
-static NSString* liferayNativityBundleName = @"LiferayFinderCore";
+static NSString* liferayNativityBundleName = @"LiferayNativityFinder";
 
 typedef struct {
   NSString* location;
