@@ -34,6 +34,15 @@ static ContentManager* sharedInstance = nil;
 	return self;
 }
 
+- (void)dealloc
+{
+	[self removeAllIcons];
+	[_fileNamesCache release];
+	sharedInstance = nil;
+
+	[super dealloc];
+}
+
 + (ContentManager*)sharedInstance
 {
 	@synchronized(self)

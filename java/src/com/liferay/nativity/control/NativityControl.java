@@ -78,6 +78,28 @@ public abstract class NativityControl {
 	}
 
 	/**
+	 * Mac only
+	 *
+	 * Loads Liferay Nativity into Finder.
+	 *
+	 * @param
+	 *
+	 * @return true if successfully loaded
+	 */
+	public abstract boolean load() throws Exception;
+
+	/**
+	 * Mac only
+	 *
+	 * Check if Liferay Nativity is loaded in Finder.
+	 *
+	 * @param
+	 *
+	 * @return true if loaded
+	 */
+	public abstract boolean loaded();
+
+	/**
 	 * Used by modules to register a MessageListener that will respond to
 	 * messages received from the native service. Each registered
 	 * MessageListener instance must have a unique "command" parameter.
@@ -100,13 +122,6 @@ public abstract class NativityControl {
 	public void removeSocketCloseListener(SocketCloseListener listener) {
 		socketCloseListeners.remove(listener);
 	}
-
-	/**
-	 * Checks if the native service is running
-	 *
-	 * @return true if native service is running
-	 */
-	public abstract boolean running();
 
 	/**
 	 * Used by modules to send messages to the native service.
@@ -140,13 +155,13 @@ public abstract class NativityControl {
 	/**
 	 * Mac only
 	 *
-	 * Starts the native service.
+	 * Unloads Liferay Nativity from Finder.
 	 *
 	 * @param
 	 *
-	 * @return true if the service successfully started
+	 * @return true if successfully unloaded
 	 */
-	public abstract boolean startPlugin(String path) throws Exception;
+	public abstract boolean unload() throws Exception;
 
 	protected List<SocketCloseListener> socketCloseListeners;
 

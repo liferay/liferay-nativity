@@ -33,7 +33,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 	public boolean connect() {
 		_logger.debug("Connecting...");
 
-		if (running()) {
+		if (_send.isConnected()) {
 			return true;
 		}
 
@@ -53,8 +53,13 @@ public class WindowsNativityControlImpl extends NativityControl {
 	}
 
 	@Override
-	public boolean running() {
-		return _send.isConnected();
+	public boolean load() throws Exception {
+		return true;
+	}
+
+	@Override
+	public boolean loaded() {
+		return true;
 	}
 
 	@Override
@@ -81,8 +86,8 @@ public class WindowsNativityControlImpl extends NativityControl {
 	}
 
 	@Override
-	public boolean startPlugin(String path) throws Exception {
-		return true;
+	public boolean unload() throws Exception {
+		return false;
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

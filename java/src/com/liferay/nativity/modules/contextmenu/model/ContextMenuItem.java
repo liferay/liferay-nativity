@@ -48,12 +48,12 @@ public class ContextMenuItem {
 		_contextMenuItems.add(index, menuItem);
 	}
 
-	public void addSeparator(int index) {
-		_contextMenuItems.add(index, _getSeparator());
-	}
-
 	public boolean addSeparator() {
 		return _contextMenuItems.add(_getSeparator());
+	}
+
+	public void addSeparator(int index) {
+		_contextMenuItems.add(index, _getSeparator());
 	}
 
 	public void fireContextMenuAction(String[] paths) {

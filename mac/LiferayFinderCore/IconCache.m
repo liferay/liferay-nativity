@@ -32,6 +32,15 @@ static IconCache* sharedInstance = nil;
 	return self;
 }
 
+- (void)dealloc
+{
+	[_iconIdDictionary release];
+	[_iconPathDictionary release];
+	sharedInstance = nil;
+
+	[super dealloc];
+}
+
 + (IconCache*)sharedInstance
 {
 	@synchronized(self)

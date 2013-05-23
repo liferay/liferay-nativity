@@ -19,6 +19,8 @@
 #include "objc/objc-class.h"
 #import "RequestManager.h"
 
+static BOOL installed = NO;
+
 @implementation FinderHook
 
 + (void)hookClassMethod:(SEL)oldSelector inClass:(NSString*)className toCallToTheNewMethod:(SEL)newSelector
@@ -41,6 +43,20 @@
 
 + (void)load
 {
+	[FinderHook install];
+}
+
++ (void)install
+{
+	if (installed)
+	{
+		NSLog(@"LiferayFinderCore: already installed");
+
+		return;
+	}
+
+	NSLog(@"LiferayFinderCore: installing");
+
 	[RequestManager sharedInstance];
 
 	[self hookMethod:@selector(drawImage:) inClass:@"TIconViewCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_drawImage:)]; // Lion & Mountain Lion
@@ -56,6 +72,42 @@
 	[self hookClassMethod:@selector(handleContextMenuCommon:nodes:event:view:browserController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:view:browserController:addPlugIns:)]; // Mountain Lion
 
 	[self hookMethod:@selector(configureWithNodes:browserController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(ContextMenuHandlers_configureWithNodes:browserController:container:)]; // Mountain Lion
+
+	installed = YES;
+}
+
++ (void)uninstall
+{
+	if (!installed)
+	{
+		NSLog(@"LiferayFinderCore: not installed");
+
+		return;
+	}
+
+	NSLog(@"LiferayFinderCore: uninstalling");
+
+	[[ContentManager sharedInstance] dealloc];
+
+	[[IconCache sharedInstance] dealloc];
+
+	[[RequestManager sharedInstance] dealloc];
+
+	[self hookMethod:@selector(IconOverlayHandlers_drawImage:) inClass:@"TIconViewCell" toCallToTheNewMethod:@selector(drawImage:)]; // Lion & Mountain Lion
+
+	[self hookMethod:@selector(IconOverlayHandlers_drawIconWithFrame:) inClass:@"TListViewIconAndTextCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)]; // Lion & Mountain Lion
+
+	[self hookClassMethod:@selector(ContextMenuHandlers_addViewSpecificStuffToMenu:browserViewController:context:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(addViewSpecificStuffToMenu:browserViewController:context:)]; // Lion & Mountain Lion
+
+	[self hookClassMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:view:windowController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(handleContextMenuCommon:nodes:event:view:windowController:addPlugIns:)]; // Lion
+
+	[self hookMethod:@selector(ContextMenuHandlers_configureWithNodes:windowController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureWithNodes:windowController:container:)]; // Lion
+
+	[self hookClassMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:view:browserController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(handleContextMenuCommon:nodes:event:view:browserController:addPlugIns:)]; // Mountain Lion
+
+	[self hookMethod:@selector(ContextMenuHandlers_configureWithNodes:browserController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureWithNodes:browserController:container:)]; // Mountain Lion
+
+	installed = NO;
 }
 
 @end

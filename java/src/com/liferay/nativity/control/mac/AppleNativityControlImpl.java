@@ -21,6 +21,7 @@ import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.listeners.SocketCloseListener;
+import com.liferay.nativity.util.mac.AppleUtil;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -38,6 +39,10 @@ import org.slf4j.LoggerFactory;
 public class AppleNativityControlImpl extends NativityControl {
 
 	public boolean connect() {
+		if ((_serviceSocket != null) && _serviceSocket.isConnected()) {
+			return true;
+		}
+
 		try {
 			_serviceSocket = new Socket("127.0.0.1", _serviceSocketPort);
 
@@ -73,6 +78,7 @@ public class AppleNativityControlImpl extends NativityControl {
 	public boolean disconnect() {
 		try {
 			_serviceSocket.close();
+			_callbackSocket.close();
 
 			return true;
 		}
@@ -84,31 +90,15 @@ public class AppleNativityControlImpl extends NativityControl {
 	}
 
 	@Override
-	public boolean running() {
-		boolean running = false;
+	public boolean load() throws Exception {
+		_logger.trace("Installing Liferay Nativity");
 
-		try {
-			String grepCommand =
-				"ps -e | grep com.liferay.FinderPluginHelper | grep -v grep";
+		return AppleUtil.load();
+	}
 
-			String[] cmd = { "/bin/sh", "-c", grepCommand };
-
-			Process process = Runtime.getRuntime().exec(cmd);
-
-			BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(process.getInputStream()));
-
-			while (bufferedReader.readLine() != null) {
-				running = true;
-			}
-
-			bufferedReader.close();
-		}
-		catch (Exception e) {
-			_logger.error(e.getMessage(), e);
-		}
-
-		return running;
+	@Override
+	public boolean loaded() {
+		return AppleUtil.loaded();
 	}
 
 	@Override
@@ -154,43 +144,10 @@ public class AppleNativityControlImpl extends NativityControl {
 	}
 
 	@Override
-	public boolean startPlugin(String path) throws Exception {
-		_logger.trace("Starting Finder plugin helper");
+	public boolean unload() throws Exception {
+		_logger.trace("Uninstalling Liferay Nativity");
 
-		Process process = Runtime.getRuntime().exec(new String[] { path });
-
-		BufferedReader inputBufferedReader = new BufferedReader(
-			new InputStreamReader(process.getInputStream()));
-
-		BufferedReader errorBufferedReader = new BufferedReader(
-			new InputStreamReader(process.getErrorStream()));
-
-		String input = inputBufferedReader.readLine();
-
-		while (input != null) {
-			input = inputBufferedReader.readLine();
-		}
-
-		inputBufferedReader.close();
-
-		String error = errorBufferedReader.readLine();
-
-		if (error != null) {
-			errorBufferedReader.close();
-
-			_logger.trace(
-				"Finder plugin helper failed to start. Error: {}", error);
-
-			return false;
-		}
-
-		errorBufferedReader.close();
-
-		process.waitFor();
-
-		_logger.trace("Finder plugin helper successfully started");
-
-		return true;
+		return AppleUtil.unload();
 	}
 
 	protected class ReadThread extends Thread {

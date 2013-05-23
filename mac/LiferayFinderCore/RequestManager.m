@@ -18,9 +18,11 @@
 #import "JSONKit.h"
 #include "MenuManager.h"
 
+static RequestManager* sharedInstance = nil;
+
 @implementation RequestManager
 
-static double maxMenuItemsRequestWaitMilliSec = 100;
+static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (id)init
 {
@@ -46,13 +48,51 @@ static double maxMenuItemsRequestWaitMilliSec = 100;
 	return self;
 }
 
+- (void)dealloc
+{
+	[_listenSocket setDelegate:nil delegateQueue:NULL];
+	[_listenSocket disconnect];
+	[_listenSocket release];
+
+	[_callbackListenSocket setDelegate:nil delegateQueue:NULL];
+	[_callbackListenSocket disconnect];
+	[_callbackListenSocket release];
+
+	for (GCDAsyncSocket* socket in _connectedSockets)
+	{
+		[socket setDelegate:nil delegateQueue:NULL];
+		[socket disconnect];
+	}
+
+	[_connectedSockets release];
+
+	for (GCDAsyncSocket* socket in _callbackSockets)
+	{
+		[socket setDelegate:nil delegateQueue:NULL];
+		[socket disconnect];
+	}
+
+	[_callbackSockets release];
+	[_callbackMsgs release];
+
+	[_numberFormatter release];
+
+	[_filterFolder release];
+
+	sharedInstance = nil;
+
+	[super dealloc];
+}
+
 + (RequestManager*)sharedInstance
 {
-	static RequestManager* sharedInstance = nil;
-
-	static dispatch_once_t onceToken;
-
-	dispatch_once(&onceToken, ^{ sharedInstance = [[RequestManager alloc] init]; });
+	@synchronized(self)
+	{
+		if (sharedInstance == nil)
+		{
+			sharedInstance = [[self alloc] init];
+		}
+	}
 
 	return sharedInstance;
 }
