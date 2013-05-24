@@ -18,11 +18,14 @@
 
 @interface RequestManager : NSObject
 {
+	dispatch_queue_t _listenQueue;
+	dispatch_queue_t _callbackQueue;
+	
 	GCDAsyncSocket* _listenSocket;
-	GCDAsyncSocket* _callbackListenSocket;
+	GCDAsyncSocket* _callbackSocket;
 
-	NSMutableArray* _connectedSockets;
-	NSMutableArray* _callbackSockets;
+	NSMutableArray* _connectedListenSockets;
+	NSMutableArray* _connectedCallbackSockets;
 	NSMutableDictionary* _callbackMsgs;
 
 	NSNumberFormatter* _numberFormatter;

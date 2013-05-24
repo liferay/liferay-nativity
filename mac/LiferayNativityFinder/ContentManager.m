@@ -133,7 +133,8 @@ static ContentManager* sharedInstance = nil;
 		{
 			[_fileNamesCache removeObjectForKey:path];
 		}
-		else {
+		else
+		{
 			[_fileNamesCache setObject:iconId forKey:path];
 		}
 	}

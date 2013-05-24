@@ -28,11 +28,14 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	if ((self = [super init]))
 	{
-		_listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-		_callbackListenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+		_listenQueue = dispatch_queue_create("listen queue", nil);
+		_listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_listenQueue];
 
-		_connectedSockets = [[NSMutableArray alloc] init];
-		_callbackSockets = [[NSMutableArray alloc] init];
+		_callbackQueue = dispatch_queue_create("callback queue", nil);
+		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
+
+		_connectedListenSockets = [[NSMutableArray alloc] init];
+		_connectedCallbackSockets = [[NSMutableArray alloc] init];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
 
 		_filterFolder = nil;
@@ -54,25 +57,29 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[_listenSocket disconnect];
 	[_listenSocket release];
 
-	[_callbackListenSocket setDelegate:nil delegateQueue:NULL];
-	[_callbackListenSocket disconnect];
-	[_callbackListenSocket release];
+	dispatch_release(_listenQueue);
 
-	for (GCDAsyncSocket* socket in _connectedSockets)
+	[_callbackSocket setDelegate:nil delegateQueue:NULL];
+	[_callbackSocket disconnect];
+	[_callbackSocket release];
+
+	dispatch_release(_callbackQueue);
+
+	for (GCDAsyncSocket* socket in _connectedListenSockets)
 	{
 		[socket setDelegate:nil delegateQueue:NULL];
 		[socket disconnect];
 	}
 
-	[_connectedSockets release];
+	[_connectedListenSockets release];
 
-	for (GCDAsyncSocket* socket in _callbackSockets)
+	for (GCDAsyncSocket* socket in _connectedCallbackSockets)
 	{
 		[socket setDelegate:nil delegateQueue:NULL];
 		[socket disconnect];
 	}
 
-	[_callbackSockets release];
+	[_connectedCallbackSockets release];
 	[_callbackMsgs release];
 
 	[_numberFormatter release];
@@ -208,7 +215,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)menuItemClicked:(NSDictionary*)actionDictionary
 {
-	if ([_callbackSockets count] == 0)
+	if ([_connectedCallbackSockets count] == 0)
 	{
 		return;
 	}
@@ -225,7 +232,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
-	for (GCDAsyncSocket* callbackSocket in _callbackSockets)
+	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
 	{
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
@@ -233,7 +240,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (NSArray*)menuItemsForFiles:(NSArray*)files
 {
-	if ([_callbackSockets count] == 0)
+	if ([_connectedCallbackSockets count] == 0)
 	{
 		return nil;
 	}
@@ -258,7 +265,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
-	for (GCDAsyncSocket* callbackSocket in _callbackSockets)
+	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
 	{
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
@@ -267,13 +274,13 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	[_callbackMsgs removeAllObjects];
 
-	NSDate *startDate = [NSDate date];
+	NSDate* startDate = [NSDate date];
 
-	while ([_callbackMsgs count] < [_callbackSockets count])
+	while ([_callbackMsgs count] < [_connectedCallbackSockets count])
 	{
 		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
 
-		if ([_callbackSockets count] == 0)
+		if ([_connectedCallbackSockets count] == 0)
 		{
 			return nil;
 		}
@@ -304,11 +311,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	if (socket == _listenSocket)
 	{
-		[_connectedSockets addObject:newSocket];
+		[_connectedListenSockets addObject:newSocket];
 	}
-	if (socket == _callbackListenSocket)
+	if (socket == _callbackSocket)
 	{
-		[_callbackSockets addObject:newSocket];
+		[_connectedCallbackSockets addObject:newSocket];
 	}
 
 	[newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
@@ -321,14 +328,14 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)socket:(GCDAsyncSocket*)socket didReadData:(NSData*)data withTag:(long)tag
 {
-	if ([_connectedSockets containsObject:socket])
+	if ([_connectedListenSockets containsObject:socket])
 	{
 		[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:socket];
 
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 	}
 
-	if ([_callbackSockets containsObject:socket])
+	if ([_connectedCallbackSockets containsObject:socket])
 	{
 		NSData* strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
 		NSString* callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
@@ -348,16 +355,16 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)err
 {
-	if ([_connectedSockets containsObject:socket])
+	if ([_connectedListenSockets containsObject:socket])
 	{
-		[_connectedSockets removeObject:socket];
+		[_connectedListenSockets removeObject:socket];
 
 		[[ContentManager sharedInstance] enableOverlays:false];
 	}
 
-	if ([_callbackSockets containsObject:socket])
+	if ([_connectedCallbackSockets containsObject:socket])
 	{
-		[_callbackSockets removeObject:socket];
+		[_connectedCallbackSockets removeObject:socket];
 	}
 }
 
@@ -379,7 +386,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 			return;
 		}
 
-		if (![_callbackListenSocket acceptOnPort:33002 error:&error])
+		if (![_callbackSocket acceptOnPort:33002 error:&error])
 		{
 			return;
 		}
