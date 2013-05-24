@@ -39,10 +39,6 @@ import org.slf4j.LoggerFactory;
 public class AppleNativityControlImpl extends NativityControl {
 
 	public boolean connect() {
-		if ((_serviceSocket != null) && _serviceSocket.isConnected()) {
-			return true;
-		}
-
 		try {
 			_serviceSocket = new Socket("127.0.0.1", _serviceSocketPort);
 
@@ -91,7 +87,7 @@ public class AppleNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean load() throws Exception {
-		_logger.trace("Installing Liferay Nativity");
+		_logger.trace("Loading Liferay Nativity");
 
 		return AppleUtil.load();
 	}
@@ -145,7 +141,7 @@ public class AppleNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean unload() throws Exception {
-		_logger.trace("Uninstalling Liferay Nativity");
+		_logger.trace("Unloading Liferay Nativity");
 
 		return AppleUtil.unload();
 	}

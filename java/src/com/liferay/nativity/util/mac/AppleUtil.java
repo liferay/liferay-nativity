@@ -70,6 +70,8 @@ public class AppleUtil {
 			String script = AppleScriptUtil.getScript("load.applescript");
 
 			AppleScriptUtil.executeScript(script);
+
+			return true;
 		}
 		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
@@ -115,6 +117,8 @@ public class AppleUtil {
 			String script = AppleScriptUtil.getScript("unload.applescript");
 
 			AppleScriptUtil.executeScript(script);
+
+			return true;
 		}
 		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
