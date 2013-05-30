@@ -36,7 +36,7 @@
 			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
 		</jar>
 	</target>
-	
+
 	<target name="build-windows-util" depends="compile">
         <if>
             <not>
@@ -48,7 +48,7 @@
                 </fail>
             </then>
         </if>
-        
+
 		<mkdir dir="${project.dir}/dist/" />
 
         <exec
@@ -72,7 +72,7 @@
         />
 
     </target>
-    
+
 	<target name="build-windows-menus" depends="compile">
         <if>
             <not>
@@ -84,9 +84,9 @@
                 </fail>
             </then>
         </if>
-        
+
 		<mkdir dir="${project.dir}/dist/" />
-		
+
 	    <copy
 	        file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuContants.h.original"
 	        toFile="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuContants.h"
@@ -94,7 +94,7 @@
 	        force="true"
 	        failonerror="true"
 	    />
-	        
+
 	    <replace file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuContants.h">
 	    	<replacefilter token="[$context.menu.guid$]" value="${context.menu.guid}" />
 	   </replace>
@@ -120,7 +120,7 @@
         />
 
     </target>
-	
+
 	<target name="build-windows-overlays" depends="compile">
         <if>
             <not>
@@ -132,9 +132,9 @@
                 </fail>
             </then>
         </if>
-        
+
 		<mkdir dir="${project.dir}/dist/" />
-		
+
 	    <copy
 		    file="${overlay.path}"
 	        toFile="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/overlay.ico"
@@ -150,13 +150,13 @@
 		    force="true"
 		    failonerror="true"
 		/>
-		
+
 	    <replace file="${nativity.dir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h">
 	        <replacefilter token="[$overlay.guid$]" value="${overlay.guid}" />
 	        <replacefilter token="[$overlay.id$]" value="${overlay.id}" />
 	    	<replacefilter token="[$overlay.name$]" value="${overlay.name}" />
 	    </replace>
-		
+
         <exec
             executable="${nativity.dir}/build-windows.cmd"
             failonerror="true"
@@ -176,9 +176,9 @@
             file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityOverlays_x86.dll"
             toFile="${project.dir}/dist/${overlay.name}_x86.dll"
         />
-        
+
     </target>
-    
+
     <target name="build-windows-service" depends="compile">
         <if>
             <not>
@@ -190,7 +190,7 @@
                 </fail>
             </then>
         </if>
-        
+
     	<mkdir dir="${project.dir}/dist/" />
 
         <exec
@@ -252,7 +252,7 @@
 
 	<target name="format-source">
 		<java
-			classname="com.liferay.portal.tools.SourceFormatter"
+			classname="com.liferay.portal.tools.sourceformatter.SourceFormatter"
 			classpathref="portal.classpath"
 			dir="${java.dir}"
 			fork="true"
