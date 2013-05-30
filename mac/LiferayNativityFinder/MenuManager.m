@@ -37,9 +37,43 @@ static MenuManager* sharedInstance = nil;
 	return [super init];
 }
 
-- (void)addItemsToMenu:(TContextMenu*)menu forPaths:(NSArray*)selectedItems
+- (void)addChildrenSubMenuItems:(NSMenuItem*)parentMenuItem withChildren:(NSArray*)menuItemsDictionaries forFiles:(NSArray*)files
 {
-	NSArray* menuItemsArray = [[RequestManager sharedInstance] menuItemsForFiles:selectedItems];
+	NSMenu* menu = [[NSMenu alloc] init];
+
+	for (int i = 0; i < [menuItemsDictionaries count]; ++i)
+	{
+		NSDictionary* menuItemDictionary = [menuItemsDictionaries objectAtIndex:i];
+
+		NSString* submenuTitle = [menuItemDictionary objectForKey:@"title"];
+		BOOL enabled = [[menuItemDictionary objectForKey:@"enabled"] boolValue];
+		NSString* uuid = [menuItemDictionary objectForKey:@"uuid"];
+		NSArray* childrenSubMenuItems = (NSArray*)[menuItemDictionary objectForKey:@"contextMenuItems"];
+
+		if ([submenuTitle isEqualToString:@"_SEPARATOR_"])
+		{
+			[menu addItem:[NSMenuItem separatorItem]];
+		}
+		else if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
+		{
+			NSMenuItem* submenuItem = [menu addItemWithTitle:submenuTitle action:nil keyEquivalent:@""];
+
+			[self addChildrenSubMenuItems:submenuItem withChildren:childrenSubMenuItems forFiles:files];
+		}
+		else
+		{
+			[self createActionMenuItemIn:menu withTitle:submenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
+		}
+	}
+
+	[parentMenuItem setSubmenu:menu];
+
+	[menu release];
+}
+
+- (void)addItemsToMenu:(TContextMenu*)menu forFiles:(NSArray*)files
+{
+	NSArray* menuItemsArray = [[RequestManager sharedInstance] menuItemsForFiles:files];
 
 	if (menuItemsArray == nil)
 	{
@@ -73,32 +107,19 @@ static MenuManager* sharedInstance = nil;
 
 		menuIndex++;
 
+		BOOL enabled = [[menuItemDictionary objectForKey:@"enabled"] boolValue];
+		NSString* uuid = [menuItemDictionary objectForKey:@"uuid"];
 		NSArray* childrenSubMenuItems = (NSArray*)[menuItemDictionary objectForKey:@"contextMenuItems"];
 
 		if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
 		{
 			NSMenuItem* mainMenuItem = [menu insertItemWithTitle:mainMenuTitle action:nil keyEquivalent:@"" atIndex:menuIndex];
 
-			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forPaths:selectedItems];
+			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else
 		{
-			NSMenuItem* mainMenuItem = [menu insertItemWithTitle:mainMenuTitle action:@selector(menuItemClicked:) keyEquivalent:@"" atIndex:menuIndex];
-
-			if ([[menuItemDictionary objectForKey:@"enabled"] boolValue])
-			{
-				[mainMenuItem setTarget:self];
-			}
-
-			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
-			[menuActionDictionary setValue:[menuItemDictionary objectForKey:@"uuid"] forKey:@"uuid"];
-			NSMutableArray* filesArray = [selectedItems copy];
-			[menuActionDictionary setValue:filesArray forKey:@"files"];
-
-			[mainMenuItem setRepresentedObject:menuActionDictionary];
-
-			[filesArray release];
-			[menuActionDictionary release];
+			[self createActionMenuItemIn:menu withTitle:mainMenuTitle withIndex:menuIndex enabled:enabled withUuid:uuid forFiles:files];
 		}
 	}
 
@@ -110,52 +131,24 @@ static MenuManager* sharedInstance = nil;
 	}
 }
 
-- (void)addChildrenSubMenuItems:(NSMenuItem*)parentMenuItem withChildren:(NSArray*)childrenMenuItemsDictionary forPaths:(NSArray*)selectedItems
+- (void)createActionMenuItemIn:(NSMenu*)menu withTitle:(NSString*)title withIndex:(NSInteger*)index enabled:(BOOL)enabled withUuid:(NSString*)uuid forFiles:(NSArray*)files
 {
-	NSMenu* submenu = [[NSMenu alloc] init];
+	NSMenuItem* mainMenuItem = [menu insertItemWithTitle:title action:@selector(menuItemClicked:) keyEquivalent:@"" atIndex:index];
 
-	for (int i = 0; i < [childrenMenuItemsDictionary count]; ++i)
+	if (enabled)
 	{
-		NSDictionary* submenuDictionary = [childrenMenuItemsDictionary objectAtIndex:i];
-
-		NSString* submenuTitle = [submenuDictionary objectForKey:@"title"];
-
-		NSArray* childrenSubMenuItems = (NSArray*)[submenuDictionary objectForKey:@"contextMenuItems"];
-
-		if ([submenuTitle isEqualToString:@"_SEPARATOR_"])
-		{
-			[submenu addItem:[NSMenuItem separatorItem]];
-		}
-		else if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
-		{
-			NSMenuItem* submenuItem = [submenu addItemWithTitle:submenuTitle action:nil keyEquivalent:@""];
-
-			[self addChildrenSubMenuItems:submenuItem withChildren:childrenSubMenuItems forPaths:selectedItems];
-		}
-		else
-		{
-			NSMenuItem* submenuItem = [submenu addItemWithTitle:submenuTitle action:@selector(menuItemClicked:) keyEquivalent:@""];
-
-			if ([[submenuDictionary objectForKey:@"enabled"] boolValue])
-			{
-				[submenuItem setTarget:self];
-			}
-
-			NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
-			[menuActionDictionary setValue:[submenuDictionary objectForKey:@"uuid"] forKey:@"uuid"];
-			NSMutableArray* filesArray = [selectedItems copy];
-			[menuActionDictionary setValue:filesArray forKey:@"files"];
-
-			[submenuItem setRepresentedObject:menuActionDictionary];
-
-			[filesArray release];
-			[menuActionDictionary release];
-		}
+		[mainMenuItem setTarget:self];
 	}
 
-	[parentMenuItem setSubmenu:submenu];
+	NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
+	[menuActionDictionary setValue:uuid forKey:@"uuid"];
+	NSMutableArray* filesArray = [files copy];
+	[menuActionDictionary setValue:filesArray forKey:@"files"];
 
-	[submenu release];
+	[mainMenuItem setRepresentedObject:menuActionDictionary];
+
+	[filesArray release];
+	[menuActionDictionary release];
 }
 
 - (void)menuItemClicked:(id)param

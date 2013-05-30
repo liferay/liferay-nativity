@@ -129,7 +129,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 	else if ([command isEqualToString:@"enableFileIcons"])
 	{
-		[self execEnableOverlaysCmd:value replyTo:sock];
+		[self execEnableFileIconsCmd:value replyTo:sock];
 	}
 	else if ([command isEqualToString:@"registerIcon"])
 	{
@@ -149,11 +149,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 }
 
-- (void)execEnableOverlaysCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+- (void)execEnableFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	NSNumber* enabled = (NSNumber*)cmdData;
 
-	[[ContentManager sharedInstance] enableOverlays:enabled];
+	[[ContentManager sharedInstance] enableFileIcons:enabled];
 
 	[self replyString:@"1" toSocket:sock];
 }
@@ -359,7 +359,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	{
 		[_connectedListenSockets removeObject:socket];
 
-		[[ContentManager sharedInstance] enableOverlays:false];
+		[[ContentManager sharedInstance] enableFileIcons:false];
 	}
 
 	if ([_connectedCallbackSockets containsObject:socket])

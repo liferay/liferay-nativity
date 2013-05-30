@@ -28,7 +28,7 @@ static ContentManager* sharedInstance = nil;
 	if (self)
 	{
 		_fileNamesCache = [[NSMutableDictionary alloc] init];
-		_overlaysEnabled = FALSE;
+		_fileIconsEnabled = FALSE;
 	}
 
 	return self;
@@ -56,16 +56,16 @@ static ContentManager* sharedInstance = nil;
 	return sharedInstance;
 }
 
-- (void)enableOverlays:(BOOL)enable
+- (void)enableFileIcons:(BOOL)enable
 {
-	_overlaysEnabled = enable;
+	_fileIconsEnabled = enable;
 
 	[self repaintAllWindows];
 }
 
 - (NSNumber*)iconByPath:(NSString*)path
 {
-	if (!_overlaysEnabled)
+	if (!_fileIconsEnabled)
 	{
 		return nil;
 	}

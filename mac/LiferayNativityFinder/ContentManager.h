@@ -17,12 +17,12 @@
 @interface ContentManager : NSObject
 {
 	NSMutableDictionary* _fileNamesCache;
-	BOOL _overlaysEnabled;
+	BOOL _fileIconsEnabled;
 }
 
 + (ContentManager*)sharedInstance;
 
-- (void)enableOverlays:(BOOL)enable;
+- (void)enableFileIcons:(BOOL)enable;
 - (NSNumber*)iconByPath:(NSString*)path;
 - (void)removeAllIcons;
 - (void)removeIcons:(NSArray*)paths;
