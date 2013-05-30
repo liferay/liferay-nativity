@@ -62,11 +62,15 @@ public class AppleNativityControlImpl extends NativityControl {
 
 			_callbackThread.start();
 
+			_connected = true;
+
 			return true;
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage());
 		}
+
+		_connected = false;
 
 		return false;
 	}
@@ -76,11 +80,15 @@ public class AppleNativityControlImpl extends NativityControl {
 			_serviceSocket.close();
 			_callbackSocket.close();
 
+			_connected = false;
+
 			return true;
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 		}
+
+		_connected = true;
 
 		return false;
 	}
@@ -99,6 +107,12 @@ public class AppleNativityControlImpl extends NativityControl {
 
 	@Override
 	public String sendMessage(NativityMessage message) {
+		if (!_connected) {
+			_logger.debug("LiferayNativity is not connected");
+
+			return "";
+		}
+
 		try {
 			_objectMapper.writeValue(_serviceOutputStream, message);
 
@@ -162,6 +176,12 @@ public class AppleNativityControlImpl extends NativityControl {
 	}
 
 	private void _doCallbackLoop() {
+		if (!_connected) {
+			_logger.debug("LiferayNativity is not connected");
+
+			return;
+		}
+
 		while (_callbackSocket.isConnected()) {
 			try {
 				String data = _callbackBufferedReader.readLine();
@@ -215,6 +235,7 @@ public class AppleNativityControlImpl extends NativityControl {
 	private DataOutputStream _callbackOutputStream;
 	private Socket _callbackSocket;
 	private ReadThread _callbackThread;
+	private boolean _connected = false;
 	private BufferedReader _serviceBufferedReader;
 	private DataOutputStream _serviceOutputStream;
 	private Socket _serviceSocket;
