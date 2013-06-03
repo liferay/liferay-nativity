@@ -41,6 +41,8 @@ public class Constants {
 
 	public static final String REGISTER_ICON = "registerIcon";
 
+	public static final String REMOVE_ALL_FILE_ICONS = "removeAllFileIcons";
+
 	public static final String REMOVE_FILE_ICONS = "removeFileIcons";
 
 	public static final String SET_FILE_ICONS = "setFileIcons";

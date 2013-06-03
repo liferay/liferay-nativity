@@ -71,6 +71,10 @@ public class AppleFileIconControlImpl extends FileIconControlBase {
 
 	@Override
 	public void removeAllFileIcons() {
+		NativityMessage message = new NativityMessage(
+			Constants.REMOVE_ALL_FILE_ICONS, "");
+
+		nativityControl.sendMessage(message);
 	}
 
 	public void removeFileIcon(String path) {
