@@ -34,7 +34,7 @@ The following operating systems are currently supported:
 
 Currently the client code is only available for Java. The following clients are currently supported. Contributions for other clients like Ruby, C++, etc are welcome.
 
-<img width="500" src="https://raw.github.com/liferay/liferay-nativity/readme/extra/screenshot-mac.png">
+<img width="500" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-mac.png">
 
 # Native Plugins
 
