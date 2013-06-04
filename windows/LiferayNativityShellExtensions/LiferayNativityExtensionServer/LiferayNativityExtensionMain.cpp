@@ -21,12 +21,7 @@ using namespace std;
 
 int wmain(int argc, wchar_t *argv[]) 
     { 
-		if(argc <= 1)
-		{
-			LiferayNativityExtensionService service(SERVICE_NAME); 
-			service.Test();
-		}
-        else if (argc == 2) 
+		if ((argc > 1) && ((*argv[1] == L'-' || (*argv[1] == L'/')))) 
         { 
             if (_wcsicmp(L"install", argv[1] + 1) == 0) 
             { 
@@ -50,8 +45,13 @@ int wmain(int argc, wchar_t *argv[])
             cout<<" -install \t to install Nativity Service"<<endl; 
             cout<<" -remove \t to remove Nativity Service"<<endl; 
 			cout<<" none \t to run Nativity Service"<<endl;
+
+			LiferayNativityExtensionService service(SERVICE_NAME); 
+            if (!CServiceBase::Run(service)) 
+            { 
+                wprintf(L"Service failed to run w/err 0x%08lx\n", GetLastError()); 
+            } 
         } 
- 
- 
+  
         return 0; 
     } 
