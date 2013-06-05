@@ -45,11 +45,17 @@ extern "C" void commandExecuted(NautilusMenuItem* item, gpointer user_data)
 	{
 		NautilusFileInfo* file = (NautilusFileInfo*)scan->data;
 
-		char* uri;
-
-		uri = nautilus_file_info_get_uri(file);
-		std::string filePath(g_filename_from_uri(uri, NULL, NULL));
+		char* uri = nautilus_file_info_get_uri(file);
+		gchar* filename = g_filename_from_uri(uri, NULL, NULL);
 		g_free(uri);
+
+		if (filename == NULL)
+		{
+			continue;
+		}
+
+		std::string filePath(filename);
+		g_free(filename);
 
 		try
 		{
@@ -153,11 +159,17 @@ extern "C" GList * nautilus_liferay_get_file_items(NautilusMenuProvider* provide
 	{
 		NautilusFileInfo* file = (NautilusFileInfo*)scan->data;
 
-		char* uri;
-
-		uri = nautilus_file_info_get_uri(file);
-		std::string filePath(g_filename_from_uri(uri, NULL, NULL));
+		char* uri = nautilus_file_info_get_uri(file);
+		gchar* filename = g_filename_from_uri(uri, NULL, NULL);
 		g_free(uri);
+
+		if (filename == NULL)
+		{
+			continue;
+		}
+
+		std::string filePath(filename);
+		g_free(filename);
 
 		try
 		{
@@ -243,11 +255,16 @@ extern "C" GList * nautilus_liferay_get_file_items(NautilusMenuProvider* provide
 
 extern "C" NautilusOperationResult nautilus_liferay_extension_update_file_info(NautilusInfoProvider* provider, NautilusFileInfo* file, GClosure* update_complete, NautilusOperationHandle** handle)
 {
-	char* uri;
+	char* uri = nautilus_file_info_get_uri(file);
 
-	uri = nautilus_file_info_get_uri(file);
+	gchar* filename = g_filename_from_uri(uri, NULL, NULL);
 
-	nautilus_file_info_add_emblem(file, ContentManager::instance().getFileIconName(g_filename_from_uri(uri, NULL, NULL)).c_str());
+	if (filename != NULL)
+	{
+		nautilus_file_info_add_emblem(file, ContentManager::instance().getFileIconName(filename).c_str());
+
+		g_free(filename);
+	}
 
 	return NAUTILUS_OPERATION_COMPLETE;
 }
