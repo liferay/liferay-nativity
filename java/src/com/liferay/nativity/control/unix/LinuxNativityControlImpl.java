@@ -11,9 +11,27 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
 
-#define GETTEXT_PACKAGE "liferay-plugin"
+package com.liferay.nativity.control.unix;
 
-#endif
+/**
+ * @author Dennis Ju
+ */
+public class LinuxNativityControlImpl extends UnixNativityControlBaseImpl {
+
+	@Override
+	public boolean load() throws Exception {
+		return true;
+	}
+
+	@Override
+	public boolean loaded() {
+		return true;
+	}
+
+	@Override
+	public boolean unload() throws Exception {
+		return true;
+	}
+
+}

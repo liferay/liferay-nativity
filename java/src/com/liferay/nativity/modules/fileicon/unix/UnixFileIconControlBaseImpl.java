@@ -12,65 +12,34 @@
  * details.
  */
 
-package com.liferay.nativity.modules.fileicon.win;
+package com.liferay.nativity.modules.fileicon.unix;
 
 import com.liferay.nativity.Constants;
-import com.liferay.nativity.control.MessageListener;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
-* @author Dennis Ju
-*/
-public class WindowsFileIconControlImpl extends FileIconControlBase {
+ * @author Dennis Ju
+ */
+public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 
-	public WindowsFileIconControlImpl(
+	public UnixFileIconControlBaseImpl(
 		NativityControl nativityControl,
 		FileIconControlCallback fileIconControlCallback) {
 
 		super(nativityControl, fileIconControlCallback);
-
-		MessageListener messageListener = new MessageListener(
-				Constants.GET_FILE_ICON_ID) {
-
-			@Override
-			public NativityMessage onMessage(NativityMessage message) {
-				_logger.debug(message.getValue().toString());
-
-				String filePath = null;
-
-				if (message.getValue() instanceof List<?>) {
-					List<?> args = (List<?>)message.getValue();
-
-					if (args.size() > 0) {
-						filePath = args.get(0).toString();
-					}
-				}
-				else {
-					filePath = message.getValue().toString();
-				}
-
-				int icon = getIconForFile(filePath);
-
-				return new NativityMessage(Constants.GET_FILE_ICON_ID, icon);
-			}
-		};
-
-		nativityControl.registerMessageListener(messageListener);
 	}
 
 	@Override
 	public void disableFileIcons() {
 		NativityMessage message = new NativityMessage(
-		Constants.ENABLE_FILE_ICONS, String.valueOf(false));
+			Constants.ENABLE_FILE_ICONS, Boolean.FALSE);
 
 		nativityControl.sendMessage(message);
 	}
@@ -78,58 +47,92 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	@Override
 	public void enableFileIcons() {
 		NativityMessage message = new NativityMessage(
-		Constants.ENABLE_FILE_ICONS, String.valueOf(true));
+			Constants.ENABLE_FILE_ICONS, Boolean.TRUE);
 
 		nativityControl.sendMessage(message);
 	}
 
 	@Override
 	public int registerIcon(String path) {
-		return 0;
+		NativityMessage message = new NativityMessage(
+			Constants.REGISTER_ICON, path);
+
+		String reply = nativityControl.sendMessage(message);
+
+		if ((reply == null) || reply.isEmpty()) {
+			return -1;
+		}
+
+		return Integer.parseInt(reply);
 	}
 
 	@Override
 	public void removeAllFileIcons() {
 	}
 
-	@Override
 	public void removeFileIcon(String path) {
 		NativityMessage message = new NativityMessage(
-			Constants.CLEAR_FILE_ICON, path);
+			Constants.REMOVE_FILE_ICONS, new String[] { path });
 
 		nativityControl.sendMessage(message);
 	}
 
-	@Override
 	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
-			Constants.CLEAR_FILE_ICON, paths);
+			Constants.REMOVE_FILE_ICONS, paths);
 
 		nativityControl.sendMessage(message);
 	}
 
-	@Override
 	public void setFileIcon(String path, int iconId) {
+		Map<String, Integer> map = new HashMap<String, Integer>(1);
+
+		map.put(path, iconId);
+
 		NativityMessage message = new NativityMessage(
-			Constants.UPDATE_FILE_ICON, path);
+			Constants.SET_FILE_ICONS, map);
 
 		nativityControl.sendMessage(message);
 	}
 
-	@Override
 	public void setFileIcons(Map<String, Integer> fileIconsMap) {
-		NativityMessage message = new NativityMessage(
-			Constants.UPDATE_FILE_ICON, fileIconsMap.keySet());
+		Map<String, Integer> map = new HashMap<String, Integer>(
+			_messageBufferSize);
 
-		nativityControl.sendMessage(message);
+		int i = 0;
+
+		for (Entry<String, Integer> entry : fileIconsMap.entrySet()) {
+			map.put(entry.getKey(), entry.getValue());
+
+			i++;
+
+			if (i == _messageBufferSize) {
+				NativityMessage message = new NativityMessage(
+					Constants.SET_FILE_ICONS, map);
+
+				nativityControl.sendMessage(message);
+
+				map.clear();
+				i = 0;
+			}
+		}
+
+		if (i > 0) {
+			NativityMessage message = new NativityMessage(
+				Constants.SET_FILE_ICONS, map);
+
+			nativityControl.sendMessage(message);
+		}
 	}
 
 	@Override
 	public void unregisterIcon(int id) {
-		return;
+		NativityMessage message = new NativityMessage(
+			Constants.UNREGISTER_ICON, id);
+
+		nativityControl.sendMessage(message);
 	}
 
-	private static Logger _logger = LoggerFactory.getLogger(
-		WindowsFileIconControlImpl.class.getName());
+	private static int _messageBufferSize = 500;
 
 }

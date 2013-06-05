@@ -65,7 +65,6 @@ public abstract class WindowsSocketBase implements Runnable {
 
 		if (_serverSocket == null) {
 			try {
-
 				_logger.debug("New server socket");
 
 				_serverSocket = new ServerSocket(_port);

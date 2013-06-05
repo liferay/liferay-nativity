@@ -126,7 +126,6 @@ void SocketServer::doReadLoop()
 
 bool SocketServer::isConnected()
 {
-	writeLog("isConnected %d\n", clientSocket_);
 	return clientSocket_ != 0;
 }
 

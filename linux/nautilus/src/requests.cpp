@@ -37,12 +37,8 @@ RequestManager& RequestManager::instance()
 
 std::string RequestManager::queryMenuItems(const std::string& request)
 {
-	writeLog("Request menu items: %s\n", request.c_str());
-
 	if (!callbackSocket_.isConnected())
 	{
-		writeLog("Client is not connected\n");
-
 		return std::string();
 	}
 
@@ -94,9 +90,9 @@ void RequestManager::onStringReceived(int serverId, const std::string& text)
 		{
 			execRemoveAllFileIconsCmd(jsonValue);
 		}
-		else if (command == "enableOverlays")
+		else if (command == "enableFileIcons")
 		{
-			execEnableOverlaysCmd(jsonValue);
+			execEnableFileIconsCmd(jsonValue);
 		}
 		else if (command == "registerIcon")
 		{
@@ -106,13 +102,13 @@ void RequestManager::onStringReceived(int serverId, const std::string& text)
 		{
 			execUnregisterIconCmd(jsonValue);
 		}
-		else if (command == "setMenuTitle")
-		{
-			execSetMenuTitleCmd(jsonValue);
-		}
-		else if (command == "setRootFolder")
+		else if (command == "setFilterPath")
 		{
 			execSetRootFolderCmd(jsonValue);
+		}
+		else
+		{
+			commandSocket_.writeString("-1");
 		}
 	}
 }
@@ -149,9 +145,9 @@ void RequestManager::execRemoveAllFileIconsCmd(const Json::Value& jsonValue)
 	commandSocket_.writeString("1");
 }
 
-void RequestManager::execEnableOverlaysCmd(const Json::Value& jsonValue)
+void RequestManager::execEnableFileIconsCmd(const Json::Value& jsonValue)
 {
-	ContentManager::instance().enableOverlays(jsonValue.asBool());
+	ContentManager::instance().enableFileIcons(jsonValue.asBool());
 
 	commandSocket_.writeString("1");
 }
@@ -166,13 +162,6 @@ void RequestManager::execRegisterIconCmd(const Json::Value& jsonValue)
 void RequestManager::execUnregisterIconCmd(const Json::Value& jsonValue)
 {
 	ContentManager::instance().unregisterIcon(jsonValue.asInt());
-
-	commandSocket_.writeString("1");
-}
-
-void RequestManager::execSetMenuTitleCmd(const Json::Value& jsonValue)
-{
-	ContentManager::instance().setMenuTitle(jsonValue.asString());
 
 	commandSocket_.writeString("1");
 }

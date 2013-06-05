@@ -15,7 +15,8 @@
 package com.liferay.nativity.modules.fileicon;
 
 import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.modules.fileicon.mac.AppleFileIconControlImpl;
+import com.liferay.nativity.modules.fileicon.unix.AppleFileIconControlImpl;
+import com.liferay.nativity.modules.fileicon.unix.LinuxFileIconControlImpl;
 import com.liferay.nativity.modules.fileicon.win.WindowsFileIconControlImpl;
 import com.liferay.nativity.util.OSDetector;
 
@@ -50,7 +51,7 @@ public class FileIconControlUtil {
 	}
 
 	protected FileIconControl createLinuxFileIconControl() {
-		return new AppleFileIconControlImpl(
+		return new LinuxFileIconControlImpl(
 			_nativityControl, _fileIconControlCallback);
 	}
 

@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
-project(liferayplugin)
+project(liferaynativity)
 
 find_package(GTK2 REQUIRED)
-
-#add_definitions(-DGETTEXT_PACKAGE="liferay-plugin")
 add_definitions(-DENABLE_LOG)
 
 include_directories(/usr/lib/i386-linux-gnu/glib-2.0/include)
@@ -17,8 +15,6 @@ include_directories(/usr/include/atk-1.0)
 
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
 
-find_library(JSONCPP_LIBRARY NAMES libjson_linux-gcc-4.6_libmt.so libjsoncpp.so PATHS /usr/lib /usr/local/lib)
+add_library(liferaynativity SHARED plugin.cpp handlers.cpp logger.cpp socket.cpp requests.cpp content.cpp sync.cpp)
 
-add_library(liferayplugin SHARED plugin.cpp handlers.cpp logger.cpp socket.cpp requests.cpp content.cpp sync.cpp)
-
-target_link_libraries(liferayplugin gobject-2.0 nautilus-extension glib-2.0 pthread ${GTK2_LIBRARIES} ${JSONCPP_LIBRARY})
+target_link_libraries(liferaynativity gobject-2.0 nautilus-extension glib-2.0 pthread ${GTK2_LIBRARIES} ${CMAKE_SOURCE_DIR}/../lib/libjson_linux-gcc-4.7_libmt.a)

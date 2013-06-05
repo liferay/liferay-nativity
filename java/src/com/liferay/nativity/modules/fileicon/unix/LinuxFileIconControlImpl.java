@@ -11,9 +11,22 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
 
-#define GETTEXT_PACKAGE "liferay-plugin"
+package com.liferay.nativity.modules.fileicon.unix;
 
-#endif
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
+
+/**
+ * @author Dennis Ju
+ */
+public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
+
+	public LinuxFileIconControlImpl(
+		NativityControl nativityControl,
+		FileIconControlCallback fileIconControlCallback) {
+
+		super(nativityControl, fileIconControlCallback);
+	}
+
+}

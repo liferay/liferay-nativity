@@ -12,42 +12,26 @@
  * details.
  */
 
-package com.liferay.nativity.modules.contextmenu;
+package com.liferay.nativity.modules.contextmenu.unix;
 
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Dennis Ju
  */
-public abstract class ContextMenuControl implements ContextMenuControlCallback {
+public class LinuxContextMenuControlImpl
+	extends UnixContextMenuControlBaseImpl {
 
-	public ContextMenuControl(
+	public LinuxContextMenuControlImpl(
 		NativityControl nativityControl,
 		ContextMenuControlCallback contextMenuControlCallback) {
 
-		this.nativityControl = nativityControl;
-		this.contextMenuControlCallback = contextMenuControlCallback;
-
-		contextMenuItems = new ArrayList<ContextMenuItem>();
-	}
-
-	public void fireContextMenuAction(String uuid, String[] paths) {
-		for (ContextMenuItem contextMenuItem : contextMenuItems) {
-			if (contextMenuItem.getUuid().equals(uuid)) {
-				_logger.debug("Firing action uuid: {}, for: {}", uuid, paths);
-
-				contextMenuItem.fireContextMenuAction(paths);
-
-				break;
-			}
-		}
+		super(nativityControl, contextMenuControlCallback);
 	}
 
 	@Override
@@ -55,7 +39,11 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 		List<ContextMenuItem> newContextMenuItems =
 			contextMenuControlCallback.getContextMenuItems(paths);
 
-		contextMenuItems.clear();
+		if (!Arrays.equals(paths, _currentPaths)) {
+			contextMenuItems.clear();
+
+			_currentPaths = paths;
+		}
 
 		if (newContextMenuItems == null) {
 			return null;
@@ -68,11 +56,6 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 		return newContextMenuItems;
 	}
 
-	protected ContextMenuControlCallback contextMenuControlCallback;
-	protected List<ContextMenuItem> contextMenuItems;
-	protected NativityControl nativityControl;
-
-	private static Logger _logger = LoggerFactory.getLogger(
-		ContextMenuControl.class.getName());
+	private String[] _currentPaths;
 
 }

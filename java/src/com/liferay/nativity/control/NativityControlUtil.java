@@ -14,7 +14,8 @@
 
 package com.liferay.nativity.control;
 
-import com.liferay.nativity.control.mac.AppleNativityControlImpl;
+import com.liferay.nativity.control.unix.AppleNativityControlImpl;
+import com.liferay.nativity.control.unix.LinuxNativityControlImpl;
 import com.liferay.nativity.control.win.WindowsNativityControlImpl;
 import com.liferay.nativity.util.OSDetector;
 
@@ -41,7 +42,7 @@ public class NativityControlUtil {
 				_nativityControl = new WindowsNativityControlImpl();
 			}
 			else if (OSDetector.isLinux()) {
-				_nativityControl = new AppleNativityControlImpl();
+				_nativityControl = new LinuxNativityControlImpl();
 			}
 			else {
 				_logger.error(

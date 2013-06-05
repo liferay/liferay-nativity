@@ -41,10 +41,9 @@ private:
 	void execSetFileIconsCmd(const Json::Value& jsonValue);
 	void execRemoveFileIconsCmd(const Json::Value& jsonValue);
 	void execRemoveAllFileIconsCmd(const Json::Value& jsonValue);
-	void execEnableOverlaysCmd(const Json::Value& jsonValue);
+	void execEnableFileIconsCmd(const Json::Value& jsonValue);
 	void execRegisterIconCmd(const Json::Value& jsonValue);
 	void execUnregisterIconCmd(const Json::Value& jsonValue);
-	void execSetMenuTitleCmd(const Json::Value& jsonValue);
 	void execSetRootFolderCmd(const Json::Value& jsonValue);
 };
 

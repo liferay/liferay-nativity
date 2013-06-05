@@ -42,11 +42,11 @@ public class OSDetector {
 
 	public static final double MAC_TIGER_10_4 = 10.4;
 
-	public static final double WIN_2000 = 5.0;
-
 	public static final double WIN_7 = 6.1;
 
 	public static final double WIN_8 = 6.2;
+
+	public static final double WIN_2000 = 5.0;
 
 	public static final double WIN_SERVER_2003 = 5.2;
 

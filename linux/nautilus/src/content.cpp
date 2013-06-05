@@ -25,8 +25,7 @@
 
 ContentManager::ContentManager() :
 	lastIconId_(0),
-	overlaysEnabled_(false),
-	menuTitle_("Liferay")
+	overlaysEnabled_(false)
 {
 }
 
@@ -95,7 +94,8 @@ void ContentManager::setFileIcon(const std::string& fileName, int icon)
 {
 	std::string rootFolder = ContentManager::instance().getRootFolder();
 
-	if (!rootFolder.empty() && !boost::starts_with(fileName, rootFolder)) {
+	if (!rootFolder.empty() && !boost::starts_with(fileName, rootFolder))
+	{
 		return;
 	}
 
@@ -125,7 +125,7 @@ void ContentManager::unregisterIcon(int iconId)
 	icons_.erase(iconId);
 }
 
-void ContentManager::enableOverlays(bool enable)
+void ContentManager::enableFileIcons(bool enable)
 {
 	overlaysEnabled_ = enable;
 }
@@ -133,16 +133,6 @@ void ContentManager::enableOverlays(bool enable)
 bool ContentManager::isOverlaysEnabled()
 {
 	return overlaysEnabled_;
-}
-
-void ContentManager::setMenuTitle(const std::string& title)
-{
-	menuTitle_ = title;
-}
-
-const std::string& ContentManager::getMenuTitle() const
-{
-	return menuTitle_;
 }
 
 void ContentManager::setRootFolder(const std::string& rootFolder)

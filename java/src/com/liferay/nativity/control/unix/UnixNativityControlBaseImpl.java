@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.nativity.control.mac;
+package com.liferay.nativity.control.unix;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,6 @@ import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.listeners.SocketCloseListener;
-import com.liferay.nativity.util.mac.AppleUtil;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -36,8 +35,9 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Dennis Ju
  */
-public class AppleNativityControlImpl extends NativityControl {
+public abstract class UnixNativityControlBaseImpl extends NativityControl {
 
+	@Override
 	public boolean connect() {
 		try {
 			_serviceSocket = new Socket("127.0.0.1", _serviceSocketPort);
@@ -94,18 +94,6 @@ public class AppleNativityControlImpl extends NativityControl {
 	}
 
 	@Override
-	public boolean load() throws Exception {
-		_logger.trace("Loading Liferay Nativity");
-
-		return AppleUtil.load();
-	}
-
-	@Override
-	public boolean loaded() {
-		return AppleUtil.loaded();
-	}
-
-	@Override
 	public String sendMessage(NativityMessage message) {
 		if (!_connected) {
 			_logger.debug("LiferayNativity is not connected");
@@ -153,16 +141,9 @@ public class AppleNativityControlImpl extends NativityControl {
 	public void setSystemFolder(String folder) {
 	}
 
-	@Override
-	public boolean unload() throws Exception {
-		_logger.trace("Unloading Liferay Nativity");
-
-		return AppleUtil.unload();
-	}
-
 	protected class ReadThread extends Thread {
 
-		public ReadThread(AppleNativityControlImpl pluginControl) {
+		public ReadThread(UnixNativityControlBaseImpl pluginControl) {
 			_pluginControl = pluginControl;
 		}
 
@@ -171,7 +152,7 @@ public class AppleNativityControlImpl extends NativityControl {
 			_pluginControl._doCallbackLoop();
 		}
 
-		private AppleNativityControlImpl _pluginControl;
+		private UnixNativityControlBaseImpl _pluginControl;
 
 	}
 

@@ -32,28 +32,111 @@ static GObjectClass* parent_class;
 
 extern "C" void commandExecuted(NautilusMenuItem* item, gpointer user_data)
 {
-	gchar* title;
-
-	g_object_get(G_OBJECT(item), "label", &title, NULL);
+	GList* files = g_list_first((GList*)g_object_get_data(G_OBJECT(item), "nativity::files"));
+	GList* scan;
 
 	Json::Value jsonRoot;
 
-	jsonRoot["command"] = "menuExec";
+	jsonRoot["command"] = "contextMenuAction";
 
+	Json::Value jsonFiles(Json::arrayValue);
+
+	for (scan = files; scan; scan = scan->next)
+	{
+		NautilusFileInfo* file = (NautilusFileInfo*)scan->data;
+
+		char* uri;
+
+		uri = nautilus_file_info_get_uri(file);
+		std::string filePath(g_filename_from_uri(uri, NULL, NULL));
+		g_free(uri);
+
+		try
+		{
+			jsonFiles.append(Json::Value(filePath));
+		}
+		catch (boost::bad_lexical_cast)
+		{
+			writeLog("boost::bad_lexical_cast\n");
+		}
+	}
+
+	gchar* title;
+	g_object_get(G_OBJECT(item), "label", &title, NULL);
 	std::string menuTitle(title);
-
 	g_free(title);
 
-	jsonRoot["value"] = menuTitle;
+	gchar* uuid = (gchar*)g_object_get_data(G_OBJECT(item), "nativity::uuid");
+	std::string menuUuid(uuid);
+
+	Json::Value jsonValue;
+
+	jsonValue["title"] = menuTitle;
+	jsonValue["uuid"] = menuUuid;
+	jsonValue["files"] = jsonFiles;
+
+	jsonRoot["value"] = jsonValue;
 
 	Json::FastWriter jsonWriter;
 
 	RequestManager::instance().menuExecuted(jsonWriter.write(jsonRoot));
 }
 
-extern "C" GList* nautilus_liferay_get_file_items(NautilusMenuProvider* provider, GtkWidget* window, GList* files)
+extern "C" void addMenuItems(NautilusMenuItem* parentMenuItem, Json::Value jsonMenuItems, GList* files, int depth)
 {
-	GList* items = NULL;
+	NautilusMenu* menu = nautilus_menu_new();
+
+	nautilus_menu_item_set_submenu(parentMenuItem, menu);
+
+	for (int i = 0; i < jsonMenuItems.size(); i++)
+	{
+		Json::Value jsonMenuItem = jsonMenuItems[i];
+
+		std::string uuid = jsonMenuItem.get("uuid", "").asCString();
+		std::string itemTitle = jsonMenuItem.get("title", "").asCString();
+
+		if (itemTitle == "_SEPARATOR_")
+		{
+			continue;
+		}
+
+		std::string identifier = "nativity" + boost::lexical_cast<std::string>(depth) + boost::lexical_cast<std::string>(i);
+		NautilusMenuItem* menuItem = nautilus_menu_item_new(identifier.c_str(), itemTitle.c_str(), _(""), "drive-harddisk");
+		nautilus_menu_append_item(menu, menuItem);
+
+		Json::Value jsonSubMenuItems = jsonMenuItem.get("contextMenuItems", Json::arrayValue);
+
+		if (jsonSubMenuItems.size() != 0)
+		{
+			addMenuItems(menuItem, jsonSubMenuItems, files, depth++);
+		}
+		else
+		{
+			if (jsonMenuItem.get("enabled", true).asBool())
+			{
+				std::string uuidString = jsonMenuItem.get("uuid", "").asString();
+				const gchar* uuid = uuidString.c_str();
+
+				g_signal_connect(menuItem, "activate", G_CALLBACK(commandExecuted), NULL);
+
+				g_object_set_data_full(G_OBJECT(menuItem), "nativity::files", nautilus_file_info_list_copy(files), (GDestroyNotify)nautilus_file_info_list_free);
+				g_object_set_data_full(G_OBJECT(menuItem), "nativity::uuid", g_strdup(uuid), g_free);
+			}
+			else
+			{
+				GValue sensitive = G_VALUE_INIT;
+				g_value_init(&sensitive, G_TYPE_BOOLEAN);
+				g_value_set_boolean(&sensitive, FALSE);
+
+				g_object_set_property(G_OBJECT(menuItem), "sensitive", &sensitive);
+			}
+		}
+	}
+}
+
+extern "C" GList * nautilus_liferay_get_file_items(NautilusMenuProvider* provider, GtkWidget* window, GList* files)
+{
+	GList* menuItems = NULL;
 	GList* scan;
 
 	if (files == NULL)
@@ -73,24 +156,25 @@ extern "C" GList* nautilus_liferay_get_file_items(NautilusMenuProvider* provider
 		char* uri;
 
 		uri = nautilus_file_info_get_uri(file);
-		std::string path(g_filename_from_uri(uri, NULL, NULL));
+		std::string filePath(g_filename_from_uri(uri, NULL, NULL));
 		g_free(uri);
 
 		try
 		{
-			if (!rootFolder.empty() && !boost::starts_with(path, rootFolder)) {
+			if (!rootFolder.empty() && !boost::starts_with(filePath, rootFolder))
+			{
 				return NULL;
 			}
 
-			jsonValue.append(Json::Value(path));
+			jsonValue.append(Json::Value(filePath));
 		}
-		catch(boost::bad_lexical_cast)
+		catch (boost::bad_lexical_cast)
 		{
-			writeLog("boost::bad_lexical_cast");
+			writeLog("boost::bad_lexical_cast\n");
 		}
 	}
 
-	jsonRoot["command"] = "menuQuery";
+	jsonRoot["command"] = "getContextMenuList";
 	jsonRoot["value"] = jsonValue;
 
 	Json::FastWriter jsonWriter;
@@ -107,61 +191,54 @@ extern "C" GList* nautilus_liferay_get_file_items(NautilusMenuProvider* provider
 
 	jsonReader.parse(answer, jsonAnswer);
 
-	Json::Value jsonMenuItems = jsonAnswer.get("value", "");
+	Json::Value jsonMenuItems = jsonAnswer.get("value", Json::arrayValue);
 
 	if (jsonMenuItems.empty())
 	{
 		return NULL;
 	}
 
-	writeLog("Items count: %d\n", jsonMenuItems.size());
-
-	NautilusMenuItem* item;
-	item = nautilus_menu_item_new("LiferayMenu", ContentManager::instance().getMenuTitle().c_str(), _(""), "drive-harddisk");
-
-	items = g_list_append(items, item);
-
-	NautilusMenu* menu = nautilus_menu_new();
-	nautilus_menu_item_set_submenu(item, menu);
-
 	for (int i = 0; i < jsonMenuItems.size(); i++)
 	{
-		std::string itemTitle(jsonMenuItems[i].asString());
+		Json::Value jsonMenuItem = jsonMenuItems[i];
 
-		if (itemTitle == "_SEPARATOR_")
+		std::string identifier = "nativity" + boost::lexical_cast<std::string>(i);
+		std::string itemTitle = jsonMenuItem.get("title", "").asCString();
+
+		NautilusMenuItem* menuItem = nautilus_menu_item_new(identifier.c_str(), itemTitle.c_str(), _(""), "drive-harddisk");
+
+		menuItems = g_list_append(menuItems, menuItem);
+
+		Json::Value jsonSubMenuItems = jsonMenuItem.get("contextMenuItems", Json::arrayValue);
+
+		if (jsonSubMenuItems.size() != 0)
 		{
-			continue;
-		}
-
-		bool enabled(true);
-
-		int pos = itemTitle.find(",");
-
-		if (pos != itemTitle.npos)
-		{
-			enabled = itemTitle.substr(pos + 1, itemTitle.npos) == "true";
-			itemTitle.erase(pos, itemTitle.npos);
-		}
-
-		NautilusMenuItem* childItem = nautilus_menu_item_new(itemTitle.c_str(), itemTitle.c_str(), _(""), "drive-harddisk");
-
-		if (!enabled)
-		{
-			GValue sensitive = G_VALUE_INIT;
-			g_value_init(&sensitive, G_TYPE_BOOLEAN);
-			g_value_set_boolean(&sensitive, FALSE);
-
-			g_object_set_property(G_OBJECT(childItem), "sensitive", &sensitive);
+			addMenuItems(menuItem, jsonSubMenuItems, files, 0);
 		}
 		else
 		{
-			g_signal_connect(childItem, "activate", G_CALLBACK(commandExecuted), (gpointer)i);
-		}
+			if (jsonMenuItem.get("enabled", true).asBool())
+			{
+				std::string uuidString = jsonMenuItem.get("uuid", "").asString();
+				const gchar* uuid = uuidString.c_str();
 
-		nautilus_menu_append_item(menu, childItem);
+				g_signal_connect(menuItem, "activate", G_CALLBACK(commandExecuted), NULL);
+
+				g_object_set_data_full(G_OBJECT(menuItem), "nativity::files", nautilus_file_info_list_copy(files), (GDestroyNotify)nautilus_file_info_list_free);
+				g_object_set_data_full(G_OBJECT(menuItem), "nativity::uuid", g_strdup(uuid), g_free);
+			}
+			else
+			{
+				GValue sensitive = G_VALUE_INIT;
+				g_value_init(&sensitive, G_TYPE_BOOLEAN);
+				g_value_set_boolean(&sensitive, FALSE);
+
+				g_object_set_property(G_OBJECT(menuItem), "sensitive", &sensitive);
+			}
+		}
 	}
 
-	return items;
+	return menuItems;
 }
 
 extern "C" NautilusOperationResult nautilus_liferay_extension_update_file_info(NautilusInfoProvider* provider, NautilusFileInfo* file, GClosure* update_complete, NautilusOperationHandle** handle)
@@ -229,7 +306,7 @@ extern "C" void registerHandlers(GTypeModule* module)
 		NULL
 	};
 
-	liferay_type = g_type_module_register_type(module, G_TYPE_OBJECT, "LiferayPlugin", &info, (GTypeFlags)0);
+	liferay_type = g_type_module_register_type(module, G_TYPE_OBJECT, "LiferayNativity", &info, (GTypeFlags)0);
 
 	writeLog("g_type_module_register_type returned %d\n", liferay_type);
 

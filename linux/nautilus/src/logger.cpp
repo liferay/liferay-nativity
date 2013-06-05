@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #ifdef ENABLE_LOG
 
@@ -38,7 +40,17 @@ void writeLog(const char* format, ...)
 		homedir = pw->pw_dir;
 	}
 
-	file = fopen((std::string(homedir) + std::string("/LiferayPlugin.log")).c_str(), "a+");
+	std::string logPathString = std::string(homedir) + std::string("/.liferay-nativity");
+	const char* logPath = logPathString.c_str();
+
+	struct stat st = { 0 };
+
+	if (stat(logPath, &st) == -1)
+	{
+		mkdir(logPath, 0700);
+	}
+
+	file = fopen((logPathString + std::string("/LiferayNativity.log")).c_str(), "a+");
 
 	if (file)
 	{

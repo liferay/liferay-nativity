@@ -29,10 +29,8 @@ public:
 	void removeAllFileIcons();
 	int registerIcon(const std::string& fileName);
 	void unregisterIcon(int iconId);
-	void enableOverlays(bool enable);
+	void enableFileIcons(bool enable);
 	bool isOverlaysEnabled();
-	void setMenuTitle(const std::string& title);
-	const std::string& getMenuTitle() const;
 	void setRootFolder(std::string const& rootFolder);
 	const std::string& getRootFolder() const;
 
@@ -41,7 +39,6 @@ private:
 	int lastIconId_;
 	std::map<int, std::string> icons_;
 	bool overlaysEnabled_;
-	std::string menuTitle_;
 	std::string rootFolder_;
 	mutable std::set<std::string> registeredFolders_;
 

@@ -36,7 +36,7 @@ struct _NautilusLiferayClass
 };
 
 GType nautilus_liferay_get_type(void);
-void  registerHandlers(GTypeModule* module);
+void registerHandlers(GTypeModule* module);
 
 G_END_DECLS
 

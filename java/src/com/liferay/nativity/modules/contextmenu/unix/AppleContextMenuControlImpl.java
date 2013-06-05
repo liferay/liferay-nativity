@@ -11,9 +11,23 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
 
-#define GETTEXT_PACKAGE "liferay-plugin"
+package com.liferay.nativity.modules.contextmenu.unix;
 
-#endif
+import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
+
+/**
+ * @author Dennis Ju
+ */
+public class AppleContextMenuControlImpl
+	extends UnixContextMenuControlBaseImpl {
+
+	public AppleContextMenuControlImpl(
+		NativityControl nativityControl,
+		ContextMenuControlCallback contextMenuControlCallback) {
+
+		super(nativityControl, contextMenuControlCallback);
+	}
+
+}

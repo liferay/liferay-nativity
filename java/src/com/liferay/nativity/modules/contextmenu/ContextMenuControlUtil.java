@@ -15,7 +15,8 @@
 package com.liferay.nativity.modules.contextmenu;
 
 import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.modules.contextmenu.mac.AppleContextMenuControlImpl;
+import com.liferay.nativity.modules.contextmenu.unix.AppleContextMenuControlImpl;
+import com.liferay.nativity.modules.contextmenu.unix.LinuxContextMenuControlImpl;
 import com.liferay.nativity.modules.contextmenu.win.WindowsContextMenuControlImpl;
 import com.liferay.nativity.util.OSDetector;
 
@@ -51,7 +52,7 @@ public class ContextMenuControlUtil {
 	}
 
 	protected ContextMenuControl createLinuxContextMenuControl() {
-		return new AppleContextMenuControlImpl(
+		return new LinuxContextMenuControlImpl(
 			_nativityControl, _contextMenuControlCallback);
 	}
 
