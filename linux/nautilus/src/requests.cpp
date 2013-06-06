@@ -16,6 +16,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include "content.h"
+#define JSON_IS_AMALGAMATION
 #include <json/json.h>
 
 RequestManager::RequestManager() :

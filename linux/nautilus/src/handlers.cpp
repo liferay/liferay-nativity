@@ -26,6 +26,7 @@
 #include <boost/lexical_cast.hpp>
 #include <vector>
 #include "content.h"
+#define JSON_IS_AMALGAMATION
 #include <json/json.h>
 
 static GObjectClass* parent_class;

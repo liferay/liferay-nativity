@@ -17,6 +17,7 @@
 #include "socket.h"
 #include <string>
 #include <vector>
+#define JSON_IS_AMALGAMATION
 #include <json/json.h>
 
 class RequestManager :

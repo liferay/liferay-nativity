@@ -50,7 +50,7 @@ void writeLog(const char* format, ...)
 		mkdir(logPath, 0700);
 	}
 
-	file = fopen((logPathString + std::string("/LiferayNativity.log")).c_str(), "a+");
+	file = fopen((logPathString + std::string("/liferaynativity.log")).c_str(), "a+");
 
 	if (file)
 	{

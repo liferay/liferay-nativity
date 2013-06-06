@@ -14,6 +14,8 @@
 
 package com.liferay.nativity.control.unix;
 
+import java.io.File;
+
 /**
  * @author Dennis Ju
  */
@@ -21,17 +23,28 @@ public class LinuxNativityControlImpl extends UnixNativityControlBaseImpl {
 
 	@Override
 	public boolean load() throws Exception {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean loaded() {
-		return true;
+		File file1 = new File(
+			"/usr/lib/nautilus/extensions-3.0/libliferaynativity.so");
+
+		File file2 = new File(
+			"/usr/lib64/nautilus/extensions-3.0/libliferaynativity.so");
+
+		if (file1.exists() || file2.exists()) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
 	public boolean unload() throws Exception {
-		return true;
+		return false;
 	}
 
 }
