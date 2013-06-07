@@ -14,6 +14,7 @@
 #include "socket.h"
 #include "logger.h"
 #include <unistd.h>
+#include <errno.h>
 
 SocketServer::SocketServer(int id, unsigned short port, ISocketCallback* callback) :
 	id_(id),
@@ -87,6 +88,8 @@ void SocketServer::doAcceptLoop()
 
 		writeLog("Connection accepted socket = %d\n", clientSocket_);
 
+		setTimeout(0, 100000);
+
 		if (callback_)
 		{
 			if (pthread_create(&readThread_, NULL, readHandler, (void*)this) < 0)
@@ -143,11 +146,30 @@ bool SocketServer::readString(std::string& data)
 	while (1)
 	{
 		int read_size = recv(clientSocket_, &buffer, 1, 0);
-		if (read_size <= 0)
+
+		if (read_size == 0)
 		{
 			clientSocket_ = 0;
+
 			return false;
 		}
+		else if (read_size < 0)
+		{
+			int err_code;
+			socklen_t len = sizeof(err_code);
+
+			if (getsockopt(clientSocket_, SOL_SOCKET, SO_ERROR, &err_code, &len) != 0)
+			{
+				clientSocket_ = 0;
+			}
+			else if (err_code == EAGAIN || err_code == EWOULDBLOCK)
+			{
+				writeLog("Context menu request timed out\n");
+			}
+
+			return false;
+		}
+
 		if (buffer == '\r')
 		{
 			continue;             // ignore
@@ -161,4 +183,14 @@ bool SocketServer::readString(std::string& data)
 	}
 
 	return true;
+}
+
+void SocketServer::setTimeout(int seconds, int microseconds)
+{
+	struct timeval timeoutTimeval;
+
+	timeoutTimeval.tv_sec = seconds;
+	timeoutTimeval.tv_usec = microseconds;
+
+	setsockopt(clientSocket_, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&timeoutTimeval, sizeof(struct timeval));
 }

@@ -46,9 +46,15 @@ std::string RequestManager::queryMenuItems(const std::string& request)
 	callbackSocket_.writeString(request);
 
 	std::string result;
-	callbackSocket_.readString(result);
 
-	return result;
+	if (callbackSocket_.readString(result))
+	{
+		return result;
+	}
+	else
+	{
+		return std::string();
+	}
 }
 
 void RequestManager::menuExecuted(const std::string& reply)

@@ -35,6 +35,7 @@ public:
 	bool readString(std::string& data);
 
 	bool isConnected();
+	void setTimeout(int seconds, int microseconds);
 
 private:
 	int id_;
