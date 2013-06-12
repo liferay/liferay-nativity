@@ -23,7 +23,7 @@ struct TFENodeVector;
 
 + (MenuManager*)sharedInstance;
 
-- (void)addItemsToMenu:(TContextMenu*)menu forPaths:(NSArray*)selectedItems;
+- (void)addItemsToMenu:(TContextMenu*)menu forFiles:(NSArray*)files;
 - (NSArray*)pathsForNodes:(const struct TFENodeVector*)nodes;
 
 @end

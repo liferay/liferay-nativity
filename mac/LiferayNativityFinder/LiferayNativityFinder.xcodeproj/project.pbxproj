@@ -66,7 +66,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		089C166AFE841209C02AAC07 /* LiferayFinderCore */ = {
+		089C166AFE841209C02AAC07 /* LiferayNativityFinder */ = {
 			isa = PBXGroup;
 			children = (
 				08FB77AFFE84173DC02AAC07 /* Source */,
@@ -74,7 +74,7 @@
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
 				19C28FB6FE9D52B211CA2CBB /* Products */,
 			);
-			name = LiferayFinderCore;
+			name = LiferayNativityFinder;
 			sourceTree = "<group>";
 			usesTabs = 1;
 		};
@@ -164,7 +164,7 @@
 			);
 			name = LiferayNativityFinder;
 			productInstallPath = "$(HOME)/Library/Bundles";
-			productName = LiferayFinderCore;
+			productName = LiferayNativityFinder;
 			productReference = 8D576316048677EA00EA77CD /* LiferayNativityFinder.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
@@ -186,7 +186,7 @@
 				French,
 				German,
 			);
-			mainGroup = 089C166AFE841209C02AAC07 /* LiferayFinderCore */;
+			mainGroup = 089C166AFE841209C02AAC07 /* LiferayNativityFinder */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

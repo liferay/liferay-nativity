@@ -26,7 +26,7 @@
 	{
 		MenuManager* contextMenuUtils = [MenuManager sharedInstance];
 
-		[contextMenuUtils addItemsToMenu:arg1 forPaths:contextMenuUtils.menuItems];
+		[contextMenuUtils addItemsToMenu:arg1 forFiles:contextMenuUtils.menuItems];
 		[contextMenuUtils.menuItems removeAllObjects];
 	}
 }
@@ -57,7 +57,7 @@
 	MenuManager* contextMenuUtils = [MenuManager sharedInstance];
 
 	NSArray* selectedItems = [contextMenuUtils pathsForNodes:arg1];
-	[contextMenuUtils addItemsToMenu:realSelf forPaths:selectedItems];
+	[contextMenuUtils addItemsToMenu:realSelf forFiles:selectedItems];
 }
 
 - (void)ContextMenuHandlers_configureWithNodes:(const struct TFENodeVector*)arg1 windowController:(id)arg2 container:(BOOL)arg3   // Lion
@@ -68,7 +68,7 @@
 	MenuManager* contextMenuUtils = [MenuManager sharedInstance];
 
 	NSArray* selectedItems = [contextMenuUtils pathsForNodes:arg1];
-	[contextMenuUtils addItemsToMenu:realSelf forPaths:selectedItems];
+	[contextMenuUtils addItemsToMenu:realSelf forFiles:selectedItems];
 }
 
 @end

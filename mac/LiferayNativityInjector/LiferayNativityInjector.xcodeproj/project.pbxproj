@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BA0E339174ED54A007F936B /* LiferayNativityFinder.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0BA0E338174ED54A007F936B /* LiferayNativityFinder.bundle */; };
+		0B61C7A517686A7B0096A71C /* LiferayNativityFinder.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0B61C7A417686A7B0096A71C /* LiferayNativityFinder.bundle */; };
 		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
 		D6ACBEA2117B7D5600F6691C /* LiferayNativityInjector.m in Sources */ = {isa = PBXBuildFile; fileRef = D6ACBE9E117B7D5600F6691C /* LiferayNativityInjector.m */; };
@@ -18,7 +18,7 @@
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		0BA0E338174ED54A007F936B /* LiferayNativityFinder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = LiferayNativityFinder.bundle; path = "../../../../../../Library/Developer/Xcode/DerivedData/LiferayFinderCore-dwfvaejckqwjuvhhrgkajootwaxj/Build/Products/Development/LiferayNativityFinder.bundle"; sourceTree = "<group>"; };
+		0B61C7A417686A7B0096A71C /* LiferayNativityFinder.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = LiferayNativityFinder.bundle; path = "../../../../../../Library/Developer/Xcode/DerivedData/LiferayNativityFinder-brubebcdvbxwwegnfolpkybubdby/Build/Products/Development/LiferayNativityFinder.bundle"; sourceTree = "<group>"; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D60A992314CE37030061AD6D /* LiferayNativity.osax */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiferayNativity.osax; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6ACBE9E117B7D5600F6691C /* LiferayNativityInjector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiferayNativityInjector.m; sourceTree = "<group>"; };
@@ -65,7 +65,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				0BA0E338174ED54A007F936B /* LiferayNativityFinder.bundle */,
+				0B61C7A417686A7B0096A71C /* LiferayNativityFinder.bundle */,
 				D6ACBEA4117B7D6100F6691C /* LiferayNativityInjector.sdef */,
 				8D576317048677EA00EA77CD /* Info.plist */,
 				8D5B49A704867FD3000E48DA /* InfoPlist.strings */,
@@ -148,7 +148,7 @@
 			files = (
 				8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */,
 				D6ACBEA5117B7D6100F6691C /* LiferayNativityInjector.sdef in Resources */,
-				0BA0E339174ED54A007F936B /* LiferayNativityFinder.bundle in Resources */,
+				0B61C7A517686A7B0096A71C /* LiferayNativityFinder.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
