@@ -160,7 +160,7 @@ public abstract class NativityControl {
 	 * @param folder to set as a system folder
 	 */
 	public abstract void setSystemFolder(String folder);
-	
+
 	/**
 	 * Mac only
 	 *

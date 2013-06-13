@@ -38,7 +38,6 @@ public class AppleNativityControlImpl extends UnixNativityControlBaseImpl {
 
 	@Override
 	public void refreshFiles(String[] paths) {
-		//Windows only
 	}
 
 	@Override
