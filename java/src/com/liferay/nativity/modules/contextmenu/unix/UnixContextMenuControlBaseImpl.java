@@ -42,6 +42,7 @@ public abstract class UnixContextMenuControlBaseImpl
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
+				@SuppressWarnings("unchecked")
 				List<String> files = (List<String>)message.getValue();
 
 				String[] currentFilesArray = (String[])files.toArray(
@@ -63,11 +64,13 @@ public abstract class UnixContextMenuControlBaseImpl
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
+				@SuppressWarnings("unchecked")
 				Map<String, Object> map =
 					(Map<String, Object>)message.getValue();
 
 				String uuid = (String)map.get("uuid");
 
+				@SuppressWarnings("unchecked")
 				List<String> files = (List<String>)map.get("files");
 
 				String[] filesArray = (String[])files.toArray(

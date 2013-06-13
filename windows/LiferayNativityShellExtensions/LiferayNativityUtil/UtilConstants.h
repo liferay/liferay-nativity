@@ -25,6 +25,6 @@
 #define QUOTE							L"\""
 #define VALUE							L"value"
 
-//Registry values for running
-#define REGISTRY_ROOT_KEY			    L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
-#define REGISTRY_FILTER_PATH	  	    L"FilterPath"
+#define REGISTRY_ROOT_KEY			 L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
+#define REGISTRY_ENABLE_OVERLAY		 L"EnableOverlay"
+#define REGISTRY_FILTER_PATH		 L"FilterPath"

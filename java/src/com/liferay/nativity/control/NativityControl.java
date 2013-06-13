@@ -100,6 +100,15 @@ public abstract class NativityControl {
 	public abstract boolean loaded();
 
 	/**
+	 * Windows only
+	 *
+	 * Causes Explorer to refresh the display of the file in explorer
+	 *
+	 * @param files to refresh
+	 */
+	public abstract void refreshFiles(String[] paths);
+
+	/**
 	 * Used by modules to register a MessageListener that will respond to
 	 * messages received from the native service. Each registered
 	 * MessageListener instance must have a unique "command" parameter.
@@ -151,7 +160,7 @@ public abstract class NativityControl {
 	 * @param folder to set as a system folder
 	 */
 	public abstract void setSystemFolder(String folder);
-
+	
 	/**
 	 * Mac only
 	 *

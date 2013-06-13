@@ -37,6 +37,11 @@ public class AppleNativityControlImpl extends UnixNativityControlBaseImpl {
 	}
 
 	@Override
+	public void refreshFiles(String[] paths) {
+		//Windows only
+	}
+
+	@Override
 	public boolean unload() throws Exception {
 		_logger.trace("Unloading Liferay Nativity");
 

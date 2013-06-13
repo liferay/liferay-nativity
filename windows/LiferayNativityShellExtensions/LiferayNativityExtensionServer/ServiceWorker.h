@@ -35,8 +35,8 @@ private:
 	bool _EnableFileIcons(std::wstring*);
 	bool _SetSystemFolder(std::wstring*);
 	bool _SetFilterPath(std::wstring*);
-	bool _UpdateFileIcons(std::wstring*);
-	bool _UpdateFileIcon(const wchar_t*);
+	bool _RefreshFiles(std::wstring*);
+	bool _RefreshFile(const wchar_t*);
 };
 
 #endif

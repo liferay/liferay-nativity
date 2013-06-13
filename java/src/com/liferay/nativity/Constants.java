@@ -39,6 +39,8 @@ public class Constants {
 
 	public static final String MENU_TEXT = "menuText";
 
+	public static final String REFRESH_FILES = "refreshFiles";
+
 	public static final String REGISTER_ICON = "registerIcon";
 
 	public static final String REMOVE_ALL_FILE_ICONS = "removeAllFileIcons";

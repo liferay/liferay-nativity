@@ -43,6 +43,11 @@ public class LinuxNativityControlImpl extends UnixNativityControlBaseImpl {
 	}
 
 	@Override
+	public void refreshFiles(String[] paths) {
+		//Windows only
+	}
+
+	@Override
 	public boolean unload() throws Exception {
 		return false;
 	}

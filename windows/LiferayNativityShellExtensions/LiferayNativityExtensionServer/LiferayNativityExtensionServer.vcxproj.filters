@@ -21,9 +21,6 @@
     <ClCompile Include="ServiceInstaller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigurationUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LiferayNativityExtensionMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,9 +39,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ThreadPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ConfigurationUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConfigurationConstants.h">

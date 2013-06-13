@@ -17,7 +17,6 @@ package com.liferay.nativity.control.win;
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -88,6 +87,14 @@ public class WindowsNativityControlImpl extends NativityControl {
 	@Override
 	public boolean unload() throws Exception {
 		return false;
+	}
+
+	@Override
+	public void refreshFiles(String[] paths) {
+		NativityMessage message = new NativityMessage(
+				Constants.REFRESH_FILES, paths);
+
+			sendMessage(message);
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

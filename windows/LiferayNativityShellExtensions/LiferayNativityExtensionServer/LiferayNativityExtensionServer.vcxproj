@@ -148,7 +148,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConfigurationUtil.cpp" />
     <ClCompile Include="LiferayNativityExtensionMain.cpp" />
     <ClCompile Include="LiferayNativityExtensionService.cpp" />
     <ClCompile Include="ServiceBase.cpp" />
@@ -157,7 +156,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigurationConstants.h" />
-    <ClInclude Include="ConfigurationUtil.h" />
     <ClInclude Include="LiferayNativityExtensionService.h" />
     <ClInclude Include="ServiceBase.h" />
     <ClInclude Include="ServiceInstaller.h" />

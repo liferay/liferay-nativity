@@ -25,10 +25,7 @@
 
 #define CMD_ENABLE_FILE_ICONS		 L"enableFileIcons"
 #define CMD_CLEAR_FILE_ICON			 L"clearFileIcon"
-#define CMD_UPDATE_FILE_ICON		 L"updateFileIcon"
+#define CMD_REFRESH_FILES			 L"refreshFiles"
 #define CMD_SET_FILTER_PATH			 L"setFilterPath"
 #define CMD_SET_SYSTEM_FOLDER		 L"setSystemFolder"
 
-#define REGISTRY_ROOT_KEY			 L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
-#define REGISTRY_ENABLE_OVERLAY		 L"EnableOverlay"
-#define REGISTRY_FILTER_PATH		 L"FilterPath"

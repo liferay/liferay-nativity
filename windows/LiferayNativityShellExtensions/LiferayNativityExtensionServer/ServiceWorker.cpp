@@ -17,6 +17,7 @@
 #include "ConfigurationConstants.h"
 #include "RegistryUtil.h"
 #include "ParserUtil.h"
+#include "UtilConstants.h"
 
 using namespace std;
 
@@ -48,9 +49,9 @@ bool ServiceWorker::ProcessMessages(vector<NativityMessage*>* messages)
 		{
 			_SetSystemFolder(nativityMessage->GetValue());
 		}
-		else if(nativityMessage->GetCommand()->compare(CMD_UPDATE_FILE_ICON) == 0)
+		else if(nativityMessage->GetCommand()->compare(CMD_REFRESH_FILES) == 0)
 		{
-			_UpdateFileIcons(nativityMessage->GetValue());
+			_RefreshFiles(nativityMessage->GetValue());
 		}
 		else if(nativityMessage->GetCommand()->compare(CMD_CLEAR_FILE_ICON) == 0)
 		{
@@ -163,11 +164,11 @@ bool ServiceWorker::_SetFilterPath(wstring* value)
 	return true;
 }
 
-bool ServiceWorker::_UpdateFileIcons(wstring* value)
+bool ServiceWorker::_RefreshFiles(wstring* value)
 {
 	if(!ParserUtil::IsList(value))
 	{
-		_UpdateFileIcon(value->c_str());
+		_RefreshFile(value->c_str());
 		return true;
 	}
 
@@ -181,14 +182,14 @@ bool ServiceWorker::_UpdateFileIcons(wstring* value)
 	for (vector<wstring*>::iterator it = list->begin() ; it != list->end(); it++)
 	{
 		wstring* path = *it;
-		_UpdateFileIcon(path->c_str());
+		_RefreshFile(path->c_str());
 		delete *it;
 	}
 
 	return true;
 }	
 
-bool ServiceWorker::_UpdateFileIcon(const wchar_t* file)
+bool ServiceWorker::_RefreshFile(const wchar_t* file)
 {
 	DWORD fileAttributes = GetFileAttributes(file);
 
