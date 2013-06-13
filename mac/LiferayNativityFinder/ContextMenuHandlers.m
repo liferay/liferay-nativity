@@ -13,7 +13,6 @@
  */
 
 #import "ContextMenuHandlers.h"
-#import "Finder/Finder.h"
 #import "MenuManager.h"
 
 @implementation NSObject (ContextMenuHandlers)
