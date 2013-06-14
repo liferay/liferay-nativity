@@ -21,29 +21,29 @@
 {
 	[self ContextMenuHandlers_addViewSpecificStuffToMenu:arg1 browserViewController:arg2 context:arg3];
 
-	if ([MenuManager sharedInstance].menuItems.count > 0)
-	{
-		MenuManager* contextMenuUtils = [MenuManager sharedInstance];
+	MenuManager* menuManager = [MenuManager sharedInstance];
 
-		[contextMenuUtils addItemsToMenu:arg1 forFiles:contextMenuUtils.menuItems];
-		[contextMenuUtils.menuItems removeAllObjects];
+	if (menuManager.menuItems.count > 0)
+	{
+		[menuManager addItemsToMenu:arg1 forFiles:menuManager.menuItems];
+		[menuManager.menuItems removeAllObjects];
 	}
 }
 
 + (void)ContextMenuHandlers_handleContextMenuCommon:(unsigned int)arg1 nodes:(const struct TFENodeVector*)arg2 event:(id)arg3 view:(id)arg4 browserController:(id)arg5 addPlugIns:(BOOL)arg6  // Mountain Lion
 {
-	MenuManager* contextMenuUtils = [MenuManager sharedInstance];
+	MenuManager* menuManager = [MenuManager sharedInstance];
 
-	contextMenuUtils.menuItems = (NSMutableArray*)[contextMenuUtils pathsForNodes:arg2];
+	menuManager.menuItems = (NSMutableArray*)[menuManager pathsForNodes:arg2];
 
 	[self ContextMenuHandlers_handleContextMenuCommon:arg1 nodes:arg2 event:arg3 view:arg4 browserController:arg5 addPlugIns:arg6];
 }
 
 + (void)ContextMenuHandlers_handleContextMenuCommon:(unsigned int)arg1 nodes:(const struct TFENodeVector*)arg2 event:(id)arg3 view:(id)arg4 windowController:(id)arg5 addPlugIns:(BOOL)arg6   // Lion
 {
-	MenuManager* contextMenuUtils = [MenuManager sharedInstance];
+	MenuManager* menuManager = [MenuManager sharedInstance];
 
-	contextMenuUtils.menuItems = (NSMutableArray*)[contextMenuUtils pathsForNodes:arg2];
+	menuManager.menuItems = (NSMutableArray*)[menuManager pathsForNodes:arg2];
 
 	[self ContextMenuHandlers_handleContextMenuCommon:arg1 nodes:arg2 event:arg3 view:arg4 windowController:arg5 addPlugIns:arg6];
 }
@@ -53,10 +53,10 @@
 	[self ContextMenuHandlers_configureWithNodes:arg1 browserController:arg2 container:arg3];
 
 	TContextMenu* realSelf = (TContextMenu*)self;
-	MenuManager* contextMenuUtils = [MenuManager sharedInstance];
+	MenuManager* menuManager = [MenuManager sharedInstance];
 
-	NSArray* selectedItems = [contextMenuUtils pathsForNodes:arg1];
-	[contextMenuUtils addItemsToMenu:realSelf forFiles:selectedItems];
+	NSArray* selectedItems = [menuManager pathsForNodes:arg1];
+	[menuManager addItemsToMenu:realSelf forFiles:selectedItems];
 }
 
 - (void)ContextMenuHandlers_configureWithNodes:(const struct TFENodeVector*)arg1 windowController:(id)arg2 container:(BOOL)arg3   // Lion
@@ -64,10 +64,10 @@
 	[self ContextMenuHandlers_configureWithNodes:arg1 windowController:arg2 container:arg3];
 
 	TContextMenu* realSelf = (TContextMenu*)self;
-	MenuManager* contextMenuUtils = [MenuManager sharedInstance];
+	MenuManager* menuManager = [MenuManager sharedInstance];
 
-	NSArray* selectedItems = [contextMenuUtils pathsForNodes:arg1];
-	[contextMenuUtils addItemsToMenu:realSelf forFiles:selectedItems];
+	NSArray* selectedItems = [menuManager pathsForNodes:arg1];
+	[menuManager addItemsToMenu:realSelf forFiles:selectedItems];
 }
 
 @end

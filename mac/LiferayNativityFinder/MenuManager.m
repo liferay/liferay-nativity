@@ -13,7 +13,7 @@
  */
 
 #import "MenuManager.h"
-#import "Finder/finder.h"
+#import "Finder/Finder.h"
 #import "RequestManager.h"
 
 @implementation MenuManager

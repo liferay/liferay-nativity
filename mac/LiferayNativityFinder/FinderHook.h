@@ -13,7 +13,6 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "RequestManager.h"
 
 @interface FinderHook : NSObject
 

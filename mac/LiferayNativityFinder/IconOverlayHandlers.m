@@ -12,10 +12,10 @@
  * details.
  */
 
-#import "IconOverlayHandlers.h"
-#import "Finder/Finder.h"
 #import "ContentManager.h"
 #import "IconCache.h"
+#import "IconOverlayHandlers.h"
+#import "Finder/Finder.h"
 
 @implementation NSObject (IconOverlayHandlers)
 

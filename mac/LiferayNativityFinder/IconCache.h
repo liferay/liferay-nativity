@@ -14,7 +14,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
 @interface IconCache : NSObject {
 	int _currentIconId;
 	NSMutableDictionary* _iconIdDictionary;

@@ -12,11 +12,11 @@
  * details.
  */
 
-#import "RequestManager.h"
 #import "ContentManager.h"
 #import "IconCache.h"
 #import "JSONKit.h"
-#include "MenuManager.h"
+#import "RequestManager.h"
+#import "MenuManager.h"
 
 static RequestManager* sharedInstance = nil;
 
