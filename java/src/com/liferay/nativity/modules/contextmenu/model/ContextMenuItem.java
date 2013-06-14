@@ -57,7 +57,9 @@ public class ContextMenuItem {
 	}
 
 	public void fireContextMenuAction(String[] paths) {
-		_contextMenuAction.onSelection(paths);
+		if (_contextMenuAction != null) {
+			_contextMenuAction.onSelection(paths);
+		}
 	}
 
 	@JsonIgnore
