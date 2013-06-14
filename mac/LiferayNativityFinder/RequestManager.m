@@ -287,7 +287,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 		if (([startDate timeIntervalSinceNow] * -1000) > maxMenuItemsRequestWaitMilliSec)
 		{
-			NSLog(@"LiferayFinderCore: menu item request timed out");
+			NSLog(@"LiferayNativityFinder: menu item request timed out");
 
 			break;
 		}

@@ -12,11 +12,13 @@
  * details.
  */
 
-#import "ContentManager.h"
-#import <AppKit/NSWorkspace.h>
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSWindow.h>
+#import <AppKit/NSWorkspace.h>
 #import <Carbon/Carbon.h>
+#import "ContentManager.h"
+#import "MenuManager.h"
+#import "RequestManager.h"
 
 static ContentManager* sharedInstance = nil;
 
@@ -105,15 +107,40 @@ static ContentManager* sharedInstance = nil;
 			continue;
 		}
 
-		[window update];
-
+		MenuManager* menuManager = [MenuManager sharedInstance];
+		RequestManager* requestManager = [RequestManager sharedInstance];
+		
 		if ([[window className] isEqualToString:@"TBrowserWindow"])
 		{
 			NSObject* controller = [window browserWindowController];
 
-			[controller updateViewLayout];
-			[controller viewContentChanged];
-			[controller drawCompletelyIntoBackBuffer];
+			BOOL repaintWindow = YES;
+
+			NSString* filterFolder = [requestManager filterFolder];
+
+			if (filterFolder)
+			{
+				repaintWindow = NO;
+
+				NSArray* folderPaths = [menuManager pathsForNodes:[controller targetPath]];
+
+				for (NSString* folderPath in folderPaths)
+				{
+					if ([folderPath hasPrefix:filterFolder] || [filterFolder hasPrefix:folderPath])
+					{
+						repaintWindow = YES;
+
+						break;
+					}
+				}
+			}
+
+			if (repaintWindow)
+			{
+				@synchronized(controller) {
+					[controller drawCompletelyIntoBackBuffer];					
+				}
+			}
 		}
 	}
 }
