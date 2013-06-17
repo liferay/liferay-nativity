@@ -97,6 +97,8 @@ The code for LiferayNativityInjector is modified from the scripting additions us
 
 #### LiferayNativityFinder
 
+Once injected, LiferayNativityFinder is responsible for method swizzling the overlay icons and context menus into Finder. The original source code for method swizzling (as well as the previously used injection method through mach_inject) was written by the talented developers at [TeamDev](http://www.teamdev.com/). Kudos to TeamDev for tackling an extremely challenging programming task!
+
 Below is a brief description of the classes inside LiferayNativityFinder.
 
 * **[GCDAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket)** - Used for interprocess communication with the client.
@@ -139,7 +141,7 @@ The key classes for the java client are:
 
 # Example Code
 
-The following example Java code will work on Windows, Mac, or Linux will overlay testFile.txt with testIcon.icns and create a context menu item titled "Nativity Test".
+The following example Java code will overlay testFile.txt with testIcon.icns and create a context menu item titled "Nativity Test".
 
 	NativityControl nativityControl = NativityControlUtil.getNativityControl();
 
