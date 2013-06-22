@@ -32,7 +32,7 @@ The following operating systems are currently supported:
 * Mac OS X 10.7 or greater (tested up to OS X 10.8.4)
 * Linux GNOME Nautilus 3.x or greater (tested up to Nautilus 3.6)
 
-Currently the client code is only available for Java. The following clients are currently supported. Contributions for other clients like Ruby, C++, etc are welcome.
+Currently the client code is only available for Java. Contributions for other clients like Ruby, C++, etc are welcome.
 
 <img width="500" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-mac.png">
 
@@ -199,11 +199,11 @@ The following example Java code will overlay testFile.txt with testIcon.icns and
 
 # Issue Tracking
 
-LiferayNativity is an open source project and community members are encouraged to submit bug fixes and enhancements. Please create tickets on http://issues.liferay.com under the **PUBLIC - Nativity** project.
+LiferayNativity is an open source project and community members are encouraged to submit bug fixes and enhancements. Please create tickets [here](http://issues.liferay.com/browse/NVTY).
 
 # Licensing
 
-Check [license.txt](https://github.com/liferay/liferay-nativity/blob/master/copyright.txt) for the latest licensing information.
+LiferayNativity is licensed under the LGPL. Check [license.txt](https://github.com/liferay/liferay-nativity/blob/master/copyright.txt) for the latest licensing information.
 
 # Contact
 
