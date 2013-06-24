@@ -4,8 +4,30 @@
 
 #define EXPORT __attribute__((visibility("default")))
 
+#define WAIT_FOR_APPLE_EVENT_TO_ENTER_HANDLER_IN_SECONDS 1.0
 #define FINDER_MIN_TESTED_VERSION @"10.7"
-#define FINDER_MAX_TESTED_VERSION @"10.8.3"
+#define FINDER_MAX_TESTED_VERSION @"10.8.5"
+#define LIFERAYNATIVITY_INJECTED_NOTIFICATION @"LiferayNativityInjectedNotification"
+
+EXPORT OSErr HandleLoadEvent(const AppleEvent* ev, AppleEvent* reply, long refcon);
+
+static NSString* globalLock = @"I'm the global lock to prevent concruent handler executions";
+static bool enteredHandler = false;
+
+__attribute__((constructor))
+static void autoInitializer() {
+  enteredHandler = false;
+  dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(WAIT_FOR_APPLE_EVENT_TO_ENTER_HANDLER_IN_SECONDS * NSEC_PER_SEC));
+  dispatch_after(delay, dispatch_get_main_queue(), ^(void) {
+    if (enteredHandler) {
+      return; // applescript subsystem was able to execute one of our handlers, nothing to do
+    }
+    AppleEvent err;
+    AECreateAppleEvent('BATF', 'err-', NULL, kAutoGenerateReturnID, kAnyTransactionID, &err);
+    HandleLoadEvent(NULL, &err, 0);
+    AEDisposeDesc(&err);
+  });
+}
 
 // SIMBL-compatible interface
 @interface LiferayNativityShell : NSObject { }
@@ -147,10 +169,6 @@ static OSErr loadBundle(LNBundleType type, AppleEvent* reply, long refcon) {
       [principalClassObject install];
     }
 
-    if (type == LiferayNativityBundleType) {
-      liferayNativityLoaded = true;
-    }
-
     return noErr;
   } @catch (NSException* exception) {
     reportError(reply, [NSString stringWithFormat:@"Failed to load %@ with exception: %@", bundleName, exception]);
@@ -178,66 +196,94 @@ static LNBundleType mainBundleType(AppleEvent* reply) {
 }
 
 EXPORT OSErr HandleLoadEvent(const AppleEvent* ev, AppleEvent* reply, long refcon) {
-  NSBundle* injectorBundle = [NSBundle bundleForClass:[LiferayNativityInjector class]];
-  NSString* injectorVersion = [injectorBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+  enteredHandler = true;
+  @synchronized(globalLock) {
+    @autoreleasepool {
+      NSBundle* injectorBundle = [NSBundle bundleForClass:[LiferayNativityInjector class]];
+      NSString* injectorVersion = [injectorBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
 
-  if (!injectorVersion || ![injectorVersion isKindOfClass:[NSString class]]) {
-    reportError(reply, [NSString stringWithFormat:@"Unable to determine LiferayNativityInjector version!"]);
-    return 7;
+      if (!injectorVersion || ![injectorVersion isKindOfClass:[NSString class]]) {
+        reportError(reply, [NSString stringWithFormat:@"Unable to determine LiferayNativityInjector version!"]);
+        return 7;
+      }
+
+      @try {
+        OSErr err = loadBundle(mainBundleType(reply), reply, refcon);
+
+        if (err != noErr)
+        {
+          return err;
+        }
+
+        pid_t pid = [[NSProcessInfo processInfo] processIdentifier];
+
+        [[NSDistributedNotificationCenter defaultCenter]postNotificationName:LIFERAYNATIVITY_INJECTED_NOTIFICATION object:[[NSBundle mainBundle]bundleIdentifier] userInfo:@{@"pid": @(pid)}];
+
+        liferayNativityLoaded = true;
+
+        return noErr;
+      } @catch (NSException* exception) {
+        reportError(reply, [NSString stringWithFormat:@"Failed to load LiferayNativity with exception: %@", exception]);
+      }
+
+      return 1;
+    }
   }
-
-  @try {
-    return loadBundle(mainBundleType(reply), reply, refcon);
-  } @catch (NSException* exception) {
-    reportError(reply, [NSString stringWithFormat:@"Failed to load LiferayNativity with exception: %@", exception]);
-  }
-
-  return 1;
 }
 
 EXPORT OSErr HandleLoadedEvent(const AppleEvent* ev, AppleEvent* reply, long refcon) {
-  LNBundleType type = mainBundleType(reply);
-  if ((type == LiferayNativityBundleType) && liferayNativityLoaded) {
-    return noErr;
+  enteredHandler = true;
+  @synchronized(globalLock) {
+    @autoreleasepool {
+      LNBundleType type = mainBundleType(reply);
+      if ((type == LiferayNativityBundleType) && liferayNativityLoaded) {
+        return noErr;
+      }
+      reportError(reply, @"LiferayNativity not loaded");
+      return 1;
+    }
   }
-  reportError(reply, @"LiferayNativity not loaded");
-  return 1;
 }
 
 EXPORT OSErr HandleUnloadEvent(const AppleEvent* ev, AppleEvent* reply, long refcon) {
-  @try {
-    if (!liferayNativityLoaded) {
-      NSLog(@"LiferayNativityInjector: not loaded.");
-      return noErr;
+  enteredHandler = true;
+  @synchronized(globalLock) {
+    @autoreleasepool {
+      @try {
+        if (!liferayNativityLoaded) {
+          NSLog(@"LiferayNativityInjector: not loaded.");
+          return noErr;
+        }
+
+        NSString* bundleName = liferayNativityBundleName;
+
+        NSBundle* liferayNativityInjectorBundle = [NSBundle bundleForClass:[LiferayNativityInjector class]];
+        NSString* liferayNativityLocation = [liferayNativityInjectorBundle pathForResource:bundleName ofType:@"bundle"];
+        NSBundle* pluginBundle = [NSBundle bundleWithPath:liferayNativityLocation];
+        if (!pluginBundle) {
+          reportError(reply, [NSString stringWithFormat:@"Unable to create bundle from path: %@ [%@]", liferayNativityLocation, liferayNativityInjectorBundle]);
+          return 2;
+        }
+
+        Class principalClass = [pluginBundle principalClass];
+        if (!principalClass) {
+          reportError(reply, [NSString stringWithFormat:@"Unable to retrieve principalClass for bundle: %@", pluginBundle]);
+          return 3;
+        }
+        id principalClassObject = NSClassFromString(NSStringFromClass(principalClass));
+        if ([principalClassObject respondsToSelector:@selector(uninstall)]) {
+          NSLog(@"LiferayNativityInjector: Uninstalling %@ ...", bundleName);
+          [principalClassObject uninstall];
+        }
+
+        liferayNativityLoaded = false;
+
+        return noErr;
+      } @catch (NSException* exception) {
+        reportError(reply, [NSString stringWithFormat:@"Failed to unload LiferayNativity with exception: %@", exception]);
+      }
+
+      return 1;
     }
-
-    NSString* bundleName = liferayNativityBundleName;
-
-    NSBundle* liferayNativityInjectorBundle = [NSBundle bundleForClass:[LiferayNativityInjector class]];
-    NSString* liferayNativityLocation = [liferayNativityInjectorBundle pathForResource:bundleName ofType:@"bundle"];
-    NSBundle* pluginBundle = [NSBundle bundleWithPath:liferayNativityLocation];
-    if (!pluginBundle) {
-      reportError(reply, [NSString stringWithFormat:@"Unable to create bundle from path: %@ [%@]", liferayNativityLocation, liferayNativityInjectorBundle]);
-      return 2;
-    }
-
-    Class principalClass = [pluginBundle principalClass];
-    if (!principalClass) {
-      reportError(reply, [NSString stringWithFormat:@"Unable to retrieve principalClass for bundle: %@", pluginBundle]);
-      return 3;
-    }
-    id principalClassObject = NSClassFromString(NSStringFromClass(principalClass));
-    if ([principalClassObject respondsToSelector:@selector(uninstall)]) {
-      NSLog(@"LiferayNativityInjector: Uninstalling %@ ...", bundleName);
-      [principalClassObject uninstall];
-    }
-
-    liferayNativityLoaded = false;
-
-    return noErr;
-  } @catch (NSException* exception) {
-    reportError(reply, [NSString stringWithFormat:@"Failed to unload LiferayNativity with exception: %@", exception]);
   }
-
-  return 1;
 }
