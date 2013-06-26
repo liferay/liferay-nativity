@@ -27,19 +27,22 @@ ContextMenuItem::~ContextMenuItem()
 
 ContextMenuItem::ContextMenuItem(const ContextMenuItem& other)
 {
-    operator=(other);
+	_contextMenuItems = other._contextMenuItems;
+	_enabled = other._enabled;
+	_helpText = other._helpText;
+	_id = other._id;
+	_index = other._index;
+	_title = other._title;
 }
 
 ContextMenuItem& ContextMenuItem::operator=(const ContextMenuItem& other)
 {
-	ContextMenuItem tmp( other );
-	
-	swap(_contextMenuItems, tmp._contextMenuItems);
-	swap(_enabled, tmp._enabled);
-	swap(_helpText, tmp._helpText);
-	swap(_id, tmp._id);
-	swap(_index, tmp._index);
-	swap(_title, tmp._title);
+	_contextMenuItems = other._contextMenuItems;
+	_enabled = other._enabled;
+	_helpText = other._helpText;
+	_id = other._id;
+	_index = other._index;
+	_title = other._title;
 
 	return *this;
 }

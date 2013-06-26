@@ -18,11 +18,9 @@
 
 #pragma region Includes
 #include "ServiceBase.h"
-#include <assert.h>
 #include <strsafe.h>
 #pragma endregion
 
-#include <iostream>
 
 
 #pragma region Static Members
@@ -67,9 +65,6 @@ BOOL CServiceBase::Run(CServiceBase &service)
 
 	DWORD error = GetLastError();
 
-	std::cout<<"Result "<<result<<std::endl;
-	std::cout<<"Error "<<error<<std::endl;
-
 	return result;
 }
 
@@ -86,7 +81,10 @@ BOOL CServiceBase::Run(CServiceBase &service)
 //
 void WINAPI CServiceBase::ServiceMain(DWORD dwArgc, PWSTR *pszArgv)
 {
-    assert(s_service != NULL);
+    if(s_service == NULL)
+	{
+		throw GetLastError();
+	}
 
     // Register the handler function for the service
     s_service->m_statusHandle = RegisterServiceCtrlHandler(
