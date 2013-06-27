@@ -29,6 +29,7 @@ class SocketServer
 {
 public:
 	SocketServer(int id, unsigned short port, ISocketCallback* callback);
+	SocketServer(int id, unsigned short port, ISocketCallback* callback, int timeoutSeconds, int timeoutMicroseconds);
 	virtual ~SocketServer();
 
 	void writeString(const std::string& data);
@@ -48,6 +49,9 @@ private:
 
 	ISocketCallback* callback_;
 	unsigned short port_;
+
+	int timeoutSeconds_;
+	int timeoutMicroseconds_;
 
 	void startListening();
 

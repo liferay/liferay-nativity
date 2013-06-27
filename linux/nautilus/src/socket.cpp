@@ -26,6 +26,18 @@ SocketServer::SocketServer(int id, unsigned short port, ISocketCallback* callbac
 	startListening();
 }
 
+SocketServer::SocketServer(int id, unsigned short port, ISocketCallback* callback, int timeoutSeconds, int timeoutMicroseconds) :
+	id_(id),
+	port_(port),
+	callback_(callback),
+	clientSocket_(0),
+	serverSocket_(0),
+	timeoutSeconds_(timeoutSeconds),
+	timeoutMicroseconds_(timeoutMicroseconds)
+{
+	startListening();
+}
+
 SocketServer::~SocketServer()
 {
 }
@@ -88,7 +100,12 @@ void SocketServer::doAcceptLoop()
 
 		writeLog("Connection accepted socket = %d\n", clientSocket_);
 
-		setTimeout(0, 100000);
+		struct timeval timeoutTimeval;
+
+		timeoutTimeval.tv_sec = timeoutSeconds_;
+		timeoutTimeval.tv_usec = timeoutMicroseconds_;
+
+		setsockopt(clientSocket_, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&timeoutTimeval, sizeof(struct timeval));
 
 		if (callback_)
 		{
@@ -172,12 +189,14 @@ bool SocketServer::readString(std::string& data)
 
 		if (buffer == '\r')
 		{
-			continue;             // ignore
+			continue;
 		}
 		if (buffer == '\n')
 		{
 			break;
 		}
+
+//		writeLog("Received data: %s\n", data.c_str());
 
 		data += buffer;
 	}
@@ -187,10 +206,6 @@ bool SocketServer::readString(std::string& data)
 
 void SocketServer::setTimeout(int seconds, int microseconds)
 {
-	struct timeval timeoutTimeval;
-
-	timeoutTimeval.tv_sec = seconds;
-	timeoutTimeval.tv_usec = microseconds;
-
-	setsockopt(clientSocket_, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&timeoutTimeval, sizeof(struct timeval));
+	timeoutSeconds_ = seconds;
+	timeoutMicroseconds_ = microseconds;
 }

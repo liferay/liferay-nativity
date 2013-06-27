@@ -90,7 +90,7 @@ std::string ContentManager::getFileIconName(const std::string& fileName) const
 	return icon;
 }
 
-void ContentManager::setFileIcon(const std::string& fileName, int icon)
+void ContentManager::setFileIcon(const std::string& fileName, int iconId)
 {
 	std::string rootFolder = ContentManager::instance().getRootFolder();
 
@@ -99,7 +99,13 @@ void ContentManager::setFileIcon(const std::string& fileName, int icon)
 		return;
 	}
 
-	iconsForFiles_[fileName] = icon;
+	if (iconId == -1)
+	{
+		iconsForFiles_.erase(fileName);
+	}
+	else {
+		iconsForFiles_[fileName] = iconId;		
+	}
 }
 
 void ContentManager::removeFileIcon(const std::string& fileName)

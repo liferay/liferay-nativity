@@ -20,7 +20,7 @@
 #include <json/json.h>
 
 RequestManager::RequestManager() :
-	callbackSocket_(2, 33002, NULL),
+	callbackSocket_(2, 33002, NULL, 0, 100000),
 	commandSocket_(1, 33001, this)
 {
 }
