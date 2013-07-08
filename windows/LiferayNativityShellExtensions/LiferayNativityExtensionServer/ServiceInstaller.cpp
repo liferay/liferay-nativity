@@ -42,20 +42,23 @@
 //   NOTE: If the function fails to install the service, it prints the error 
 //   in the standard output stream for users to diagnose the problem.
 //
-void InstallService(PWSTR pszServiceName, 
+int InstallService(PWSTR pszServiceName, 
                     PWSTR pszDisplayName, 
                     DWORD dwStartType,
                     PWSTR pszDependencies, 
                     PWSTR pszAccount, 
                     PWSTR pszPassword)
 {
+	int returnCode = 0;
+
     wchar_t szPath[MAX_PATH];
     SC_HANDLE schSCManager = NULL;
     SC_HANDLE schService = NULL;
 
     if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath)) == 0)
     {
-        wprintf(L"GetModuleFileName failed w/err 0x%08lx\n", GetLastError());
+		returnCode = GetLastError();
+        wprintf(L"GetModuleFileName failed w/err 0x%08lx\n", returnCode);
         goto Cleanup;
     }
 
@@ -64,7 +67,7 @@ void InstallService(PWSTR pszServiceName,
         SC_MANAGER_CREATE_SERVICE);
     if (schSCManager == NULL)
     {
-        wprintf(L"OpenSCManager failed w/err 0x%08lx\n", GetLastError());
+        wprintf(L"OpenSCManager failed w/err 0x%08lx\n", returnCode);
         goto Cleanup;
     }
 
@@ -86,10 +89,11 @@ void InstallService(PWSTR pszServiceName,
         );
     if (schService == NULL)
     {
-        wprintf(L"CreateService failed w/err 0x%08lx\n", GetLastError());
+		returnCode = GetLastError();
+        wprintf(L"CreateService failed w/err 0x%08lx\n", returnCode);
         goto Cleanup;
     }
-
+	returnCode = 0;
     wprintf(L"%s is installed.\n", pszServiceName);
 
 Cleanup:
@@ -104,6 +108,8 @@ Cleanup:
         CloseServiceHandle(schService);
         schService = NULL;
     }
+
+	return returnCode;
 }
 
 //

@@ -25,7 +25,7 @@ int wmain(int argc, wchar_t *argv[])
         { 
             if (_wcsicmp(L"install", argv[1] + 1) == 0) 
             { 
-                InstallService( 
+                return InstallService( 
                     SERVICE_NAME, SERVICE_DISPLAY_NAME, SERVICE_START_TYPE,
                     SERVICE_DEPENDENCIES, SERVICE_ACCOUNT, SERVICE_PASSWORD);
             } 

@@ -38,7 +38,7 @@
 //   NOTE: If the function fails to install the service, it prints the error 
 //   in the standard output stream for users to diagnose the problem.
 //
-void InstallService(PWSTR pszServiceName, 
+int InstallService(PWSTR pszServiceName, 
                     PWSTR pszDisplayName, 
                     DWORD dwStartType,
                     PWSTR pszDependencies, 
