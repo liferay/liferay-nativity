@@ -22,32 +22,14 @@ using namespace std;
 
 bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, int* result)
 {
-	HRESULT hResult;
+	wstring* strResult = new wstring();
 
-	HKEY rootKey = NULL;
-
-	hResult = HRESULT_FROM_WIN32(
-		RegOpenKeyEx(
-			HKEY_CURRENT_USER, (LPCWSTR)key, NULL, KEY_READ, &rootKey));
-
-	if(!SUCCEEDED(hResult))
+	if(!ReadRegistry(key, name, strResult))
 	{
 		return false;
 	}
 
-	wchar_t value[SIZE];
-	DWORD value_length = SIZE;
-	
-    hResult = RegQueryValueEx(rootKey, (LPCWSTR)name, NULL, NULL, (LPBYTE)value, &value_length );
-
-	if(!SUCCEEDED(hResult))
-	{
-		return false;
-	}
-
-	*result = value[0];
-
-	RegCloseKey(rootKey);
+	*result = stoi( strResult->c_str() );
 
 	return true;
 }
@@ -58,7 +40,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	HKEY rootKey = NULL;
 
-	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CURRENT_USER, (LPCWSTR)key, NULL, KEY_READ, &rootKey));
+	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_USERS, (LPCWSTR)key, NULL, KEY_READ, &rootKey));
 
 	if(!SUCCEEDED(hResult))
 	{
@@ -77,68 +59,12 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	*result = value;
 
-	RegCloseKey(rootKey);
-
-	return true;
-}
-
-bool RegistryUtil::WriteRegistry(const wchar_t* key, const wchar_t* name, int value)
-{
-	HRESULT hResult;
-
-	HKEY rootKey = NULL;
-
-	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CURRENT_USER, (LPCWSTR)key, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &rootKey, NULL));
-
-	if (!SUCCEEDED(hResult))
-	{
-		return false;
-	}
-
-	hResult = RegSetValueEx(rootKey, (LPCWSTR)name, 0, REG_DWORD, (CONST BYTE*)&value, sizeof(DWORD));
-
-	if (!SUCCEEDED(hResult))
-	{
-		return false;
-	}
-
 	HRESULT hResult2 = RegCloseKey(rootKey);
 
-	if (!SUCCEEDED(hResult) || !SUCCEEDED(hResult2))
+	if (!SUCCEEDED(hResult2))
 	{
 		return false;
 	}
 
 	return true;
 }
-
-bool RegistryUtil::WriteRegistry(const wchar_t* key, const wchar_t* name, const wchar_t* value)
-{
-	HRESULT hResult;
-
-	HKEY rootKey = NULL;
-
-	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CURRENT_USER, (LPCWSTR)key, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &rootKey, NULL));
-
-	if (!SUCCEEDED(hResult))
-	{
-		return false;
-	}
-
-	hResult = RegSetValueEx(rootKey, (LPCWSTR)name, 0, REG_SZ, (LPBYTE)value, (DWORD)wcslen(value) * sizeof(TCHAR));
-
-	if (!SUCCEEDED(hResult))
-	{
-		return false;
-	}
-
-	HRESULT hResult2 = RegCloseKey(rootKey);
-
-	if (!SUCCEEDED(hResult) || !SUCCEEDED(hResult2))
-	{
-		return false;
-	}
-
-	return true;
-}
-

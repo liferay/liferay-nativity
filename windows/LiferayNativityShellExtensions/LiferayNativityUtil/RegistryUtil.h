@@ -30,8 +30,6 @@ public:
 
 	static bool ReadRegistry(const wchar_t*,  const wchar_t*, int*);
 	static bool ReadRegistry(const wchar_t*,  const wchar_t*, std::wstring*);
-	static bool WriteRegistry(const wchar_t*, const wchar_t*, int);
-	static bool WriteRegistry(const wchar_t*, const wchar_t*, const wchar_t*);
 };
 
 #endif

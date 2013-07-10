@@ -143,7 +143,7 @@ bool LiferayNativityOverlay::_IsMonitoredFile(const wchar_t* filePath)
 	wstring* rootFolder = new wstring();
 	bool needed = false;
 	
-	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_PATH, rootFolder))
+	if(RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDER, rootFolder))
 	{
 		if(FileUtil::IsChildFile(rootFolder->c_str(), filePath))
 		{

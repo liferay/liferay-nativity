@@ -23,9 +23,7 @@
 #define SOCKET_PORT_SEND			 33001
 #define SOCKET_PORT_RECEIVE			 33002
 
-#define CMD_ENABLE_FILE_ICONS		 L"enableFileIcons"
 #define CMD_CLEAR_FILE_ICON			 L"clearFileIcon"
 #define CMD_REFRESH_FILES			 L"refreshFiles"
-#define CMD_SET_FILTER_PATH			 L"setFilterPath"
 #define CMD_SET_SYSTEM_FOLDER		 L"setSystemFolder"
 

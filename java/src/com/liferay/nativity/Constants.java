@@ -23,7 +23,11 @@ public class Constants {
 
 	public static final String ENABLE_FILE_ICONS = "enableFileIcons";
 
+	public static final String ENABLE_OVERLAY_REGISTRY_NAME = "EnableOverlay";
+
 	public static final String FILES = "files";
+
+	public static final String FILTER_FOLDER_REGISTRY_NAME = "FilterPath";
 
 	public static final String FIRE_CONTEXT_MENU_ACTION = "contextMenuAction";
 
@@ -38,6 +42,8 @@ public class Constants {
 	public static final String MENU_ITEMS = "menuItems";
 
 	public static final String MENU_TEXT = "menuText";
+
+	public static final String NATIVITY_REGISTRY_KEY = "SOFTWARE\\Liferay Inc\\Liferay Nativity";
 
 	public static final String REFRESH_FILES = "refreshFiles";
 
@@ -56,5 +62,6 @@ public class Constants {
 	public static final String UNREGISTER_ICON = "unregisterIcon";
 
 	public static final String UPDATE_FILE_ICON = "updateFileIcon";
+	
 
 }

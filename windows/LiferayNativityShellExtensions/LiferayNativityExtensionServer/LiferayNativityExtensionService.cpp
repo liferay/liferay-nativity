@@ -56,30 +56,20 @@ void LiferayNativityExtensionService::OnStart(DWORD dwArgc, LPWSTR *lpszArgv)
 
 void LiferayNativityExtensionService::ServiceWorkerThread(void)
 {
-	cout<<"ServiceWorkerThread(void)"<<endl;
-
 	WriteEventLogEntry(L"Liferay Nativity Extension Service worker thread", EVENTLOG_INFORMATION_TYPE);
 
     while (!stopped)
 	{
-		cout<<"Not stopped"<<endl;
-
 		wstring* message = new wstring();
 
 		if(_receiveFromPlugInSocketClient->ReceiveResponseOnly(message))
 		{
-			wcout<<"Received response "<<message->c_str()<<endl;
-
 			vector<NativityMessage*>* messages = new vector<NativityMessage*>();
 
 			if(ParserUtil::ParseNativityMessageList(message, messages))
 			{
-				wcout<<"Parsed nativity messages "<<messages->size()<<endl;
-
 				if(!_serviceWorker->ProcessMessages(messages))
 				{
-					cout<<"Responding to message"<<endl;
-
 					WriteEventLogEntry(L"Unable to process message", EVENTLOG_INFORMATION_TYPE);
 				}
 			}
@@ -95,7 +85,6 @@ void LiferayNativityExtensionService::ServiceWorkerThread(void)
 
 void LiferayNativityExtensionService::Test()
 {
-	cout<<"Staring to test worker thread"<<endl;
 	ServiceWorkerThread();
 }
 

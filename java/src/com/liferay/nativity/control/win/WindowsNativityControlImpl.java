@@ -17,6 +17,7 @@ package com.liferay.nativity.control.win;
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
+import com.liferay.nativity.util.win.RegistryUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,10 +80,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void setFilterFolder(String folder) {
-		NativityMessage message = new NativityMessage(
-			Constants.SET_FILTER_PATH, folder);
-
-		sendMessage(message);
+		RegistryUtil.writeRegistry(
+			Constants.NATIVITY_REGISTRY_KEY, 
+			Constants.FILTER_FOLDER_REGISTRY_NAME, folder);
 	}
 
 	@Override

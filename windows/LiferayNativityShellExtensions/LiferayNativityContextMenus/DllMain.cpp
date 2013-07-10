@@ -18,7 +18,6 @@
 #include <Guiddef.h>
 #include <windows.h>
 
-
 HINSTANCE instanceHandle = NULL;
 
 long dllReferenceCount = 0;

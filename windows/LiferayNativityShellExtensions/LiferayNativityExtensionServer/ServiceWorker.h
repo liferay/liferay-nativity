@@ -32,9 +32,7 @@ public:
 	
 private:
 	bool _ClearFileIcon(std::wstring*);
-	bool _EnableFileIcons(std::wstring*);
 	bool _SetSystemFolder(std::wstring*);
-	bool _SetFilterPath(std::wstring*);
 	bool _RefreshFiles(std::wstring*);
 	bool _RefreshFile(const wchar_t*);
 };

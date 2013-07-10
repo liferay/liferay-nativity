@@ -37,15 +37,7 @@ bool ServiceWorker::ProcessMessages(vector<NativityMessage*>* messages)
 	{
 		NativityMessage* nativityMessage = *it;
 
-		if(nativityMessage->GetCommand()->compare(CMD_ENABLE_FILE_ICONS) == 0)
-		{
-			_EnableFileIcons(nativityMessage->GetValue());
-		}
-		else if(nativityMessage->GetCommand()->compare(CMD_SET_FILTER_PATH) == 0)
-		{
-			_SetFilterPath(nativityMessage->GetValue());
-		}
-		else if(nativityMessage->GetCommand()->compare(CMD_SET_SYSTEM_FOLDER) == 0)
+		if(nativityMessage->GetCommand()->compare(CMD_SET_SYSTEM_FOLDER) == 0)
 		{
 			_SetSystemFolder(nativityMessage->GetValue());
 		}
@@ -88,39 +80,6 @@ bool ServiceWorker::_ClearFileIcon(wstring* value)
 	return true;
 }
 
-bool ServiceWorker::_EnableFileIcons(wstring* value)
-{
-	if(value->size() < 1)
-	{
-		return false;
-	}
-
-	int overlays = 0;
-
-	if(value->compare(L"0") == 0)
-	{
-		overlays = 0;
-	}
-	else if(value->compare(L"1") == 0)
-	{
-		overlays = 1;
-	}
-	else if(value->compare(L"true") == 0)
-	{
-		overlays = 1;
-	}
-	else if(value->compare(L"false") == 0)
-	{
-		overlays = 0;
-	}
-
-	RegistryUtil::WriteRegistry(REGISTRY_ROOT_KEY, REGISTRY_ENABLE_OVERLAY, overlays);
-
-	delete value;
-
-	return true;
-}
-
 bool ServiceWorker::_SetSystemFolder(wstring* value)
 {
 	if(!ParserUtil::IsList(value))
@@ -142,25 +101,6 @@ bool ServiceWorker::_SetSystemFolder(wstring* value)
 		delete *it;
 	}
 
-	return true;
-}
-
-bool ServiceWorker::_SetFilterPath(wstring* value)
-{
-	if(value->size() < 1)
-	{
-		return false;
-	}
-
-	while(value->find(L"\\\\", 0) != string::npos)
-	{
-		size_t temp = value->find(L"\\\\", 0);
-		
-		value->replace(temp, 2, L"\\");
-	}
-
-	RegistryUtil::WriteRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_PATH, value->c_str());
-	
 	return true;
 }
 

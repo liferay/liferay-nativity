@@ -20,6 +20,7 @@ import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
+import com.liferay.nativity.util.win.RegistryUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -69,18 +70,16 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	@Override
 	public void disableFileIcons() {
-		NativityMessage message = new NativityMessage(
-		Constants.ENABLE_FILE_ICONS, String.valueOf(false));
-
-		nativityControl.sendMessage(message);
+		RegistryUtil.writeRegistry(
+			Constants.NATIVITY_REGISTRY_KEY, 
+			Constants.ENABLE_OVERLAY_REGISTRY_NAME, 0);
 	}
 
 	@Override
 	public void enableFileIcons() {
-		NativityMessage message = new NativityMessage(
-		Constants.ENABLE_FILE_ICONS, String.valueOf(true));
-
-		nativityControl.sendMessage(message);
+		RegistryUtil.writeRegistry(
+			Constants.NATIVITY_REGISTRY_KEY, 
+			Constants.ENABLE_OVERLAY_REGISTRY_NAME, 1);
 	}
 
 	@Override
