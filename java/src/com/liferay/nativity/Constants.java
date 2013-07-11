@@ -62,6 +62,5 @@ public class Constants {
 	public static final String UNREGISTER_ICON = "unregisterIcon";
 
 	public static final String UPDATE_FILE_ICON = "updateFileIcon";
-	
 
 }

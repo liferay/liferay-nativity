@@ -81,7 +81,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 	@Override
 	public void setFilterFolder(String folder) {
 		RegistryUtil.writeRegistry(
-			Constants.NATIVITY_REGISTRY_KEY, 
+			Constants.NATIVITY_REGISTRY_KEY,
 			Constants.FILTER_FOLDER_REGISTRY_NAME, folder);
 	}
 
@@ -102,12 +102,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 		WindowsNativityControlImpl.class.getName());
 
 	private WindowsReceiveSocket _receive;
-
 	private ExecutorService _receiveExecutor =
 		Executors.newSingleThreadExecutor();
-
 	private WindowsSendSocket _send = new WindowsSendSocket();
-
 	private ExecutorService _sendExecutor = Executors.newSingleThreadExecutor();
 
 }
