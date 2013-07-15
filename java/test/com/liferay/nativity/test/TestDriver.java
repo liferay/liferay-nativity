@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -221,27 +221,19 @@ public class TestDriver {
 	}
 
 	private static int _fileIconId = -1;
-
 	private static String _fileIconPath = "/Users/liferay/Desktop/test.icns";
-
 	private static boolean _list = false;
-
 	private static Logger _logger = LoggerFactory.getLogger(
 		TestDriver.class.getName());
-
 	private static ObjectMapper _objectMapper =
 		new ObjectMapper().configure(
 			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-
 	private static String _testFile =
 		"C:/Users/liferay/Documents/liferay-sync/Sync.pptx";
-
 	private static String _testFolder =
 		"C:/Users/liferay/Documents/liferay-sync/My Documents (test)/temp";
-
 	private static String _testRootFolder =
 		"C:/Users/liferay/Documents/liferay-sync";
-
 	private static int _waitTime = 1000;
 
 }

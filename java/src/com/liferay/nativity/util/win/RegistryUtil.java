@@ -1,12 +1,15 @@
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
- * The contents of this file are subject to the terms of the Liferay Enterprise
- * Subscription License ("License"). You may not use this file except in
- * compliance with the License. You can obtain a copy of the License by
- * contacting Liferay, Inc. See the License for the specific language governing
- * permissions and limitations under the License, including but not limited to
- * distribution rights of the Software.
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
  */
 
 package com.liferay.nativity.util.win;
@@ -50,7 +53,7 @@ public class RegistryUtil {
 			}
 
 			return success;
-		} 
+		}
 		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
 		}
@@ -114,9 +117,8 @@ public class RegistryUtil {
 		regOpenKey.setAccessible(true);
 
 		Object result = regOpenKey.invoke(
-			_userRoot, 
-			new Object[] {HKEY_CURRENT_USER, _stringToByteArray(key), 
-				KEY_WRITE});
+			_userRoot, new Object[] {HKEY_CURRENT_USER, _stringToByteArray(key),
+			KEY_WRITE});
 
 		if (result == null) {
 			return 0;
@@ -136,30 +138,30 @@ public class RegistryUtil {
 	}
 
 	private static boolean _regSetStringValueEx(
-			int handle, String name, String value) 
+			int handle, String name, String value)
 		throws Exception {
 
 		Method regSetValueEx = _clazz.getDeclaredMethod(
-			WINDOWS_REG_SET_VALUE_EX, 
+			WINDOWS_REG_SET_VALUE_EX,
 			new Class[] {
 				int.class, byte[].class, byte[].class});
 
 		regSetValueEx.setAccessible(true);
 
 		Object hResult = regSetValueEx.invoke(
-			_userRoot, 
-			new Object[] {handle, _stringToByteArray(name), 
-				_stringToByteArray(value)});
+			_userRoot,
+			new Object[] {
+				handle, _stringToByteArray(name), _stringToByteArray(value)});
 
 		if (hResult instanceof Integer) {
-			int result = ((Integer) hResult).intValue();
+			int result = ((Integer)hResult).intValue();
 
 			if (result == 0) {
 				return true;
-			} 
+			}
 			else {
-				_logger.error("Unable to set registry value {} {}", name,
-					result);
+				_logger.error(
+					"Unable to set registry value {} {}", name, result);
 			}
 		}
 
@@ -170,7 +172,7 @@ public class RegistryUtil {
 		byte[] result = new byte[str.length() + 1];
 
 		for (int i = 0; i < str.length(); i++) {
-			result[i] = (byte) str.charAt(i);
+			result[i] = (byte)str.charAt(i);
 		}
 
 		result[str.length()] = 0;
@@ -182,22 +184,19 @@ public class RegistryUtil {
 
 	private static final int KEY_WRITE = 0x20006;
 
-	private static final String WINDOWS_REG_CREATE_KEY_EX = 
+	private static final String WINDOWS_REG_CLOSE_KEY = "WindowsRegCloseKey";
+
+	private static final String WINDOWS_REG_CREATE_KEY_EX =
 		"WindowsRegCreateKeyEx";
 
-	private static final String WINDOWS_REG_OPEN_KEY = 
-		"WindowsRegOpenKey";
+	private static final String WINDOWS_REG_OPEN_KEY = "WindowsRegOpenKey";
 
-	private static final String WINDOWS_REG_SET_VALUE_EX = 
+	private static final String WINDOWS_REG_SET_VALUE_EX =
 		"WindowsRegSetValueEx";
 
+	private static Class<? extends Preferences> _clazz = null;
 	private static Logger _logger = LoggerFactory.getLogger(
 		RegistryUtil.class.getName());
-	
-	private static final String WINDOWS_REG_CLOSE_KEY = 
-		"WindowsRegCloseKey";
-
-	private static Class<? extends Preferences> _clazz = null;
 	private static Preferences _userRoot = null;
 
 }

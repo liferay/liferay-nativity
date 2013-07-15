@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,6 +23,7 @@ public class AppPropsKeys {
 
 	public static final String NVTY_LIFERAY_NATIVITY_UTIL_64 =
 		"LiferayNativityWindowsUtil_x64.dll";
+
 	public static final String NVTY_LIFERAY_NATIVITY_UTIL_86 =
 		"LiferayNativityWindowsUtil_x86.dll";
 
