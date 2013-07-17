@@ -40,7 +40,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	HKEY rootKey = NULL;
 
-	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_USERS, (LPCWSTR)key, NULL, KEY_READ, &rootKey));
+	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CURRENT_USER, (LPCWSTR)key, NULL, KEY_READ, &rootKey));
 
 	if(!SUCCEEDED(hResult))
 	{
