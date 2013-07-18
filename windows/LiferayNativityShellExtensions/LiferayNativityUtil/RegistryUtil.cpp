@@ -57,7 +57,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 		return false;
 	}
 
-	*result = value;
+	result->append(value);
 
 	HRESULT hResult2 = RegCloseKey(rootKey);
 

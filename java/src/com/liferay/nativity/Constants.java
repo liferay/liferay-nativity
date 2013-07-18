@@ -27,7 +27,7 @@ public class Constants {
 
 	public static final String FILES = "files";
 
-	public static final String FILTER_FOLDER_REGISTRY_NAME = "FilterPath";
+	public static final String FILTER_FOLDER_REGISTRY_NAME = "FilterFolder";
 
 	public static final String FIRE_CONTEXT_MENU_ACTION = "contextMenuAction";
 
