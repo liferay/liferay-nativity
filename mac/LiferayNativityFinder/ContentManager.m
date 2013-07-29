@@ -112,7 +112,7 @@ static ContentManager* sharedInstance = nil;
 		
 		if ([[window className] isEqualToString:@"TBrowserWindow"])
 		{
-			NSObject* controller = [window browserWindowController];
+			NSObject* browserWindowController = [window browserWindowController];
 
 			BOOL repaintWindow = YES;
 
@@ -122,7 +122,7 @@ static ContentManager* sharedInstance = nil;
 			{
 				repaintWindow = NO;
 
-				NSArray* folderPaths = [menuManager pathsForNodes:[controller targetPath]];
+				NSArray* folderPaths = [menuManager pathsForNodes:[browserWindowController targetPath]];
 
 				for (NSString* folderPath in folderPaths)
 				{
@@ -137,9 +137,9 @@ static ContentManager* sharedInstance = nil;
 
 			if (repaintWindow)
 			{
-				@synchronized(controller) {
-					[controller drawCompletelyIntoBackBuffer];					
-				}
+				NSObject* browserView = [[browserWindowController browserViewController] browserView];
+
+				[browserView setNeedsDisplay:YES];
 			}
 		}
 	}
