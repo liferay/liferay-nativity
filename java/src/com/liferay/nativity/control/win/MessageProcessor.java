@@ -89,6 +89,10 @@ public class MessageProcessor implements Runnable {
 			_logger.error("Invalid message {}", receivedMessage);
 			return;
 		}
+		
+		if(receivedMessage.endsWith(":\\\"]}")) {
+			receivedMessage = receivedMessage.replace(":\\\"]}", "\"]}");
+		}
 
 		try {
 			NativityMessage message = _objectMapper.readValue(
