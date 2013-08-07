@@ -89,8 +89,8 @@ public class MessageProcessor implements Runnable {
 			_logger.error("Invalid message {}", receivedMessage);
 			return;
 		}
-		
-		if(receivedMessage.endsWith(":\\\"]}")) {
+
+		if (receivedMessage.endsWith(":\\\"]}")) {
 			receivedMessage = receivedMessage.replace(":\\\"]}", "\"]}");
 		}
 
