@@ -107,7 +107,7 @@ public class MessageProcessor implements Runnable {
 			else {
 				_logger.trace(
 					"Response {}", responseMessage.getValue().toString());
-				
+
 				_objectMapper.writeValue(_outputStreamWriter, responseMessage);
 				_outputStreamWriter.write("\0");
 			}
