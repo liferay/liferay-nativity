@@ -25,9 +25,6 @@ import com.liferay.nativity.util.win.RegistryUtil;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
 * @author Dennis Ju
 */
@@ -44,8 +41,6 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
-				_logger.debug(message.getValue().toString());
-
 				String filePath = null;
 
 				if (message.getValue() instanceof List<?>) {
@@ -127,8 +122,5 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	public void unregisterIcon(int id) {
 		return;
 	}
-
-	private static Logger _logger = LoggerFactory.getLogger(
-		WindowsFileIconControlImpl.class.getName());
 
 }
