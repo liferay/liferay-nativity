@@ -9,6 +9,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityOverlays", "LiferayNativityOverlays\LiferayNativityOverlays.vcxproj", "{42EFEC79-5ACA-4F76-955F-15CE4340F6BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityExtensionServer", "LiferayNativityExtensionServer\LiferayNativityExtensionServer.vcxproj", "{4F8FA82D-71A8-46CB-96DF-B01D3A6B34DA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4F63E19-808D-4234-8DF0-69C5F47C9CD3} = {E4F63E19-808D-4234-8DF0-69C5F47C9CD3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityUtil", "LiferayNativityUtil\LiferayNativityUtil.vcxproj", "{E4F63E19-808D-4234-8DF0-69C5F47C9CD3}"
 EndProject
