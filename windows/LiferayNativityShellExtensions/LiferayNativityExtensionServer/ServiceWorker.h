@@ -20,6 +20,8 @@
 
 #include "stdafx.h"
 
+//TODO
+
 class ServiceWorker
 {
 public:
