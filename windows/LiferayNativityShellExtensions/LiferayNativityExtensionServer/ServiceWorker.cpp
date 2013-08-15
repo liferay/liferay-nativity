@@ -45,36 +45,8 @@ bool ServiceWorker::ProcessMessages(vector<NativityMessage*>* messages)
 		{
 			_RefreshFiles(nativityMessage->GetValue());
 		}
-		else if(nativityMessage->GetCommand()->compare(CMD_CLEAR_FILE_ICON) == 0)
-		{
-			_ClearFileIcon(nativityMessage->GetValue());
-		}
-
+		
 		delete nativityMessage;
-	}
-
-	return true;
-}
-
-bool ServiceWorker::_ClearFileIcon(wstring* value)
-{
-	if(!ParserUtil::IsList(value))
-	{
-		SHChangeNotify(SHCNE_DELETE, SHCNF_PATH | SHCNF_FLUSH, value, 0);
-		return true;
-	}
-
-	vector<wstring*>* list = new vector<wstring*>();
-
-	if(!ParserUtil::ParseList(value, list))
-	{
-		return false;
-	}
-
-	for (vector<wstring*>::iterator it = list->begin() ; it != list->end(); it++)
-	{
-		SHChangeNotify(SHCNE_DELETE, SHCNF_PATH | SHCNF_FLUSH, *it, 0);
-		delete *it;
 	}
 
 	return true;
@@ -90,7 +62,7 @@ bool ServiceWorker::_SetSystemFolder(wstring* value)
 
 	vector<wstring*>* list = new vector<wstring*>();
 
-	if(!ParserUtil::ParseList(value, list))
+	if(!ParserUtil::ParseJsonList(value, list))
 	{
 		return false;
 	}
@@ -114,7 +86,7 @@ bool ServiceWorker::_RefreshFiles(wstring* value)
 
 	vector<wstring*>* list = new vector<wstring*>();
 
-	if(!ParserUtil::ParseList(value, list))
+	if(!ParserUtil::ParseJsonList(value, list))
 	{
 		return false;
 	}
@@ -122,7 +94,9 @@ bool ServiceWorker::_RefreshFiles(wstring* value)
 	for (vector<wstring*>::iterator it = list->begin() ; it != list->end(); it++)
 	{
 		wstring* path = *it;
+
 		_RefreshFile(path->c_str());
+		
 		delete *it;
 	}
 
@@ -131,12 +105,7 @@ bool ServiceWorker::_RefreshFiles(wstring* value)
 
 bool ServiceWorker::_RefreshFile(const wchar_t* file)
 {
-	DWORD fileAttributes = GetFileAttributes(file);
-
-	if(fileAttributes & INVALID_FILE_ATTRIBUTES)
-	{
-		SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, file, 0);
-	}
+	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, file, 0);
 
 	return true;
 }

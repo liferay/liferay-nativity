@@ -12,8 +12,6 @@
  *  details.
  */
 
-//TODO
-
 #define SERVICE_NAME	             L"LiferayNativityExtensionService"
 #define SERVICE_DISPLAY_NAME		 L"Liferay Nativity Extension Service"
 #define SERVICE_START_TYPE	         SERVICE_AUTO_START
@@ -25,7 +23,6 @@
 #define SOCKET_PORT_SEND			 33001
 #define SOCKET_PORT_RECEIVE			 33002
 
-#define CMD_CLEAR_FILE_ICON			 L"clearFileIcon"
 #define CMD_REFRESH_FILES			 L"refreshFiles"
 #define CMD_SET_SYSTEM_FOLDER		 L"setSystemFolder"
 

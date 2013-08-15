@@ -15,6 +15,8 @@
 #include "ParserUtil.h"
 #include "UtilConstants.h"
 
+#include <iostream>
+
 using namespace std;
 
 bool ParserUtil::GetItem(const wchar_t* item, const wstring* message, wstring* result)
@@ -80,7 +82,37 @@ bool ParserUtil::GetList(size_t start, const wstring* message, wstring* result)
 	return GetString(start, end, message, result);
 }
 
-size_t ParserUtil::GetNextItemInList(const wstring* message, size_t start, wstring* result)
+size_t ParserUtil::GetNextStringItemInList(const wstring* message, size_t start, wstring* result)
+{
+	size_t end = string::npos;
+	size_t commaLocation = message->find(COMMA, start);
+
+	if(commaLocation == string::npos)
+	{
+		end = message->find(CLOSE_BRACE, start);
+		if(end == string::npos)
+		{
+			end = message->length();
+		}
+		else
+		{
+			end = end - 1;
+		}
+	}
+	else
+	{
+		end = commaLocation - 1;
+	}
+
+	if(!GetString(start + 2, end, message, result))
+	{
+		return string::npos;
+	}
+
+	return end + 2;
+}
+
+size_t ParserUtil::GetNextNativityItemInList(const wstring* message, size_t start, wstring* result)
 {
 	size_t end = message->find(OPEN_CURLY_BRACE, start) + 1;
 
@@ -150,6 +182,7 @@ bool ParserUtil::GetString(size_t start, size_t end, const wstring* message, wst
 		result->append(L"");
 	}
 
+	
 	return true;
 }
 
@@ -165,15 +198,38 @@ bool ParserUtil::IsList(wstring* message)
 	return false;
 }
 
-bool ParserUtil::ParseList(wstring* message, vector<wstring*>* items)
+bool ParserUtil::ParseJsonList(wstring* message, vector<wstring*>* items)
 {
+
+	size_t currentLocation = message->find(OPEN_BRACE, 0);
+
+	while(currentLocation < message->size())
+	{
+		wstring* item = new wstring();
+
+		currentLocation = ParserUtil::GetNextStringItemInList(message, currentLocation, item);
+
+		if(currentLocation == string::npos)
+		{
+			return false;
+		}
+
+		items->push_back(item);
+	}
+
+	return true;
+}
+
+bool ParserUtil::ParseNativityList(wstring* message, vector<wstring*>* items)
+{
+
 	size_t currentLocation = message->find(OPEN_CURLY_BRACE, 0);
 
 	while(currentLocation < message->size())
 	{
 		wstring* item = new wstring();
 
-		currentLocation = ParserUtil::GetNextItemInList(message, currentLocation, item);
+		currentLocation = ParserUtil::GetNextNativityItemInList(message, currentLocation, item);
 
 		if(currentLocation == string::npos)
 		{
@@ -190,7 +246,7 @@ bool ParserUtil::ParseNativityMessageList(wstring* message, vector<NativityMessa
 {
 	vector<wstring*>* items = new vector<wstring*>();
 
-	if(!ParseList(message, items))
+	if(!ParseNativityList(message, items))
 	{
 		return false;
 	}

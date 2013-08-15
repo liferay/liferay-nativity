@@ -21,8 +21,6 @@
 #include <vector>
 #include <map>
 
-//TODO
-
 #include "NativityMessage.h"
 
 class __declspec(dllexport) ParserUtil
@@ -35,15 +33,19 @@ public:
 
 	static bool GetList(size_t, const std::wstring*, std::wstring*);
 	
-	static size_t GetNextItemInList(const std::wstring*, size_t, std::wstring*);
+	static size_t GetNextNativityItemInList(const std::wstring*, size_t, std::wstring*);
 	
+	static size_t GetNextStringItemInList(const std::wstring*, size_t, std::wstring*);
+
 	static bool GetString(size_t, size_t, const std::wstring*, std::wstring*);
 
 	static bool GetValue(size_t, const std::wstring*, std::wstring*);
 
 	static bool IsList(std::wstring*);
 
-	static bool ParseList(std::wstring*, std::vector<std::wstring*>*);
+	static bool ParseNativityList(std::wstring*, std::vector<std::wstring*>*);
+
+	static bool ParseJsonList(std::wstring*, std::vector<std::wstring*>*);
 
 	static bool SerializeList(std::vector<std::wstring>*, std::wstring*, bool);
 
