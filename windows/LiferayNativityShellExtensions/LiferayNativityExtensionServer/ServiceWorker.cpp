@@ -95,7 +95,7 @@ bool ServiceWorker::_RefreshFiles(wstring* value)
 	{
 		wstring* path = *it;
 
-		_RefreshFile(path->c_str());
+		SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, path->c_str(), 0);
 		
 		delete *it;
 	}

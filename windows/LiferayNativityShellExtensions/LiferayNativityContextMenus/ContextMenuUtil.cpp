@@ -23,7 +23,6 @@
 
 #include <vector>
 
-//TODO 
 using namespace std;
 
 ContextMenuUtil::ContextMenuUtil() : _menuList(0)
@@ -325,7 +324,7 @@ bool ContextMenuUtil::_ParseContextMenuList(wstring* contextMenuList, vector<Con
 	{
 		wstring* contextMenu = new wstring();
 
-		currentLocation = ParserUtil::GetNextItemInList(contextMenuList, currentLocation, contextMenu);
+		currentLocation = ParserUtil::GetNextStringItemInList(contextMenuList, currentLocation, contextMenu);
 
 		currentLocation++;
 
