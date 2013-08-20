@@ -12,22 +12,6 @@
 EXPORT OSErr HandleLoadEvent(const AppleEvent* ev, AppleEvent* reply, long refcon);
 
 static NSString* globalLock = @"I'm the global lock to prevent concruent handler executions";
-static bool enteredHandler = false;
-
-__attribute__((constructor))
-static void autoInitializer() {
-  enteredHandler = false;
-  dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(WAIT_FOR_APPLE_EVENT_TO_ENTER_HANDLER_IN_SECONDS * NSEC_PER_SEC));
-  dispatch_after(delay, dispatch_get_main_queue(), ^(void) {
-    if (enteredHandler) {
-      return; // applescript subsystem was able to execute one of our handlers, nothing to do
-    }
-    AppleEvent err;
-    AECreateAppleEvent('BATF', 'err-', NULL, kAutoGenerateReturnID, kAnyTransactionID, &err);
-    HandleLoadEvent(NULL, &err, 0);
-    AEDisposeDesc(&err);
-  });
-}
 
 // SIMBL-compatible interface
 @interface LiferayNativityShell : NSObject { }
@@ -196,7 +180,6 @@ static LNBundleType mainBundleType(AppleEvent* reply) {
 }
 
 EXPORT OSErr HandleLoadEvent(const AppleEvent* ev, AppleEvent* reply, long refcon) {
-  enteredHandler = true;
   @synchronized(globalLock) {
     @autoreleasepool {
       NSBundle* injectorBundle = [NSBundle bundleForClass:[LiferayNativityInjector class]];
@@ -232,7 +215,6 @@ EXPORT OSErr HandleLoadEvent(const AppleEvent* ev, AppleEvent* reply, long refco
 }
 
 EXPORT OSErr HandleLoadedEvent(const AppleEvent* ev, AppleEvent* reply, long refcon) {
-  enteredHandler = true;
   @synchronized(globalLock) {
     @autoreleasepool {
       LNBundleType type = mainBundleType(reply);
@@ -246,7 +228,6 @@ EXPORT OSErr HandleLoadedEvent(const AppleEvent* ev, AppleEvent* reply, long ref
 }
 
 EXPORT OSErr HandleUnloadEvent(const AppleEvent* ev, AppleEvent* reply, long refcon) {
-  enteredHandler = true;
   @synchronized(globalLock) {
     @autoreleasepool {
       @try {
