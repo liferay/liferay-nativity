@@ -40,11 +40,6 @@ static BOOL installed = NO;
 	method_exchangeImplementations(newMethod, oldMethod);
 }
 
-+ (void)load
-{
-	[FinderHook install];
-}
-
 + (void)install
 {
 	if (installed)
@@ -73,6 +68,8 @@ static BOOL installed = NO;
 	[self hookMethod:@selector(configureWithNodes:browserController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(ContextMenuHandlers_configureWithNodes:browserController:container:)]; // Mountain Lion
 
 	installed = YES;
+
+    NSLog(@"LiferayNativityFinder: installed");
 }
 
 + (void)uninstall
@@ -107,6 +104,8 @@ static BOOL installed = NO;
 	[self hookMethod:@selector(ContextMenuHandlers_configureWithNodes:browserController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureWithNodes:browserController:container:)]; // Mountain Lion
 
 	installed = NO;
+
+    NSLog(@"LiferayNativityFinder: uninstalled");
 }
 
 @end
