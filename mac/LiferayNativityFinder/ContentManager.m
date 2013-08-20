@@ -65,14 +65,14 @@ static ContentManager* sharedInstance = nil;
 	[self repaintAllWindows];
 }
 
-- (NSNumber*)iconByPath:(NSString*)path
+- (NSNumber*)iconByURL:(NSURL*)url
 {
 	if (!_fileIconsEnabled)
 	{
 		return nil;
 	}
 
-	NSNumber* result = [_fileNamesCache objectForKey:path];
+	NSNumber* result = [_fileNamesCache objectForKey:url];
 
 	return result;
 }
@@ -88,7 +88,9 @@ static ContentManager* sharedInstance = nil;
 {
 	for (NSString* path in paths)
 	{
-		[_fileNamesCache removeObjectForKey:path];
+		NSURL* url = [NSURL fileURLWithPath:path];
+
+		[_fileNamesCache removeObjectForKey:url];
 	}
 
 	[self repaintAllWindows];
@@ -154,15 +156,17 @@ static ContentManager* sharedInstance = nil;
 			continue;
 		}
 
+		NSURL* url = [NSURL fileURLWithPath:path];
+
 		NSNumber* iconId = [iconDictionary objectForKey:path];
 
 		if ([iconId intValue] == -1)
 		{
-			[_fileNamesCache removeObjectForKey:path];
+			[_fileNamesCache removeObjectForKey:url];
 		}
 		else
 		{
-			[_fileNamesCache setObject:iconId forKey:path];
+			[_fileNamesCache setObject:iconId forKey:url];
 		}
 	}
 

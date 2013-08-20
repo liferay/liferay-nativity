@@ -25,7 +25,7 @@
 
 	NSURL* url = [[NSClassFromString(@"FINode") nodeFromNodeRef:[(TNodeIconAndNameCell*)self node]->fNodeRef] previewItemURL];
 
-	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
+	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByURL:url];
 
 	if ([imageIndex intValue] > 0)
 	{
@@ -47,7 +47,7 @@
 
 	NSURL* url = [node previewItemURL];
 
-	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
+	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByURL:url];
 
 	if ([imageIndex intValue] > 0)
 	{

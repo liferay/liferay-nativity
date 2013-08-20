@@ -23,7 +23,7 @@
 + (ContentManager*)sharedInstance;
 
 - (void)enableFileIcons:(BOOL)enable;
-- (NSNumber*)iconByPath:(NSString*)path;
+- (NSNumber*)iconByURL:(NSURL*)url;
 - (void)removeAllIcons;
 - (void)removeIcons:(NSArray*)paths;
 - (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
