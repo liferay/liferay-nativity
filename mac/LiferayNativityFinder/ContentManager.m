@@ -72,7 +72,9 @@ static ContentManager* sharedInstance = nil;
 		return nil;
 	}
 
-	NSNumber* result = [_fileNamesCache objectForKey:path];
+	NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
+
+	NSNumber* result = [_fileNamesCache objectForKey:normalizedPath];
 
 	return result;
 }
@@ -88,7 +90,9 @@ static ContentManager* sharedInstance = nil;
 {
 	for (NSString* path in paths)
 	{
-		[_fileNamesCache removeObjectForKey:path];
+		NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
+
+		[_fileNamesCache removeObjectForKey:normalizedPath];
 	}
 
 	[self repaintAllWindows];
@@ -109,7 +113,7 @@ static ContentManager* sharedInstance = nil;
 
 		MenuManager* menuManager = [MenuManager sharedInstance];
 		RequestManager* requestManager = [RequestManager sharedInstance];
-		
+
 		if ([[window className] isEqualToString:@"TBrowserWindow"])
 		{
 			NSObject* browserWindowController = [window browserWindowController];
@@ -154,15 +158,16 @@ static ContentManager* sharedInstance = nil;
 			continue;
 		}
 
+		NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 		NSNumber* iconId = [iconDictionary objectForKey:path];
 
 		if ([iconId intValue] == -1)
 		{
-			[_fileNamesCache removeObjectForKey:path];
+			[_fileNamesCache removeObjectForKey:normalizedPath];
 		}
 		else
 		{
-			[_fileNamesCache setObject:iconId forKey:path];
+			[_fileNamesCache setObject:iconId forKey:normalizedPath];
 		}
 	}
 
