@@ -14,8 +14,6 @@
 
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSWindow.h>
-#import <AppKit/NSWorkspace.h>
-#import <Carbon/Carbon.h>
 #import "ContentManager.h"
 #import "MenuManager.h"
 #import "RequestManager.h"

@@ -16,7 +16,6 @@
 #import "IconCache.h"
 #import "JSONKit.h"
 #import "RequestManager.h"
-#import "MenuManager.h"
 
 static RequestManager* sharedInstance = nil;
 
