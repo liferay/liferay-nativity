@@ -21,7 +21,7 @@
     <ClInclude Include="ConfigurationUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="com_liferay_nativity_util_windows_WindowsUtil.h">
+    <ClInclude Include="com_liferay_nativity_control_win_WindowsNativityWindowsUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

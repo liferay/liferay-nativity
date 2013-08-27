@@ -23,15 +23,9 @@ class __declspec(dllexport) ConfigurationUtil
 {
 public:
 
-	static bool UpdateExplorer(const wchar_t* syncRoot, int value);
-	static bool UpdateExplorer(const wchar_t* oldPath, const wchar_t* syncRoot, int value);
-	static bool SetSyncRootFolder(const wchar_t* syncRoot);
-	static std::wstring GetSyncRootFolder();
-	static int GetRPCServerPort();
+	static bool UpdateExplorer(const wchar_t* syncRoot);
+	static bool SetSystemFolder(const wchar_t* syncRoot);
 
-private:
-	static long GetEventId(int);
-   
 };
 
 #endif

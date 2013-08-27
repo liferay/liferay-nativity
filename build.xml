@@ -36,6 +36,10 @@
 			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
 		</jar>
 	</target>
+	
+	<target name="build-jni-headers" depends="compile">
+		<javah destdir="${project.dir}/windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil" classpath="${java.dir}/classes" class="com.liferay.nativity.control.win.WindowsNativityWindowsUtil"/>
+	</target>
 
 	<target name="build-windows-util" depends="compile">
         <if>
@@ -63,12 +67,48 @@
 
         <copy
             file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityUtil_x64.dll"
-            toFile="${project.dir}/dist//LiferayNativityUtil_x64.dll"
+            toFile="${project.dir}/dist/LiferayNativityUtil_x64.dll"
         />
 
         <copy
             file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityUtil_x86.dll"
             toFile="${project.dir}/dist/LiferayNativityUtil_x86.dll"
+        />
+
+    </target>
+    
+    <target name="build-windows-native-util" depends="compile">
+        <if>
+            <not>
+                <equals arg1="${target.os}" arg2="windows" />
+            </not>
+            <then>
+                <fail>
+                    Ant target must be run in Windows
+                </fail>
+            </then>
+        </if>
+
+		<mkdir dir="${project.dir}/dist/" />
+
+        <exec
+            executable="${nativity.dir}/build-windows.cmd"
+            failonerror="true"
+        >
+            <arg value="LiferayNativityWindowsUtil" />
+            <arg value="${nativity.dir}/windows" />
+            <arg value="${ms.sdk.7.1.dir}" />
+            <arg value="${framework.dir}" />
+        </exec>
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityWindowsUtil_x64.dll"
+            toFile="${project.dir}/dist/LiferayNativityWindowsUtil_x64.dll"
+        />
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityWindowsUtil_x86.dll"
+            toFile="${project.dir}/dist/LiferayNativityWindowsUtil_x86.dll"
         />
 
     </target>
