@@ -134,7 +134,7 @@ public abstract class NativityControl {
 
 	/**
 	 * Mac only
-	 * 
+	 *
 	 * Used by modules to send messages to the native service.
 	 *
 	 * @param NativityMessage to send to the native service
@@ -142,7 +142,7 @@ public abstract class NativityControl {
 	 * @return response from the native service
 	 */
 	public String sendMessage(NativityMessage message) {
-		return null;
+		return "";
 	}
 
 	/**

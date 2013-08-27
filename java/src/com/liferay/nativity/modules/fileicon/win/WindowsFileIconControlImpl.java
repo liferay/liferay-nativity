@@ -37,7 +37,7 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 		super(nativityControl, fileIconControlCallback);
 
 		MessageListener messageListener = new MessageListener(
-				Constants.GET_FILE_ICON_ID) {
+			Constants.GET_FILE_ICON_ID) {
 
 			@Override
 			public NativityMessage onMessage(NativityMessage message) {
@@ -88,39 +88,22 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	@Override
 	public void removeFileIcon(String path) {
-		NativityMessage message = new NativityMessage(
-			Constants.CLEAR_FILE_ICON, path);
-
-		nativityControl.sendMessage(message);
 	}
 
 	@Override
 	public void removeFileIcons(String[] paths) {
-		NativityMessage message = new NativityMessage(
-			Constants.CLEAR_FILE_ICON, paths);
-
-		nativityControl.sendMessage(message);
 	}
 
 	@Override
 	public void setFileIcon(String path, int iconId) {
-		NativityMessage message = new NativityMessage(
-			Constants.UPDATE_FILE_ICON, path);
-
-		nativityControl.sendMessage(message);
 	}
 
 	@Override
 	public void setFileIcons(Map<String, Integer> fileIconsMap) {
-		NativityMessage message = new NativityMessage(
-			Constants.UPDATE_FILE_ICON, fileIconsMap.keySet());
-
-		nativityControl.sendMessage(message);
 	}
 
 	@Override
 	public void unregisterIcon(int id) {
-		return;
 	}
 
 }

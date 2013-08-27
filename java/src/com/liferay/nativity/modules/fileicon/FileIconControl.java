@@ -50,6 +50,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void removeAllFileIcons();
 
 	/**
+	 * Mac only
+	 *
 	 * Removes file icon overlay
 	 *
 	 * @param file path to remove the file icon overlay
@@ -57,6 +59,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void removeFileIcon(String path);
 
 	/**
+	 * Mac only
+	 *
 	 * Removes file icon overlays
 	 *
 	 * @param file paths to remove file icon overlays
