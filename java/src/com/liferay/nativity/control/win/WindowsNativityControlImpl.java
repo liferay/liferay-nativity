@@ -80,23 +80,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 			_logger.error(e.getMessage(), e);
 		}
 	}
-
-	@Override
-	public String sendMessage(NativityMessage message) {
-		if (message.getCommand().equals(Constants.REMOVE_ALL_FILE_ICONS)) {
-			_enableFileIcons(false);
-		}
-		else if (message.getCommand().equals(Constants.ENABLE_FILE_ICONS)) {
-			_enableFileIcons(true);
-		}
-		else {
-			_logger.error(
-				"Unsupported command for windows {}", message.getCommand());
-		}
-
-		return null;
-	}
-
+	
 	@Override
 	public void setFilterFolder(String folder) {
 		RegistryUtil.writeRegistry(
@@ -121,18 +105,6 @@ public class WindowsNativityControlImpl extends NativityControl {
 	@Override
 	public boolean unload() throws Exception {
 		return false;
-	}
-
-	private void _enableFileIcons(boolean state) {
-		int value = 0;
-
-		if (state) {
-			value = 1;
-		}
-
-		RegistryUtil.writeRegistry(
-			Constants.NATIVITY_REGISTRY_KEY,
-			Constants.ENABLE_OVERLAY_REGISTRY_NAME, value);
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

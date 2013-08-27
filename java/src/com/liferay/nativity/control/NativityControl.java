@@ -133,13 +133,17 @@ public abstract class NativityControl {
 	}
 
 	/**
+	 * Mac only
+	 * 
 	 * Used by modules to send messages to the native service.
 	 *
 	 * @param NativityMessage to send to the native service
 	 *
 	 * @return response from the native service
 	 */
-	public abstract String sendMessage(NativityMessage message);
+	public String sendMessage(NativityMessage message) {
+		return null;
+	}
 
 	/**
 	 * Optionally set the root folder filter path for requests made
