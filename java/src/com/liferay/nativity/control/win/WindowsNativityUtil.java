@@ -18,9 +18,13 @@ import com.liferay.nativity.util.OSDetector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-public class WindowsNativityWindowsUtil {
 
-	public static boolean isLoaded() {
+/**
+ * @author Gail Hernandez
+ */
+public class WindowsNativityUtil {
+
+	public static boolean load() {
 		if (!_loaded) {
 			_load();
 		}
@@ -81,13 +85,13 @@ public class WindowsNativityWindowsUtil {
 	}
 
 	private static final String _LIFERAY_NATIVITY_WINDOWS_UTIL_x64 =
-	"LiferayNativityWindowsUtil_x64";
+		"LiferayNativityWindowsUtil_x64";
 	private static final String _LIFERAY_NATIVITY_WINDOWS_UTIL_x86 =
-	"LiferayNativityWindowsUtil_x86";
+		"LiferayNativityWindowsUtil_x86";
 
 	private static boolean _load = true;
 	private static boolean _loaded;
 	private static Logger _logger = LoggerFactory.getLogger(
-		WindowsNativityWindowsUtil.class.getName());
+		WindowsNativityUtil.class.getName());
 
 }

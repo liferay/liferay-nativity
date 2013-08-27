@@ -21,8 +21,8 @@ import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Map;
 
 /**
  * @author Dennis Ju

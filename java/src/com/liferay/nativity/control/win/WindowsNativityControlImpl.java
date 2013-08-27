@@ -33,9 +33,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 	public boolean connect() {
 		_logger.debug("Connecting...");
 
-		boolean loaded = WindowsNativityWindowsUtil.isLoaded();
+		boolean loaded = WindowsNativityUtil.load();
 
-		_logger.debug("Loaded....{}", loaded);
+		_logger.debug("Loaded {}", loaded);
 
 		_receive = new WindowsReceiveSocket(this);
 
@@ -56,7 +56,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean loaded() {
-		return WindowsNativityWindowsUtil.isLoaded();
+		return WindowsNativityUtil.load();
 	}
 
 	@Override
@@ -65,14 +65,15 @@ public class WindowsNativityControlImpl extends NativityControl {
 			return;
 		}
 
-		if (!WindowsNativityWindowsUtil.isLoaded()) {
+		if (!WindowsNativityUtil.load()) {
 			return;
 		}
 
 		try {
 			for (String path : paths) {
 				String temp = path.replace("/", "\\");
-				WindowsNativityWindowsUtil.updateExplorer(temp);
+
+				WindowsNativityUtil.updateExplorer(temp);
 			}
 		}
 		catch (UnsatisfiedLinkError e) {
@@ -89,12 +90,12 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void setSystemFolder(String folder) {
-		if (!WindowsNativityWindowsUtil.isLoaded()) {
+		if (!WindowsNativityUtil.load()) {
 			return;
 		}
 
 		try {
-			WindowsNativityWindowsUtil.setSystemFolder(folder);
+			WindowsNativityUtil.setSystemFolder(folder);
 		}
 		catch (UnsatisfiedLinkError e) {
 			_logger.error(e.getMessage(), e);
