@@ -35,9 +35,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 		_logger.debug("Connecting...");
 
 		boolean loaded = WindowsNativityWindowsUtil.isLoaded();
-		
+
 		_logger.debug("Loaded....{}", loaded);
-		
+
 		_receive = new WindowsReceiveSocket(this);
 
 		_receiveExecutor.execute(_receive);
@@ -62,28 +62,38 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void refreshFiles(String[] paths) {
-		if(paths == null) {
+		if (paths == null) {
 			return;
 		}
-		
-		if(!WindowsNativityWindowsUtil.isLoaded()) {
+
+		if (!WindowsNativityWindowsUtil.isLoaded()) {
 			return;
 		}
-		
+
 		try {
-			for(String path : paths) {
+			for (String path : paths) {
 				String temp = path.replace("/", "\\");
 				WindowsNativityWindowsUtil.updateExplorer(temp);
 			}
 		}
-		catch(UnsatisfiedLinkError e) {
+		catch (UnsatisfiedLinkError e) {
 			_logger.error(e.getMessage(), e);
 		}
 	}
 
 	@Override
 	public String sendMessage(NativityMessage message) {
-		_logger.error("Invalid message {} ", message);
+		if (message.getCommand().equals(Constants.REMOVE_ALL_FILE_ICONS)) {
+			_enableFileIcons(false);
+		}
+		else if (message.getCommand().equals(Constants.ENABLE_FILE_ICONS)) {
+			_enableFileIcons(true);
+		}
+		else {
+			_logger.error(
+				"Unsupported command for windows {}", message.getCommand());
+		}
+
 		return null;
 	}
 
@@ -96,14 +106,14 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void setSystemFolder(String folder) {
-		if(!WindowsNativityWindowsUtil.isLoaded()) {
+		if (!WindowsNativityWindowsUtil.isLoaded()) {
 			return;
 		}
-		
+
 		try {
 			WindowsNativityWindowsUtil.setSystemFolder(folder);
 		}
-		catch(UnsatisfiedLinkError e) {
+		catch (UnsatisfiedLinkError e) {
 			_logger.error(e.getMessage(), e);
 		}
 	}
@@ -113,11 +123,22 @@ public class WindowsNativityControlImpl extends NativityControl {
 		return false;
 	}
 
+	private void _enableFileIcons(boolean state) {
+		int value = 0;
+
+		if (state) {
+			value = 1;
+		}
+
+		RegistryUtil.writeRegistry(
+			Constants.NATIVITY_REGISTRY_KEY,
+			Constants.ENABLE_OVERLAY_REGISTRY_NAME, value);
+	}
+
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsNativityControlImpl.class.getName());
 
 	private WindowsReceiveSocket _receive;
-	
 	private ExecutorService _receiveExecutor =
 		Executors.newSingleThreadExecutor();
 
