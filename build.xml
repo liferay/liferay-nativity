@@ -38,7 +38,7 @@
 	</target>
 	
 	<target name="build-jni-headers" depends="compile">
-		<javah destdir="${project.dir}/windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil" classpath="${java.dir}/classes" class="com.liferay.nativity.control.win.WindowsNativityWindowsUtil"/>
+		<javah destdir="${project.dir}/windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil" classpath="${java.dir}/classes" class="com.liferay.nativity.control.win.WindowsNativityUtil"/>
 	</target>
 
 	<target name="build-windows-util" depends="compile">
