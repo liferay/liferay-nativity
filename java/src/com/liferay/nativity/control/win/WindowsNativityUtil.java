@@ -58,6 +58,7 @@ public class WindowsNativityUtil {
 			return;
 		}
 
+		_logger.error("Path : {}", System.getProperty("java.library.path"));
 		_logger.error("Unable to load library");
 	}
 
