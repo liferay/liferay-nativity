@@ -138,7 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="com_liferay_nativity_control_win_WindowsNativityWindowsUtil.h" />
+    <ClInclude Include="com_liferay_nativity_control_win_WindowsNativityUtil.h" />
     <ClInclude Include="ConfigConstants.h" />
     <ClInclude Include="ConfigurationUtil.h" />
   </ItemGroup>
