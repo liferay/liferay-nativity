@@ -50,7 +50,7 @@ public class WindowsNativityUtil {
 
 			return;
 		}
-		
+
 		if (_loadLibrary(false, _LIFERAY_NATIVITY_WINDOWS_UTIL_x64)) {
 			return;
 		}
