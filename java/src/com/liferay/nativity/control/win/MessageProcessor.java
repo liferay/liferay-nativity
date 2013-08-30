@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -111,10 +110,6 @@ public class MessageProcessor implements Runnable {
 
 				_objectMapper.writeValue(_outputStreamWriter, responseMessage);
 				_outputStreamWriter.write("\0");
-
-				File f = new File("D:/JSON.txt");
-
-				_objectMapper.writeValue(f, responseMessage);
 			}
 		}
 		catch (IOException e) {
