@@ -42,6 +42,8 @@ public:
 	
 	std::wstring* GetTitle();
 
+	std::wstring* GetUuid();
+
 	bool HasSubMenus();
 
 	void SetContextMenuItems(std::vector<ContextMenuItem*>*);
@@ -55,6 +57,8 @@ public:
 	void SetIndex(int);
 	
 	void SetTitle(std::wstring*);
+
+	void SetUuid(std::wstring*);
 	
 private:
 
@@ -69,6 +73,8 @@ private:
 	int _index;
 	
 	std::wstring* _title;
+
+	std::wstring* _uuid;
 };
 
 #endif

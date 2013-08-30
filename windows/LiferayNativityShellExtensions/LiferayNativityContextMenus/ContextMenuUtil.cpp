@@ -112,6 +112,7 @@ bool ContextMenuUtil::InitMenus(void)
 	bool success = false;
 
 	wstring* files = new wstring();
+
 	if(!ParserUtil::SerializeList(_selectedFiles, files, false))
 	{
 		delete files;
@@ -161,7 +162,7 @@ bool ContextMenuUtil::GetContextMenuAction(std::wstring* title, ContextMenuActio
 		if(currentTitle->compare(*title) == 0)
 		{
 			ContextMenuAction* action = new ContextMenuAction();
-			action->SetId(temp->GetId());
+			action->SetUuid(temp->GetUuid());
 			action->SetFiles(_selectedFiles);
 
 			item = &action;
@@ -179,7 +180,7 @@ bool ContextMenuUtil::GetContextMenuAction(int action, ContextMenuAction** item)
 	if(GetContextMenuItem(action, &contextMenuItem))
 	{
 			ContextMenuAction* action = new ContextMenuAction();
-			action->SetId(contextMenuItem->GetId());
+			action->SetUuid(contextMenuItem->GetUuid());
 			action->SetFiles(_selectedFiles);
 
 			item = &action;
@@ -200,21 +201,19 @@ bool ContextMenuUtil::PerformAction(int command)
 	}
 
 	wstring* list = new wstring();
-
+	
 	if(!ParserUtil::SerializeList(_selectedFiles, list, true))
 	{
 		return false;
 	}
 	
-	wchar_t* buffer = new wchar_t(10);
-
-	_itow_s(item->GetId(), buffer, 10, 10);
-
-	wstring* idString = new wstring(buffer);
-
 	map<wstring*, wstring*>* message = new map<wstring*, wstring*>();
 	wstring* id = new wstring(ID);
 	wstring* files = new wstring(FILES);
+
+	wstring* idString = new wstring(L"\\\"");
+	idString->append(item->GetUuid()->c_str());
+	idString->append(L"\\\"");
 
 	message->insert(make_pair(id, idString));
 	message->insert(make_pair(files, list));
@@ -228,7 +227,7 @@ bool ContextMenuUtil::PerformAction(int command)
 
 	NativityMessage* nativityMessage = new NativityMessage();
 	
-	wstring* title = new wstring(PERFORM_ACTION);
+	wstring* title = new wstring(CONTEXT_MENU_ACTION);
 	nativityMessage->SetCommand(title);
 	nativityMessage->SetValue(messageString);
 
@@ -238,7 +237,7 @@ bool ContextMenuUtil::PerformAction(int command)
 	{
 		return false;
 	}
-
+	
 	wstring* response = new wstring();
 
 	if(!_communicationSocket->SendMessageReceiveResponse(nativityMessageString->c_str(), response))
@@ -287,6 +286,15 @@ bool ContextMenuUtil::_ParseContextMenu(wstring* contextMenu, ContextMenuItem* c
 
 	contextMenuItem->SetTitle(title);
 
+	wstring* uuid =  new wstring();
+
+	if(!ParserUtil::GetItem(UUID, contextMenu, uuid))
+	{
+		return false;
+	}
+
+	contextMenuItem->SetUuid(uuid);
+
 	wstring* helpText = new wstring();
 
 	if(!ParserUtil::GetItem(HELP_TEXT, contextMenu, helpText))
@@ -324,13 +332,13 @@ bool ContextMenuUtil::_ParseContextMenuList(wstring* contextMenuList, vector<Con
 	{
 		wstring* contextMenu = new wstring();
 
-		currentLocation = ParserUtil::GetNextStringItemInList(contextMenuList, currentLocation, contextMenu);
+		currentLocation = ParserUtil::GetNextNativityItemInList(contextMenuList, currentLocation, contextMenu);
 
 		currentLocation++;
 
 		menus->push_back(contextMenu);
 	}
-
+	
 	for(vector<wstring*>::iterator it = menus->begin(); it != menus->end(); it++)
 	{
 		wstring* temp = *it;

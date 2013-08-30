@@ -30,7 +30,7 @@
 
 //Remote Functions
 #define GET_CONTEXT_MENU_LIST			L"getContextMenuList"
-#define PERFORM_ACTION					L"performAction"
+#define CONTEXT_MENU_ACTION				L"contextMenuAction"
 
 //Model
 #define ID								L"id"
@@ -41,5 +41,6 @@
 #define ENABLED							L"enabled"
 #define HELP_TEXT						L"helpText"
 #define TITLE							L"title"
+#define UUID							L"uuid"
 
 #define TRUE_TEXT						L"true"

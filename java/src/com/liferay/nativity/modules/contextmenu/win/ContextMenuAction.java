@@ -12,27 +12,27 @@
  * details.
  */
 
-#include "ContextMenuAction.h"
+package com.liferay.nativity.modules.contextmenu.win;
 
-using namespace std;
+public class ContextMenuAction {
 
-wstring* ContextMenuAction::GetUuid()
-{
-	return _uuid;
-}
-	
-vector<wstring>* ContextMenuAction::GetFiles()
-{
-	return _files;
-}
-	
-void ContextMenuAction::SetUuid(wstring* uuid)
-{
-	_uuid = uuid;
-}
+	public String[] getFiles() {
+		return _files;
+	}
 
+	public String getUuid() {
+		return _uuid;
+	}
 
-void ContextMenuAction::SetFiles(vector<wstring>* files)
-{
-	_files = files;
+	public void setFiles(String[] files) {
+		_files = files;
+	}
+
+	public void setId(String uuid) {
+		_uuid = uuid;
+	}
+
+	private String[] _files;
+	private String _uuid;
+
 }

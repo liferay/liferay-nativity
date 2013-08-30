@@ -168,7 +168,8 @@ IFACEMETHODIMP LiferayNativityContextMenus::InvokeCommand(LPCMINVOKECOMMANDINFO 
 
 		index = _wtoi(wcommand->c_str());
 
-		delete[] buf; 
+		delete[] buf;
+
     }
     else if (unicode && HIWORD(((CMINVOKECOMMANDINFOEX*)pici)->lpVerbW))
     {
@@ -190,7 +191,6 @@ IFACEMETHODIMP LiferayNativityContextMenus::InvokeCommand(LPCMINVOKECOMMANDINFO 
 	{
 		return E_FAIL;
 	}
-
     return S_OK;
 }
 
@@ -319,7 +319,6 @@ bool LiferayNativityContextMenus::_InsertSeparator(HMENU hMenu, int location)
 
 bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, HMENU subMenuHandle, int location, const wchar_t* text)
 {
-
 	MENUITEMINFO menuItem = { sizeof(menuItem) };
 		
 	menuItem.fMask = MIIM_STRING | MIIM_SUBMENU;
@@ -345,7 +344,7 @@ bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, int location, int com
 	menuItem.dwTypeData = (LPWSTR)text;
 
 	menuItem.wID = command;
-		
+	
 	if(!InsertMenuItem(hMenu, location, TRUE, &menuItem))
 	{
 		return false;		

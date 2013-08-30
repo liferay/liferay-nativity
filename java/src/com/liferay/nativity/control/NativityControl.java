@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Dennis Ju
  */
@@ -68,6 +71,8 @@ public abstract class NativityControl {
 	 * needs to be sent back to the native service.
 	 */
 	public NativityMessage fireMessage(NativityMessage message) {
+		_logger.debug("Firing message {}", message.getCommand());
+
 		MessageListener messageListener = _commandMap.get(message.getCommand());
 
 		if (messageListener == null) {
@@ -177,6 +182,9 @@ public abstract class NativityControl {
 	public abstract boolean unload() throws Exception;
 
 	protected List<SocketCloseListener> socketCloseListeners;
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		NativityControl.class.getName());
 
 	private Map<String, MessageListener> _commandMap;
 

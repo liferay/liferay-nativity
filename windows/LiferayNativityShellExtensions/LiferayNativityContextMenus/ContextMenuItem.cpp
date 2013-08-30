@@ -33,6 +33,7 @@ ContextMenuItem::ContextMenuItem(const ContextMenuItem& other)
 	_id = other._id;
 	_index = other._index;
 	_title = other._title;
+	_uuid = other._uuid;
 }
 
 ContextMenuItem& ContextMenuItem::operator=(const ContextMenuItem& other)
@@ -43,6 +44,7 @@ ContextMenuItem& ContextMenuItem::operator=(const ContextMenuItem& other)
 	_id = other._id;
 	_index = other._index;
 	_title = other._title;
+	_uuid = other._uuid;
 
 	return *this;
 }
@@ -76,6 +78,11 @@ int ContextMenuItem::GetIndex()
 wstring* ContextMenuItem::GetTitle()
 {
 	return _title;
+}
+
+wstring* ContextMenuItem::GetUuid()
+{
+	return _uuid;
 }
 
 bool ContextMenuItem::HasSubMenus()
@@ -121,4 +128,9 @@ void ContextMenuItem::SetIndex(int index)
 void ContextMenuItem::SetTitle(wstring* title)
 {
 	_title = title;
+}
+
+void ContextMenuItem::SetUuid(wstring* uuid)
+{
+	_uuid = uuid;
 }

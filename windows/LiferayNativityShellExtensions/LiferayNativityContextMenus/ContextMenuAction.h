@@ -21,17 +21,17 @@ class __declspec(dllexport) ContextMenuAction
 {
 public:
 
-	int GetId();
+	std::wstring* GetUuid();
 	
 	std::vector<std::wstring>* GetFiles();
 	
-	void SetId(int);
+	void SetUuid(std::wstring*);
 
 	void SetFiles(std::vector<std::wstring>*);
 
 private:
 	
-	int _id;
+	std::wstring* _uuid;
 	std::vector<std::wstring>* _files;
 };
 

@@ -66,14 +66,14 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 			public NativityMessage onMessage(NativityMessage message) {
 				String value = message.getValue().toString();
 
-				_logger.debug("Nativity Message Value {}", value);
+				_logger.trace("Nativity Message Value {}", value);
 
 				try {
 					ContextMenuAction contextMenuAction =
 						_objectMapper.readValue(value, ContextMenuAction.class);
 
 					fireContextMenuAction(
-						String.valueOf(contextMenuAction.getId()),
+						contextMenuAction.getUuid(),
 						contextMenuAction.getFiles());
 				}
 				catch (Exception e) {
@@ -90,32 +90,8 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsContextMenuControlImpl.class.getName());
-
 	private static ObjectMapper _objectMapper =
 		new ObjectMapper().configure(
 			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
-
-	class ContextMenuAction {
-
-		public int getId() {
-			return _id;
-		}
-
-		public String[] getFiles() {
-			return _files;
-		}
-
-		public void setId(int id) {
-			_id = id;
-		}
-
-		public void setFiles(String[] files) {
-			_files = files;
-		}
-
-		private int _id;
-		private String[] _files;
-
-	}
 
 }
