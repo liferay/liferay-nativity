@@ -50,7 +50,7 @@ public class WindowsNativityUtil {
 
 			return;
 		}
-
+		
 		if (_loadLibrary(false, _LIFERAY_NATIVITY_WINDOWS_UTIL_x64)) {
 			return;
 		}
@@ -77,9 +77,11 @@ public class WindowsNativityUtil {
 		}
 		catch (UnsatisfiedLinkError e) {
 			_logger.error("Failed to load {}", path);
+			_logger.error(e.getMessage(), e);
 		}
 		catch (Exception e) {
 			_logger.error("Failed to load {}", path);
+			_logger.error(e.getMessage(), e);
 		}
 
 		return _loaded;

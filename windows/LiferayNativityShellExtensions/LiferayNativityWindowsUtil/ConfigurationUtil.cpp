@@ -26,8 +26,8 @@ using namespace std;
 
 #define SIZE 4096
 
-JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativityWindowsUtil_updateExplorer
-	(JNIEnv *env, jclass jclazz, jstring filePath)
+JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativityUtil_updateExplorer
+  (JNIEnv *env, jclass jclazz, jstring filePath)
 {
 	if(env == NULL)
 	{ 
@@ -61,8 +61,8 @@ JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativity
 	return JNI_TRUE;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativityWindowsUtil_setSystemFolder
-	(JNIEnv *env, jclass jclazz, jstring filePath)
+JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativityUtil_setSystemFolder
+  (JNIEnv *env, jclass jclazz, jstring filePath)
 {
 	if(env == NULL)
 	{ 
