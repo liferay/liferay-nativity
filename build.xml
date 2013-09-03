@@ -88,8 +88,10 @@
                 </fail>
             </then>
         </if>
-
+        
 		<mkdir dir="${project.dir}/dist/" />
+		
+		<antcall target="build-jni-headers" />
 
         <exec
             executable="${nativity.dir}/build-windows.cmd"
