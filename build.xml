@@ -36,7 +36,7 @@
 			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
 		</jar>
 	</target>
-	
+
 	<target name="build-jni-headers" depends="compile">
 		<javah destdir="${project.dir}/windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil" classpath="${java.dir}/classes" class="com.liferay.nativity.control.win.WindowsNativityUtil"/>
 	</target>
@@ -76,7 +76,7 @@
         />
 
     </target>
-    
+
     <target name="build-windows-native-util" depends="compile">
         <if>
             <not>
@@ -88,9 +88,9 @@
                 </fail>
             </then>
         </if>
-        
+
 		<mkdir dir="${project.dir}/dist/" />
-		
+
 		<antcall target="build-jni-headers" />
 
         <exec
