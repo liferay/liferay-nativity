@@ -70,7 +70,7 @@ void SocketServer::doAcceptLoop()
 	writeLog("Socket created\n");
 
 	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = INADDR_ANY;
+	server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	server.sin_port = htons(port_);
 
 	if (bind(serverSocket_, (struct sockaddr*)&server, sizeof(server)) < 0)

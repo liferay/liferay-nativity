@@ -380,12 +380,12 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	{
 		NSError* error = nil;
 
-		if (![_listenSocket acceptOnPort:33001 error:&error])
+		if (![_listenSocket acceptOnInterface:@"localhost" port:33001 error:&error])
 		{
 			return;
 		}
 
-		if (![_callbackSocket acceptOnPort:33002 error:&error])
+		if (![_callbackSocket acceptOnInterface:@"localhost" port:33002 error:&error])
 		{
 			return;
 		}
