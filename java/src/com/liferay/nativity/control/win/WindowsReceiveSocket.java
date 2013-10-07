@@ -38,11 +38,7 @@ public class WindowsReceiveSocket extends WindowsSocketBase {
 
 	protected void handleConnection() {
 		try {
-			_logger.trace("Waiting for connection");
-
 			Socket clientSocket = getServerSocket().accept();
-
-			_logger.trace("Got connection");
 
 			_messageProcessor.execute(
 				new MessageProcessor(clientSocket, _nativityControl));

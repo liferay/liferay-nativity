@@ -82,8 +82,6 @@ public class MessageProcessor implements Runnable {
 	}
 
 	private void _handle(String receivedMessage) throws IOException {
-		_logger.trace("Message {}", receivedMessage);
-
 		if (receivedMessage.charAt(0) != '{')
 		{
 			_logger.error("Invalid message {}", receivedMessage);
@@ -105,9 +103,6 @@ public class MessageProcessor implements Runnable {
 				_returnEmpty();
 			}
 			else {
-				_logger.trace(
-					"Response {}", responseMessage.getValue().toString());
-
 				_objectMapper.writeValue(_outputStreamWriter, responseMessage);
 				_outputStreamWriter.write("\0");
 			}
