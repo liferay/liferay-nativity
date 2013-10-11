@@ -1,5 +1,7 @@
 build.*.properties
 
+.idea/
+*.bundle/
 dist
 tmp
 
