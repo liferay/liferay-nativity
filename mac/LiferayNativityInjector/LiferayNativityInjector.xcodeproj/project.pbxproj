@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0BD880A818019AF900ED4CDA /* LiferayNativityFinder.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0BD880A718019AF900ED4CDA /* LiferayNativityFinder.bundle */; };
 		0BD9C38E1778EF450094CF5D /* license.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0BD9C38D1778EF450094CF5D /* license.txt */; };
 		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
 		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
@@ -105,6 +104,7 @@
 				8D57630F048677EA00EA77CD /* Resources */,
 				8D576311048677EA00EA77CD /* Sources */,
 				8D576313048677EA00EA77CD /* Frameworks */,
+				0BEF77771808051C007A3BE4 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -152,11 +152,26 @@
 				8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */,
 				D6ACBEA5117B7D6100F6691C /* LiferayNativityInjector.sdef in Resources */,
 				0BD9C38E1778EF450094CF5D /* license.txt in Resources */,
-				0BD880A818019AF900ED4CDA /* LiferayNativityFinder.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0BEF77771808051C007A3BE4 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -R -L -f $BUILT_PRODUCTS_DIR/LiferayNativityFinder.bundle $BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D576311048677EA00EA77CD /* Sources */ = {
