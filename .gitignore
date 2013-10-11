@@ -2,6 +2,7 @@ build.*.properties
 
 .idea/
 *.bundle/
+xcuserdata/
 dist
 tmp
 
