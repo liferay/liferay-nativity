@@ -113,7 +113,138 @@ Below is a brief description of the classes inside LiferayNativityFinder.
 
 ## Windows
 
-*Instructions coming soon*
+For Windows Nativity makes use of both a JNI interface as well as Windows Shell Extensions.  There are several DLL’s which must be built and configured to use Nativity on Windows.  
+* 1 for context menus
+* 1 for each overlay you want to use
+* 1 for JNI Interface dll
+* 1 Utility DLL shared by the context menu shell extension and the icon overlay extension.  
+
+###JNI Interface
+The JNI interface allows the Java side of nativity to interact with the native side of nativity.  It only provides the ability to set a folder to a system folder.  In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however nativity also provides it do older versions of java can be supported.  
+    
+    public static native boolean setSystemFolder(String folder)
+
+The JNI interface also allows interaction with Explorer.  It notifies explorer to redraw an icon overlay.  This provides the ability to refresh the when they have changed.
+
+    public static native boolean updateExplorer(String filePath);
+
+To use the JNI interface, the Liferay Nativity Windows Util project must be build and the resulting DLL named
+
+    LiferayNativityWindowsUtil_x64.dll
+    LiferayNativityWindowsUtil_x86.dll
+
+This dll must also be on the java.library. path.  
+
+###Java Side
+The Context Menus and the Icon Overlays only display context menus and icon overlays on folders that reside within the filter folder.  The filter folder is set with: 
+
+    public void setFilterFolder(String folder);
+
+If no filter folder is set then all folders are capable of having a context menu or icon overlay.  However setting a filter folder will improve performance.  
+
+The filter folder setting is stored in the registry key
+
+    HKEY_CURRENT_USER\Software\Liferay Inc\Liferay Nativity
+
+The FilterFolder value in this key contains the value.  
+
+###Shell Extensions 
+The shell extensions must be built and registered to be used by explorer, explorer also must be restarted for the icon overlays to display.  
+
+####Build Properties
+
+In your ant properties file you need to add the following properties.
+* **nativity.dir** This is the location of the nativity code.
+* **nativity.version** This is the version for your build of nativity.
+* **ms.sdk.7.1.dir** This is the directory that that MS SDK 7.1 resides
+* **framework.dir** This is the directory where the .NET Framework resides
+
+* **context.menu.guid** This is the GUID you have assigned to your context menu dll.
+
+* **overlay.name.?** This is the name for your icon overlay DLL, remember you need one icon overlay dll for each icon overlay.  
+* **overlay.guid.?** This is the GUID you have assigned to this icon overlay dll.
+* **overlay.id.?** This is the int value that this icon overlay will display for. The dll will query the java side for the id value, if the id value received is equal to this value, the icon overlay will display. 
+* **overlay.path.?** This is the path to the icon overlay, this icon will be placed in the DLL during the build process. 
+
+#####Sample:
+    
+    nativity.dir=D:/newrepository/liferay-nativity
+    nativity.version=1.0.1
+    ms.sdk.7.1.dir=C:/Program Files/Microsoft SDKs/Windows/v7.1
+    framework.dir=C:/Windows/Microsoft.NET/Framework64/v4.0.30319
+
+    context.menu.guid={0DD5B4B0-25AF-4e09-A46B-9F274F3D7000}
+
+    overlay.name.ok=LiferayNativityOKOverlay
+    overlay.guid.ok={0DD5B4B0-25AF-4e09-A46B-9F274F3D7001}
+    overlay.id.ok=1
+    overlay.path.ok=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/ok_overlay.ico
+
+    overlay.name.syncing=LiferayNativitySyncingOverlay
+    overlay.guid.syncing={0DD5B4B0-25AF-4e09-A46B-9F274F3D7002}
+    overlay.id.syncing=2
+    overlay.path.syncing=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/syncing_overlay.ico
+
+    overlay.name.error=LiferayNativityErrorOverlay
+    overlay.guid.error={0DD5B4B0-25AF-4e09-A46B-9F274F3D7003}
+    overlay.id.error=3
+    overlay.path.error=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/error_overlay.ico
+
+
+###Ant Scripts
+
+####Windows Util DLL
+
+This dll is required for both the Context Menus and the Icon Overlays.
+
+    <ant dir="${nativity.dir}" target="build-windows-util" inheritAll="false">
+      <property name="nativity.dir" value="${nativity.dir}" />
+      <property name="target.os" value="windows" />
+      <property name="ms.sdk.7.1.dir" value="${ms.sdk.7.1.dir}" />
+      <property name="framework.dir" value="${framework.dir}" />
+    </ant>
+
+####Context Menu DLL
+    
+    <ant dir="${nativity.dir}" target="build-windows-menus" inheritAll="false">
+      <property name="nativity.dir" value="${nativity.dir}" />
+      <property name="target.os" value="windows" />
+      <property name="ms.sdk.7.1.dir" value="${ms.sdk.7.1.dir}" />
+      <property name="framework.dir" value="${framework.dir}" />
+
+      <property name="context.menu.guid" value="${context.menu.guid}" />
+    </ant>
+
+####Icon Overlay DLL
+
+One Icon Overlay DLL must be built for each Icon Overlay.  
+
+    <ant dir="${nativity.dir}" target="build-windows-overlays" inheritAll="false">
+      <property name="nativity.dir" value="${nativity.dir}" />
+      <property name="dist.dir" value="${project.dir}/dist" />
+      <property name="target.os" value="windows" />
+      <property name="ms.sdk.7.1.dir" value="${ms.sdk.7.1.dir}" />
+      <property name="framework.dir" value="${framework.dir}" />
+
+      <property name="overlay.name" value="${overlay.name.?}" />
+      <property name="overlay.guid" value="${overlay.guid.?}" />
+      <property name="overlay.id" value="${overlay.id.?}" />
+      <property name="overlay.path" value="${overlay.path.?}" />
+    </ant>
+
+#####Sample
+    <ant dir="${nativity.dir}" target="build-windows-overlays" inheritAll="false">
+      <property name="nativity.dir" value="${nativity.dir}" />
+      <property name="dist.dir" value="${project.dir}/dist" />
+      <property name="target.os" value="windows" />
+      <property name="ms.sdk.7.1.dir" value="${ms.sdk.7.1.dir}" />
+      <property name="framework.dir" value="${framework.dir}" />
+
+      <property name="overlay.name" value="${overlay.name.syncing}" />
+      <property name="overlay.guid" value="${overlay.guid.syncing}" />
+      <property name="overlay.id" value="${overlay.id.syncing}" />
+      <property name="overlay.path" value="${overlay.path.syncing}" />
+    </ant>
 
 ## Linux
 
