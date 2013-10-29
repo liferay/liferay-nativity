@@ -23,7 +23,7 @@
 {
 	[self IconOverlayHandlers_drawIconWithFrame:arg1];
 
-	NSURL* url = [[NSClassFromString(@"FINode") nodeFromNodeRef:[(TNodeIconAndNameCell*)self node]->fNodeRef] previewItemURL];
+	NSURL* url = [[NSClassFromString(@"FINode") nodeFromNodeRef:[(TIconAndTextCell*)self node]->fNodeRef] previewItemURL];
 
 	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
 

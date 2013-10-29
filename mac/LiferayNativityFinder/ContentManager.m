@@ -139,7 +139,26 @@ static ContentManager* sharedInstance = nil;
 
 			if (repaintWindow)
 			{
-				NSObject* browserView = [[browserWindowController browserViewController] browserView];
+				NSObject* browserViewController;
+
+				if ([browserWindowController respondsToSelector:@selector(browserViewController)])
+				{
+					// 10.7 & 10.8
+					browserViewController = [browserWindowController browserViewController];
+				}
+				else if ([browserWindowController respondsToSelector:@selector(activeBrowserViewController)])
+				{
+					// 10.9
+					browserViewController = [browserWindowController activeBrowserViewController];
+				}
+				else
+				{
+					NSLog(@"LiferayNativityFinder: refreshing icon badges failed");
+
+					return;
+				}
+
+				NSObject* browserView = [browserViewController browserView];
 
 				[browserView setNeedsDisplay:YES];
 			}
