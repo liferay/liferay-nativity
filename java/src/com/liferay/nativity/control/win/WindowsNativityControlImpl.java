@@ -83,9 +83,11 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void setFilterFolder(String folder) {
+		String temp = folder.replace("/", "\\");
+		
 		RegistryUtil.writeRegistry(
 			Constants.NATIVITY_REGISTRY_KEY,
-			Constants.FILTER_FOLDER_REGISTRY_NAME, folder);
+			Constants.FILTER_FOLDER_REGISTRY_NAME, temp);
 	}
 
 	@Override
