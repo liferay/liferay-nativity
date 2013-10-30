@@ -221,41 +221,6 @@
 
     </target>
 
-    <target name="build-windows-service" depends="compile">
-        <if>
-            <not>
-                <equals arg1="${target.os}" arg2="windows" />
-            </not>
-            <then>
-                <fail>
-                    Ant target must be run in Windows
-                </fail>
-            </then>
-        </if>
-
-    	<mkdir dir="${project.dir}/dist/" />
-
-        <exec
-            executable="${nativity.dir}/build-windows.cmd"
-            failonerror="true"
-        >
-            <arg value="LiferayNativityExtensionServer" />
-            <arg value="${nativity.dir}/windows" />
-            <arg value="${ms.sdk.7.1.dir}" />
-            <arg value="${framework.dir}" />
-        </exec>
-
-        <copy
-            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityExtensionServer_x64.exe"
-            toFile="${project.dir}/dist/LiferayNativityExtensionServer_x64.exe"
-        />
-
-        <copy
-            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityExtensionServer_x86.exe"
-            toFile="${project.dir}/dist/LiferayNativityExtensionServer_x86.exe"
-        />
-    </target>
-
 	<target name="clean">
 		<delete dir="${java.dir}/classes" />
 		<delete dir="dist" />
