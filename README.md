@@ -113,15 +113,15 @@ Below is a brief description of the classes inside LiferayNativityFinder.
 
 ## Windows
 
-For Windows Nativity makes use of both a JNI interface as well as Windows Shell Extensions.  There are several DLL’s which must be built and configured to use Nativity on Windows.  
+For Windows Nativity makes use of both a JNI interface as well as Windows Shell Extensions.  There are several DLLâ€™s which must be built and configured to use Nativity on Windows.
 * 1 for context menus
 * 1 for each overlay you want to use
 * 1 for JNI Interface dll
-* 1 Utility DLL shared by the context menu shell extension and the icon overlay extension.  
+* 1 Utility DLL shared by the context menu shell extension and the icon overlay extension.
 
 ###JNI Interface
-The JNI interface allows the Java side of nativity to interact with the native side of nativity.  It only provides the ability to set a folder to a system folder.  In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however nativity also provides it do older versions of java can be supported.  
-    
+The JNI interface allows the Java side of nativity to interact with the native side of nativity.  It only provides the ability to set a folder to a system folder.  In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however nativity also provides it do older versions of java can be supported.
+
     public static native boolean setSystemFolder(String folder)
 
 The JNI interface also allows interaction with Explorer.  It notifies explorer to redraw an icon overlay.  This provides the ability to refresh the when they have changed.
@@ -133,23 +133,23 @@ To use the JNI interface, the Liferay Nativity Windows Util project must be buil
     LiferayNativityWindowsUtil_x64.dll
     LiferayNativityWindowsUtil_x86.dll
 
-This dll must also be on the java.library. path.  
+This dll must also be on the java.library. path.
 
 ###Java Side
-The Context Menus and the Icon Overlays only display context menus and icon overlays on folders that reside within the filter folder.  The filter folder is set with: 
+The Context Menus and the Icon Overlays only display context menus and icon overlays on folders that reside within the filter folder.  The filter folder is set with:
 
     public void setFilterFolder(String folder);
 
-If no filter folder is set then all folders are capable of having a context menu or icon overlay.  However setting a filter folder will improve performance.  
+If no filter folder is set then all folders are capable of having a context menu or icon overlay.  However setting a filter folder will improve performance.
 
 The filter folder setting is stored in the registry key
 
     HKEY_CURRENT_USER\Software\Liferay Inc\Liferay Nativity
 
-The FilterFolder value in this key contains the value.  
+The FilterFolder value in this key contains the value.
 
-###Shell Extensions 
-The shell extensions must be built and registered to be used by explorer, explorer also must be restarted for the icon overlays to display.  
+###Shell Extensions
+The shell extensions must be built and registered to be used by explorer, explorer also must be restarted for the icon overlays to display.
 
 ####Build Properties
 
@@ -161,13 +161,13 @@ In your ant properties file you need to add the following properties.
 
 * **context.menu.guid** This is the GUID you have assigned to your context menu dll.
 
-* **overlay.name.?** This is the name for your icon overlay DLL, remember you need one icon overlay dll for each icon overlay.  
+* **overlay.name.?** This is the name for your icon overlay DLL, remember you need one icon overlay dll for each icon overlay.
 * **overlay.guid.?** This is the GUID you have assigned to this icon overlay dll.
-* **overlay.id.?** This is the int value that this icon overlay will display for. The dll will query the java side for the id value, if the id value received is equal to this value, the icon overlay will display. 
-* **overlay.path.?** This is the path to the icon overlay, this icon will be placed in the DLL during the build process. 
+* **overlay.id.?** This is the int value that this icon overlay will display for. The dll will query the java side for the id value, if the id value received is equal to this value, the icon overlay will display.
+* **overlay.path.?** This is the path to the icon overlay, this icon will be placed in the DLL during the build process.
 
 #####Sample:
-    
+
     nativity.dir=D:/newrepository/liferay-nativity
     nativity.version=1.0.1
     ms.sdk.7.1.dir=C:/Program Files/Microsoft SDKs/Windows/v7.1
@@ -205,7 +205,7 @@ This dll is required for both the Context Menus and the Icon Overlays.
     </ant>
 
 ####Context Menu DLL
-    
+
     <ant dir="${nativity.dir}" target="build-windows-menus" inheritAll="false">
       <property name="nativity.dir" value="${nativity.dir}" />
       <property name="target.os" value="windows" />
@@ -217,7 +217,7 @@ This dll is required for both the Context Menus and the Icon Overlays.
 
 ####Icon Overlay DLL
 
-One Icon Overlay DLL must be built for each Icon Overlay.  
+One Icon Overlay DLL must be built for each Icon Overlay.
 
     <ant dir="${nativity.dir}" target="build-windows-overlays" inheritAll="false">
       <property name="nativity.dir" value="${nativity.dir}" />
