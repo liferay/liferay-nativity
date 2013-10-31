@@ -71,7 +71,7 @@ public abstract class NativityControl {
 	 * needs to be sent back to the native service.
 	 */
 	public NativityMessage fireMessage(NativityMessage message) {
-		_logger.trace("Firing message {}", message.getCommand());
+		_logger.trace("Firing message: {}", message.getCommand());
 
 		MessageListener messageListener = _commandMap.get(message.getCommand());
 

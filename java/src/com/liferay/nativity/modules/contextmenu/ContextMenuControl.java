@@ -41,7 +41,7 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 	public void fireContextMenuAction(String uuid, String[] paths) {
 		for (ContextMenuItem contextMenuItem : contextMenuItems) {
 			if (contextMenuItem.getUuid().equals(uuid)) {
-				_logger.trace("Firing action uuid: {}, for: {}", uuid, paths);
+				_logger.trace("Firing action uuid: {} for: {}", uuid, paths);
 
 				contextMenuItem.fireContextMenuAction(paths);
 
