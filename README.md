@@ -48,7 +48,7 @@ The LiferayNativityFinder bundle is responsible for "method swizzling" the code 
 
 ### Build
 
-After cloning the liferay-nativity github project, both LiferayNativityInjector and LiferayNativityFinder XCode projects should build without errors. The LiferayNativityFinder bundle should be referenced and copied by LiferayNativityInjector's project. LiferayNativity.osax is the scripting addition target built by LiferayNativityInjector.
+After cloning the liferay-nativity project, open LiferayNativity.xcworkspace and build using the LiferayNativity.osax scheme. The LiferayNativity.osax binary will be under LiferayNativityInjector's Products folder. You can ignore LiferayNativityFinder.bundle as it's already copied into LiferayNativity.osax's Resources folder.
 
 ### Deployment
 
