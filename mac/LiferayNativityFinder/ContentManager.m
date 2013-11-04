@@ -124,7 +124,26 @@ static ContentManager* sharedInstance = nil;
 			{
 				repaintWindow = NO;
 
-				NSArray* folderPaths = [menuManager pathsForNodes:[browserWindowController targetPath]];
+				struct TFENodeVector* targetPath;
+
+				if ([browserWindowController respondsToSelector:@selector(targetPath)])
+				{
+					// 10.7 & 10.8
+					targetPath = [browserWindowController targetPath];
+				}
+				else if ([browserWindowController respondsToSelector:@selector(activeContainer)])
+				{
+					// 10.9
+					targetPath = [[browserWindowController activeContainer] targetPath];
+				}
+				else
+				{
+					NSLog(@"LiferayNativityFinder: refreshing icon badges failed");
+					
+					return;
+				}
+
+				NSArray* folderPaths = [menuManager pathsForNodes:targetPath];
 
 				for (NSString* folderPath in folderPaths)
 				{
