@@ -90,7 +90,6 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsContextMenuControlImpl.class.getName());
-
 	private static ObjectMapper _objectMapper =
 		new ObjectMapper().configure(
 			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
