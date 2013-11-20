@@ -34,6 +34,7 @@
 		<jar destfile="${project.dir}/dist/liferay-nativity-${package.version}.jar" filesetmanifest="mergewithoutmain">
 			<fileset dir="${java.dir}/classes" />
 			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
+			<fileset dir="${java.dir}/lib/native" excludes="META-INF/*.SF" includes="*.dll" />
 		</jar>
 	</target>
 
@@ -113,6 +114,15 @@
             toFile="${project.dir}/dist/LiferayNativityWindowsUtil_x86.dll"
         />
 
+		<copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityWindowsUtil_x64.dll"
+            toFile="${java.dir}/lib/native/LiferayNativityWindowsUtil_x64.dll"
+        />
+
+        <copy
+            file="${nativity.dir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityWindowsUtil_x86.dll"
+            toFile="${java.dir}/lib/native/LiferayNativityWindowsUtil_x86.dll"
+        />
     </target>
 
 	<target name="build-windows-menus" depends="compile">
