@@ -32,6 +32,7 @@ public class WindowsNativityUtil {
 	public static boolean load() {
 		if (!_loaded) {
 			_logger.trace("Loading nativity");
+
 			_load();
 		}
 
@@ -75,11 +76,11 @@ public class WindowsNativityUtil {
 	private static boolean _dllsExist(String dllPath64, String dllPath86) {
 		File dllFile64 = new File(dllPath64);
 		File dllFile86 = new File(dllPath86);
-	
+
 		if (dllFile64.exists() && dllFile86.exists()) {
 			return true;
 		}
-	
+
 		return false;
 	}
 
