@@ -30,9 +30,8 @@ import org.slf4j.LoggerFactory;
 public class WindowsNativityUtil {
 
 	public static boolean load() {
-		_logger.trace("Loading nativity");
-
 		if (!_loaded) {
+			_logger.trace("Loading nativity");
 			_load();
 		}
 
@@ -73,6 +72,17 @@ public class WindowsNativityUtil {
 		return sb.toString();
 	}
 
+	private static boolean _dllsExist(String dllPath64, String dllPath86) {
+		File dllFile64 = new File(dllPath64);
+		File dllFile86 = new File(dllPath86);
+	
+		if (dllFile64.exists() && dllFile86.exists()) {
+			return true;
+		}
+	
+		return false;
+	}
+
 	private static void _extractDLL(String src, String dest) {
 		_logger.trace("Extracting {} {}", src, dest);
 
@@ -109,7 +119,7 @@ public class WindowsNativityUtil {
 
 		String dest86 = _createPath(destFolder, _NATIVITY_LIB_x86);
 
-		if (dllsExist(dest64, dest86)) {
+		if (_dllsExist(dest64, dest86)) {
 			_logger.trace("DLL's exist, no need to extract from jar");
 
 			return destFolder;
@@ -211,17 +221,6 @@ public class WindowsNativityUtil {
 		}
 
 		return _loaded;
-	}
-
-	private static boolean dllsExist(String dllPath64, String dllPath86) {
-		File dllFile64 = new File(dllPath64);
-		File dllFile86 = new File(dllPath86);
-
-		if (dllFile64.exists() && dllFile86.exists()) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private static final String _NATIVITY_LIB_x64 =
