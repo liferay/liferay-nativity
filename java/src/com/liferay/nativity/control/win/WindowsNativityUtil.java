@@ -194,7 +194,6 @@ public class WindowsNativityUtil {
 			return;
 		}
 
-		
 		_logger.error("Unable to load library");
 	}
 
@@ -216,7 +215,7 @@ public class WindowsNativityUtil {
 		catch (UnsatisfiedLinkError e) {
 			_logger.error(
 				"Library Path : {}", System.getProperty("java.library.path"));
-			
+
 			_logger.error("Failed to load {} {}", e.getMessage(), path);
 		}
 		catch (Exception e) {
@@ -229,16 +228,12 @@ public class WindowsNativityUtil {
 
 	private static final String _NATIVITY_LIB_x64 =
 		"LiferayNativityWindowsUtil_x64";
-	
-	private static final String _NATIVITY_LIB_x86 =
-		"LiferayNativityWindowsUtil_x86";
-	
 	private static final String _NATIVITY_LIB_x64_DLL =
 		_NATIVITY_LIB_x64 + ".dll";
-	
+	private static final String _NATIVITY_LIB_x86 =
+		"LiferayNativityWindowsUtil_x86";
 	private static final String _NATIVITY_LIB_x86_DLL =
 		_NATIVITY_LIB_x86 + ".dll";
-	
 
 	private static boolean _load = true;
 	private static boolean _loaded;
