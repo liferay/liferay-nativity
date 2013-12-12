@@ -179,9 +179,9 @@ public class WindowsNativityUtil {
 
 		_logger.trace("Extracted dll from jar {} ", path);
 
-		String dllPath64 = _createPath(path, _NATIVITY_LIB_x64);
+		String dllPath64 = _createPath(path, _NATIVITY_LIB_x64_DLL);
 
-		String dllPath86 = _createPath(path, _NATIVITY_LIB_x86);
+		String dllPath86 = _createPath(path, _NATIVITY_LIB_x86_DLL);
 
 		if (_loadLibrary(true, dllPath64)) {
 			_logger.trace("Loaded {} ", dllPath64);
@@ -194,7 +194,7 @@ public class WindowsNativityUtil {
 			return;
 		}
 
-		_logger.error("Path : {}", System.getProperty("java.library.path"));
+		
 		_logger.error("Unable to load library");
 	}
 
@@ -214,7 +214,10 @@ public class WindowsNativityUtil {
 			_logger.trace("Loaded library {}", path);
 		}
 		catch (UnsatisfiedLinkError e) {
-			_logger.error("Failed to load {} ()", e.getMessage(), path);
+			_logger.error(
+				"Library Path : {}", System.getProperty("java.library.path"));
+			
+			_logger.error("Failed to load {} {}", e.getMessage(), path);
 		}
 		catch (Exception e) {
 			_logger.error("Failed to load {}", path);
@@ -225,9 +228,17 @@ public class WindowsNativityUtil {
 	}
 
 	private static final String _NATIVITY_LIB_x64 =
-		"LiferayNativityWindowsUtil_x64.dll";
+		"LiferayNativityWindowsUtil_x64";
+	
 	private static final String _NATIVITY_LIB_x86 =
-		"LiferayNativityWindowsUtil_x86.dll";
+		"LiferayNativityWindowsUtil_x86";
+	
+	private static final String _NATIVITY_LIB_x64_DLL =
+		_NATIVITY_LIB_x64 + ".dll";
+	
+	private static final String _NATIVITY_LIB_x86_DLL =
+		_NATIVITY_LIB_x86 + ".dll";
+	
 
 	private static boolean _load = true;
 	private static boolean _loaded;
