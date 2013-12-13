@@ -229,11 +229,11 @@ public class WindowsNativityUtil {
 	private static final String _NATIVITY_LIB_x64 =
 		"LiferayNativityWindowsUtil_x64";
 	private static final String _NATIVITY_LIB_x64_DLL =
-		_NATIVITY_LIB_x64 + ".dll";
+		"LiferayNativityWindowsUtil_x64.dll";
 	private static final String _NATIVITY_LIB_x86 =
 		"LiferayNativityWindowsUtil_x86";
 	private static final String _NATIVITY_LIB_x86_DLL =
-		_NATIVITY_LIB_x86 + ".dll";
+		"LiferayNativityWindowsUtil_x86.dll";
 
 	private static boolean _load = true;
 	private static boolean _loaded;
