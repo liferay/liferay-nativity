@@ -16,6 +16,7 @@
 #import "IconCache.h"
 #import "IconOverlayHandlers.h"
 #import "Finder/Finder.h"
+#import <objc/runtime.h>
 
 @implementation NSObject (IconOverlayHandlers)
 
@@ -88,19 +89,37 @@
 {
 	[self IconOverlayHandlers_drawRect:arg1];
 
-	//TODO1: how to get path to file here? use iconId "1" for testing.
-	//TODO2: [ContentManager repaintWindows] does not seem to redraw the list/coverflow views.
-	NSNumber* imageIndex = [NSNumber numberWithInt:1];
-//	NSNumber* imageIndex = [NSNumber numberWithInt:((arc4random() % 2) + 1)];
+	//TODO: [ContentManager repaintWindows] does not seem to redraw the list/coverflow views.
 
-	if ([imageIndex intValue] > 0)
-	{
-		NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
+	NSView* supersuperView = [[(NSView*)self superview] superview];
+	
+	id cTListRowView = objc_getClass("TListRowView");
 		
-		if (image != nil)
-		{
-			[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+	if([supersuperView isKindOfClass:cTListRowView]) {
+		TListRowView *lrv = (TListRowView*)supersuperView;
+		FINode *finode;
+		
+		object_getInstanceVariable(lrv, "_node", (void**)&finode);
+		NSURL *fp;
+		
+		if([finode respondsToSelector:@selector(previewItemURL)]) {
+			fp = [finode previewItemURL];
+		} else {
+			return;
 		}
+		
+		NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[fp path]];
+		
+		if ([imageIndex intValue] > 0)
+		{
+			NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
+			
+			if (image != nil)
+			{
+				[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+			}
+		}
+
 	}
 }
 
