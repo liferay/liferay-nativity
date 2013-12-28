@@ -248,7 +248,28 @@ One Icon Overlay DLL must be built for each Icon Overlay.
 
 ## Linux
 
-*Instructions coming soon*
+Building:
+
+	git clone https://github.com/liferay/liferay-nativity
+	cd liferay-nativity/linux/nautilus/src
+
+	sudo apt-get install cmake build-essential libgtk2.0-dev libnautilus-extension-dev libboost-all-dev
+
+	cmake .
+	make
+
+For Nautilus:
+
+	sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nautilus/extensions-3.0/libliferaynativity.so
+	killall -9 nautilus
+
+For Nemo (Nautilus fork):
+
+	sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nemo/extensions-3.0/libliferaynativity.so
+	killall -9 nemo
+
+*Further instructions coming soon*
+
 
 # Java Client
 

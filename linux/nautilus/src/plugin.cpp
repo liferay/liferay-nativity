@@ -19,6 +19,8 @@
 #include "logger.h"
 #include "requests.h"
 
+// Hooks for Nautilus
+
 extern "C" void nautilus_module_initialize(GTypeModule* module)
 {
 	RequestManager::instance();
@@ -41,4 +43,22 @@ extern "C" void nautilus_module_list_types(const GType** types, int* num_types)
 	type_list[0] = NAUTILUS_TYPE_LIFERAY;
 	*types = type_list;
 	*num_types = 1;
+}
+
+
+// Hooks for Nemo (Nautilus fork)
+
+extern "C" void nemo_module_initialize(GTypeModule* module)
+{
+	nautilus_module_initialize(module);
+}
+
+extern "C" void nemo_module_shutdown(void)
+{
+	nautilus_module_shutdown();
+}
+
+extern "C" void nemo_module_list_types(const GType** types, int* num_types)
+{
+	nautilus_module_list_types(types, num_types);
 }
