@@ -14,7 +14,20 @@
 			- [LiferayNativityInjector](#liferaynativityinjector)
 			- [LiferayNativityFinder](#liferaynativityfinder)
 	- [Windows](#windows)
+		- [JNI Interface](#jni-interface)
+		- [Shell Extensions](#shell-extensions)
+			- [Build Properties](#build-properties)
+				- [Sample](#sample)
+		- [Ant Scripts](#ant-scripts)
+			- [Windows Util DLL](#windows-util-dll)
+			- [Context Menu DLL](#context-menu-dll)
+			- [Icon Overlay DLL](#icon-overlay-dll)
+				- [Sample](#sample-1)
 	- [Linux](#linux)
+		- [Build](#build-1)
+			- [Deployment](#deployment-1)
+				- [Nautilus](#nautilus)
+				- [Nemo (Nautilus fork)](#nemo-nautilus-fork)
 - [Java Client](#java-client)
 - [Example Code](#example-code)
 - [Issue Tracking](#issue-tracking)
@@ -34,7 +47,11 @@ The following operating systems are currently supported:
 
 Currently the client code is only available for Java. Contributions for other clients like Ruby, C++, etc are welcome.
 
-<img width="500" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-mac.png">
+<img width="400" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-win.png">
+
+<img width="400" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-mac.png">
+
+<img width="400" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-linux.png">
 
 # Native Plugins
 
@@ -89,6 +106,8 @@ Check if LiferayNativityFinder is installed in the running Finder.app. Returns 0
         end try
     end tell
 
+Upon successful deployment, log messages will be written to the system log.
+
 ### Code Architecture
 
 #### LiferayNativityInjector
@@ -119,7 +138,7 @@ For Windows Nativity makes use of both a JNI interface as well as Windows Shell 
 * 1 for JNI Interface dll
 * 1 Utility DLL shared by the context menu shell extension and the icon overlay extension.
 
-###JNI Interface
+### JNI Interface
 The JNI interface allows the Java side of nativity to interact with the native side of nativity.  It only provides the ability to set a folder to a system folder.  In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however nativity also provides it do older versions of java can be supported.
 
     public static native boolean setSystemFolder(String folder)
@@ -135,23 +154,10 @@ To use the JNI interface, the Liferay Nativity Windows Util project must be buil
 
 This dll must also be on the java.library. path.
 
-###Java Side
-The Context Menus and the Icon Overlays only display context menus and icon overlays on folders that reside within the filter folder.  The filter folder is set with:
-
-    public void setFilterFolder(String folder);
-
-If no filter folder is set then all folders are capable of having a context menu or icon overlay.  However setting a filter folder will improve performance.
-
-The filter folder setting is stored in the registry key
-
-    HKEY_CURRENT_USER\Software\Liferay Inc\Liferay Nativity
-
-The FilterFolder value in this key contains the value.
-
-###Shell Extensions
+### Shell Extensions
 The shell extensions must be built and registered to be used by explorer, explorer also must be restarted for the icon overlays to display.
 
-####Build Properties
+#### Build Properties
 
 In your ant properties file you need to add the following properties.
 * **nativity.dir** This is the location of the nativity code.
@@ -166,7 +172,7 @@ In your ant properties file you need to add the following properties.
 * **overlay.id.?** This is the int value that this icon overlay will display for. The dll will query the java side for the id value, if the id value received is equal to this value, the icon overlay will display.
 * **overlay.path.?** This is the path to the icon overlay, this icon will be placed in the DLL during the build process.
 
-#####Sample:
+##### Sample
 
     nativity.dir=D:/newrepository/liferay-nativity
     nativity.version=1.0.1
@@ -191,9 +197,9 @@ In your ant properties file you need to add the following properties.
     overlay.path.error=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/error_overlay.ico
 
 
-###Ant Scripts
+### Ant Scripts
 
-####Windows Util DLL
+#### Windows Util DLL
 
 This dll is required for both the Context Menus and the Icon Overlays.
 
@@ -204,7 +210,7 @@ This dll is required for both the Context Menus and the Icon Overlays.
       <property name="framework.dir" value="${framework.dir}" />
     </ant>
 
-####Context Menu DLL
+#### Context Menu DLL
 
     <ant dir="${nativity.dir}" target="build-windows-menus" inheritAll="false">
       <property name="nativity.dir" value="${nativity.dir}" />
@@ -215,7 +221,7 @@ This dll is required for both the Context Menus and the Icon Overlays.
       <property name="context.menu.guid" value="${context.menu.guid}" />
     </ant>
 
-####Icon Overlay DLL
+#### Icon Overlay DLL
 
 One Icon Overlay DLL must be built for each Icon Overlay.
 
@@ -232,7 +238,7 @@ One Icon Overlay DLL must be built for each Icon Overlay.
       <property name="overlay.path" value="${overlay.path.?}" />
     </ant>
 
-#####Sample
+##### Sample
     <ant dir="${nativity.dir}" target="build-windows-overlays" inheritAll="false">
       <property name="nativity.dir" value="${nativity.dir}" />
       <property name="dist.dir" value="${project.dir}/dist" />
@@ -248,7 +254,9 @@ One Icon Overlay DLL must be built for each Icon Overlay.
 
 ## Linux
 
-Building:
+Liferay Nativity currently only supports Nautilus file manager. Hooks for Nemo are available, but the overlay icons and context menus do not appear.
+
+### Build
 
 	git clone https://github.com/liferay/liferay-nativity
 	cd liferay-nativity/linux/nautilus/src
@@ -258,15 +266,19 @@ Building:
 	cmake .
 	make
 
-For Nautilus:
+#### Deployment
+
+##### Nautilus
 
 	sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nautilus/extensions-3.0/libliferaynativity.so
 	killall -9 nautilus
 
-For Nemo (Nautilus fork):
+##### Nemo (Nautilus fork)
 
 	sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nemo/extensions-3.0/libliferaynativity.so
 	killall -9 nemo
+
+Upon successful deployment, log messages will be written to ~/.liferay-nativity/liferaynativity.log.
 
 *Further instructions coming soon*
 
