@@ -105,6 +105,15 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)execCommand:(NSData*)data replyTo:(GCDAsyncSocket*)sock
 {
+	if (!data || [data length] == 0)
+	{
+		NSLog(@"LiferayNativityFinder: cannot parse empty data");
+
+		[self replyString:@"-1" toSocket:sock];
+
+		return;
+	}
+
 	NSDictionary* jsonDictionary = [data objectFromJSONData];
 
 	NSString* command = [jsonDictionary objectForKey:@"command"];
@@ -112,6 +121,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	if (!command)
 	{
+		NSString* strData = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+		NSLog(@"LiferayNativityFinder: failed to parse data: %@", strData);
+
+		[self replyString:@"-1" toSocket:sock];
+
 		return;
 	}
 	if ([command isEqualToString:@"setFileIcons"])
@@ -144,7 +158,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 	else
 	{
+		NSLog(@"LiferayNativityFinder: failed to find command: %@", command);
+
 		[self replyString:@"-1" toSocket:sock];
+
+		return;
 	}
 }
 
