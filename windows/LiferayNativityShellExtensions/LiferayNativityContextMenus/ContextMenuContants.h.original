@@ -17,7 +17,7 @@
 
 //DLL Registration information
 #define REGISTRY_ALL_CONTEXT_MENU		L"*\\shellex\\ContextMenuHandlers\\LiferayNativityContextMenus"
-#define REGISTRY_FOLDER_CONTEXT_MENU	L"Folder\\shellex\\ContextMenuHandlers\\LiferaySyncContextMenus"
+#define REGISTRY_FOLDER_CONTEXT_MENU	L"Folder\\shellex\\ContextMenuHandlers\\LiferayNativityContextMenus"
 #define REGISTRY_CLSID					L"CLSID"
 #define REGISTRY_IN_PROCESS				L"InprocServer32"
 #define REGISTRY_THREADING				L"ThreadingModel"
