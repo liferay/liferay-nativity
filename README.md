@@ -30,7 +30,7 @@
 				- [Nemo (Nautilus fork)](#nemo-nautilus-fork)
 - [Java Client](#java-client)
 - [Example Code](#example-code)
-- [Issue Tracking](#issue-tracking)
+- [Issue Tracking and Contributions](#issue-tracking-and-contributions)
 - [Licensing](#licensing)
 - [Contact](#contact)
 
@@ -361,9 +361,15 @@ The following example Java code will overlay testFile.txt with testIcon.icns and
 
 	ContextMenuControlUtil.getContextMenuControl(nativityControl, contextMenuControlCallback);
 
-# Issue Tracking
+# Issue Tracking and Contributions
 
-LiferayNativity is an open source project and community members are encouraged to submit bug fixes and enhancements. Please create tickets [here](http://issues.liferay.com/browse/NVTY).
+LiferayNativity is an open source project and community members are encouraged to submit bug fixes and enhancements.
+
+Please report all bugs and feature requests here: [http://issues.liferay.com/browse/NVTY](http://issues.liferay.com/browse/NVTY) (you will need to create a free account).
+
+To contribute code, create or find the issue on Nativity's ticket management page. From the ticket page, click on "Workflow" -> "Contribute Solution" and include the pull request link. You can choose "Automatic" for the Assignee.
+
+Review the guidelines for contributions to Liferay projects here: [link](https://www.liferay.com/community/welcome/contribute)
 
 # Licensing
 
