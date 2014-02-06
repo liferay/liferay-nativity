@@ -280,6 +280,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	NSString* jsonString = [menuQueryDictionary JSONString];
 	[menuQueryDictionary release];
 
+	[_callbackMsgs removeAllObjects];
+
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
 	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
@@ -288,8 +290,6 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 
 	NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
-
-	[_callbackMsgs removeAllObjects];
 
 	NSDate* startDate = [NSDate date];
 
