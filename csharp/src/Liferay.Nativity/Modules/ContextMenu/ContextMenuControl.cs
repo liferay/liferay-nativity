@@ -49,7 +49,7 @@ using Liferay.Nativity.Control;
 namespace Liferay.Nativity.Modules.ContextMenu
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public abstract class ContextMenuControl
 	{

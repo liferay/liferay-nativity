@@ -37,8 +37,9 @@
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  * Changes:
- * - Fixed a race condition in menuItemsForFiles:. Now clearing _callbackMsgs
- * before requesting menu items for given paths
+ * - (Andrew Rondeau) Fixed a race condition in menuItemsForFiles:. Now clearing
+ * _callbackMsgs before requesting menu items for given paths
+ * - (Ivan Burlakov) Added ability to register an icon for use in context menus
  */
 
 #import "ContentManager.h"
@@ -177,6 +178,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	{
 		[self execRegisterIconCmd:value replyTo:sock];
 	}
+	else if ([command isEqualToString:@"registerMenuIcon"])
+	{
+		[self execRegisterMenuIconCmd:value replyTo:sock];
+	}
 	else if ([command isEqualToString:@"unregisterIcon"])
 	{
 		[self execUnregisterIconCmd:value replyTo:sock];
@@ -215,6 +220,20 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		index = [NSNumber numberWithInt:-1];
 	}
 
+	[self replyString:[_numberFormatter stringFromNumber:index] toSocket:sock];
+}
+
+- (void)execRegisterMenuIconCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	NSString* path = (NSString*)cmdData;
+	
+	NSNumber* index = [[IconCache sharedInstance] registerMenuIcon:path];
+	
+	if (!index)
+	{
+		index = [NSNumber numberWithInt:-1];
+	}
+	
 	[self replyString:[_numberFormatter stringFromNumber:index] toSocket:sock];
 }
 
@@ -310,7 +329,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[menuQueryDictionary release];
 
 	[_callbackMsgs removeAllObjects];
-
+	
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
 	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)

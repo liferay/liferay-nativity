@@ -45,7 +45,7 @@ using log4net;
 using Liferay.Nativity.Util;
 
 /**
- * @author Dennis Ju
+ * @author Dennis Ju, ported to C# by Andrew Rondeau
  */
 namespace Liferay.Nativity.Control
 {

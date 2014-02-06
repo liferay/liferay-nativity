@@ -42,10 +42,12 @@ using System;
 
 using log4net;
 
+//import com.liferay.nativity.util.mac.AppleUtil;
+
 namespace Liferay.Nativity.Control.Unix
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public class AppleNativityControlImpl : UnixNativityControlBaseImpl
 	{

@@ -46,7 +46,7 @@ using Liferay.Nativity.Util;
 namespace Liferay.Nativity.Modules.FileIcon
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public static class FileIconControlUtil
 	{
