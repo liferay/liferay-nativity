@@ -43,7 +43,7 @@ using System;
 namespace Liferay.Nativity.Control
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public delegate NativityMessage MessageListener(NativityMessage nativityMessage);
 }

@@ -48,7 +48,7 @@ using log4net;
 namespace Liferay.Nativity.Util
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public static class OSDetector
 	{

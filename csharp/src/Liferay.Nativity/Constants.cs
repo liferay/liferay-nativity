@@ -43,7 +43,7 @@ using System;
 namespace Liferay.Nativity
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public static class Constants
 	{

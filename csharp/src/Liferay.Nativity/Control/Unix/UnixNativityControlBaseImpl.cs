@@ -50,7 +50,7 @@ using log4net;
 namespace Liferay.Nativity.Control.Unix
 {
 	/**
-	* @author Dennis Ju
+	* @author Dennis Ju, ported to C# by Andrew Rondeau
 	*/
 	public class UnixNativityControlBaseImpl : NativityControl
 	{

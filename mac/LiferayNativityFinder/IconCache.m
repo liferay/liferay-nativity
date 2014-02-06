@@ -12,6 +12,34 @@
  * details.
  */
 
+/**
+ * Syncplicity, LLC © 2014 
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * If you would like a copy of source code for this product, EMC will provide a
+ * copy of the source code that is required to be made available in accordance
+ * with the applicable open source license.  EMC may charge reasonable shipping
+ * and handling charges for such distribution.  Please direct requests in writing
+ * to EMC Legal, 176 South St., Hopkinton, MA 01748, ATTN: Open Source Program
+ * Office.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License along
+ * with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * Changes:
+ * - (Ivan Burlakov) Added registerMenuIcon
+ */
+
 #import "IconCache.h"
 
 @implementation IconCache
@@ -89,6 +117,19 @@ static IconCache* sharedInstance = nil;
 	[image release];
 
 	return iconId;
+}
+
+- (NSNumber*)registerMenuIcon:(NSString*)path
+{
+	NSNumber* menuIconId = [self registerIcon:path];
+	
+	NSImage* menuIconImage = [self getIcon:menuIconId];
+	
+	NSSize size;
+	size.width = size.height = [[NSFont menuFontOfSize:0] pointSize];
+	[menuIconImage setSize:size];
+	
+	return menuIconId;
 }
 
 - (void)unregisterIcon:(NSNumber*)iconId

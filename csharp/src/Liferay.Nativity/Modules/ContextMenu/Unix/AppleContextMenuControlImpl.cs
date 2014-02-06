@@ -45,7 +45,7 @@ using Liferay.Nativity.Control;
 namespace Liferay.Nativity.Modules.ContextMenu.Unix
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
 	public class AppleContextMenuControlImpl : UnixContextMenuControlBaseImpl
 	{
