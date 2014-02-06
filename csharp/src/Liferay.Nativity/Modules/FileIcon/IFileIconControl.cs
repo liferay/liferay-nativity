@@ -44,7 +44,7 @@ using System.Collections.Generic;
 namespace Liferay.Nativity.Modules.FileIcon
 {
 	/**
-	 * @author Dennis Ju
+	 * @author Dennis Ju, ported to C# by Andrew Rondeau. Support for icons added by Ivan Burlakov
 	 */
 	public interface IFileIconControl
 	{
@@ -66,6 +66,15 @@ namespace Liferay.Nativity.Modules.FileIcon
 		/// <returns>overlay icon id. -1 if the icon failed ot register.</returns>
 		/// <param name="path">path to the overlay icon</param>
 		int RegisterIcon(string path);
+
+        /// <summary>
+        /// Mac only
+        /// 
+        /// Registers the menu icon and resize it to the size of context menu text.
+        /// </summary>
+        /// <returns>The menu icon id. -1 if the icon failed ot register.</returns>
+        /// <param name="path">Path to the menu icon</param>
+        int RegisterMenuIcon(string path);
 		
 		/// <summary>
 		/// Mac only

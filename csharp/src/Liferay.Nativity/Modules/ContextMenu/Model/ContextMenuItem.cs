@@ -47,7 +47,7 @@ using Newtonsoft.Json;
 namespace Liferay.Nativity.Modules.ContextMenu.Model
 {
 	/**
-	* @author Dennis Ju
+	* @author Dennis Ju, ported to C# by Andrew Rondeau. Support for icons added by Ivan Burlakov
 	*/
 	/// <summary>
 	/// Sample: {"contextMenuItems":[],"uuid":"9b4f28ef-1026-43de-a499-a1e979146ded","enabled":true,"helpText":null,"title":"Nativity Test: 2014/01/27 15:40:34"}
@@ -57,10 +57,16 @@ namespace Liferay.Nativity.Modules.ContextMenu.Model
 	{
 		private const string SEPARATOR = "_SEPARATOR_";
 
-		public ContextMenuItem (string title)
+        public ContextMenuItem (string title) : this(title, -1)
 		{
-			this.title = title;
+
 		}
+
+        public ContextMenuItem(string title, int icon)
+        {
+            this.title = title;
+            this.icon = icon;
+        }
 
 		[JsonProperty("enabled")]
 		public bool Enabled
@@ -85,6 +91,14 @@ namespace Liferay.Nativity.Modules.ContextMenu.Model
 			set { this.title = value; }
 		}
 		private string title;
+
+        [JsonProperty("icon")]
+        public int Icon
+        {
+            get { return this.icon; }
+            set { this.icon = value; }
+        }
+        private int icon;
 
 		[JsonProperty("contextMenuItems")]
 		public List<ContextMenuItem> ContextMenuItems

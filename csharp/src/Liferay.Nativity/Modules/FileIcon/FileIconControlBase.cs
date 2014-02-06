@@ -45,7 +45,7 @@ using Liferay.Nativity.Control;
 namespace Liferay.Nativity.Modules.FileIcon
 {
 	/**
-	* @author Michael Young
+	* @author Michael Young, ported to C# by Andrew Rondeau. Support for icons added by Ivan Burlakov
 	*/
 	public abstract class FileIconControlBase : IFileIconControl
 	{
