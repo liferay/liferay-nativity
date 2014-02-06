@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A04788A3-BE1D-4047-A6F0-747E0DC5D776}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Liferay.Nativity</RootNamespace>
+    <AssemblyName>Liferay.Nativity</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="log4net">
+      <HintPath>..\..\ext\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\ext\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Control\NativityControlUtil.cs" />
+    <Compile Include="Control\NativityControl.cs" />
+    <Compile Include="Util\OSDetector.cs" />
+    <Compile Include="Control\NativityMessage.cs" />
+    <Compile Include="Listeners\SocketCloseListener.cs" />
+    <Compile Include="Control\Unix\AppleNativityControlImpl.cs" />
+    <Compile Include="Control\Unix\UnixNativityControlBaseImpl.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Modules\FileIcon\FileIconControlBase.cs" />
+    <Compile Include="Modules\FileIcon\FileIconControlCallback.cs" />
+    <Compile Include="Modules\FileIcon\FileIconControlUtil.cs" />
+    <Compile Include="Modules\FileIcon\IFileIconControl.cs" />
+    <Compile Include="Modules\FileIcon\Unix\AppleFileIconControlImpl.cs" />
+    <Compile Include="Modules\FileIcon\Unix\UnixFileIconControlBaseImpl.cs" />
+    <Compile Include="Modules\ContextMenu\ContextMenuControlUtil.cs" />
+    <Compile Include="Modules\ContextMenu\ContextMenuControlCallback.cs" />
+    <Compile Include="Modules\ContextMenu\Model\ContextMenuItem.cs" />
+    <Compile Include="Modules\ContextMenu\Unix\AppleContextMenuControlImpl.cs" />
+    <Compile Include="Modules\ContextMenu\Unix\UnixContextMenuControlBaseImpl.cs" />
+    <Compile Include="Modules\ContextMenu\ContextMenuControl.cs" />
+    <Compile Include="Control\MessageListener.cs" />
+    <Compile Include="JsonExtensions.cs" />
+    <Compile Include="Modules\ContextMenu\Model\ContextMenuAction.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Control\" />
+    <Folder Include="Util\" />
+    <Folder Include="Listeners\" />
+    <Folder Include="Control\Unix\" />
+    <Folder Include="Modules\" />
+    <Folder Include="Modules\FileIcon\" />
+    <Folder Include="Modules\FileIcon\Unix\" />
+    <Folder Include="Modules\ContextMenu\" />
+    <Folder Include="Modules\ContextMenu\Model\" />
+    <Folder Include="Modules\ContextMenu\Unix\" />
+  </ItemGroup>
+</Project>
