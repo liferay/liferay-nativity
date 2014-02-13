@@ -54,11 +54,12 @@ namespace Liferay.Nativity.Example
 			Modules.FileIcon.FileIconControlCallback fileIconControlCallback = path => 1;
 			
 			var fileIconControl = FileIconControlUtil.GetFileIconControl(NativityControlUtil.NativityControl, fileIconControlCallback);
-			
+
+			fileIconControl.EnableAutomaticCleanup();
 			fileIconControl.EnableFileIcons();
 			
-			var testFilePath = "/Users/rondea/foo.txt";
-			var testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/shell/finder/SyncpPlugin_10_6/Check.icns");
+			var testFilePath = "/Users/rondea/bar.txt";
+			var testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/resources/cocoa/overlay_Check.icns");
 
 			// FileIconControl.setFileIcon() method only used by Mac and Linux
 			fileIconControl.SetFileIcon(testFilePath, testIconId);
