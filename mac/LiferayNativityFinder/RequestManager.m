@@ -43,6 +43,7 @@
  * - (Andrew Rondeau) Started tracking programname in the socket's userData, so
  * different programs don't conflict with each other
  * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
+ * - (Andrew Rondeau) Fixed a lot of thread safety issues issues via queuing
  */
 
 #import "ContentManager.h"
@@ -232,7 +233,9 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	NSNumber* enabledNumber = (NSNumber*)cmdData;
 	BOOL enabled = (BOOL)enabledNumber;
 	
-	[[ContentManager sharedInstance] enableFileIconsFor:sock.userData enabled:enabled];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] enableFileIconsFor:sock.userData enabled:enabled];
+	});
 	
 	[self replyString:@"1" toSocket:sock];
 }
@@ -241,8 +244,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSString* path = (NSString*)cmdData;
 
-	NSNumber* index = [[IconCache sharedInstance] registerIcon:path];
-
+	__block NSNumber* index;
+	dispatch_sync(dispatch_get_main_queue(), ^{
+		index = [[IconCache sharedInstance] registerIcon:path];
+	});
+	
 	if (!index)
 	{
 		index = [NSNumber numberWithInt:-1];
@@ -255,7 +261,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSString* path = (NSString*)cmdData;
 	
-	NSNumber* index = [[IconCache sharedInstance] registerMenuIcon:path];
+	__block NSNumber* index;
+	dispatch_sync(dispatch_get_main_queue(), ^{
+		index = [[IconCache sharedInstance] registerMenuIcon:path];
+	});
 	
 	if (!index)
 	{
@@ -267,8 +276,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -276,8 +287,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSArray* paths = (NSArray*)cmdData;
 
-	[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -285,8 +298,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
 
-	[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -301,8 +316,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSNumber* iconId = (NSNumber*)cmdData;
 
-	[[IconCache sharedInstance] unregisterIcon:iconId];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[IconCache sharedInstance] unregisterIcon:iconId];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -459,10 +476,15 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 		if (YES == [_automaticCleanupPrograms containsObject:socket])
 		{
-			[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
+			});
 		}
 
-		[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
+		});
+		
 		[_automaticCleanupPrograms removeObject:socket.userData];
 	}
 
