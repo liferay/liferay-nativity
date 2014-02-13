@@ -47,7 +47,6 @@
 {
 	NSMapTable* _fileNamesCacheByConnection;
 	NSHashTable* _fileIconsEnabled;
-	// TODO: thread-safety! Should lock everything? Should caller lock or ensure that everything runs on the main thread?
 }
 
 + (ContentManager*)sharedInstance;
