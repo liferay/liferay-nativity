@@ -39,7 +39,7 @@
  * Changes:
  * - (Andrew Rondeau) Started tracking programname in the socket's userData, so
  * different programs don't conflict with each other
- * - (Andrew Rondeau) Switched to NSMutableSet for performance reasons
+ * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
  */
 
 #import <Foundation/Foundation.h>
@@ -54,16 +54,18 @@
 	GCDAsyncSocket* _listenSocket;
 	GCDAsyncSocket* _callbackSocket;
 
-	NSMutableSet* _connectedListenSockets;
-	NSMutableSet* _connectedCallbackSockets;
+	NSHashTable* _connectedListenSockets;
+	NSHashTable* _connectedCallbackSockets;
 	NSMutableDictionary* _callbackMsgs;
 	
-	NSMutableSet* _automaticCleanupPrograms;
+	NSHashTable* _automaticCleanupPrograms;
 
 	NSNumberFormatter* _numberFormatter;
 	NSString* _filterFolder; // TODO: This should probably be a dictionary at some point
 
 	BOOL _isRunning;
+	
+	id _allIconsConnection; // Key for identifying icon management requests that are global. This is purely for backwards compatibility
 }
 
 @property (nonatomic, retain) NSString* filterFolder;

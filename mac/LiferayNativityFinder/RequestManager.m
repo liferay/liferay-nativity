@@ -42,7 +42,7 @@
  * - (Ivan Burlakov) Added ability to register an icon for use in context menus
  * - (Andrew Rondeau) Started tracking programname in the socket's userData, so
  * different programs don't conflict with each other
- * - (Andrew Rondeau) Switched to NSMutableSet for performance reasons
+ * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
  */
 
 #import "ContentManager.h"
@@ -66,11 +66,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		_callbackQueue = dispatch_queue_create("callback queue", nil);
 		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
 
-		_connectedListenSockets = [[NSMutableSet alloc] init];
-		_connectedCallbackSockets = [[NSMutableSet alloc] init];
+		_connectedListenSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
+		_connectedCallbackSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
 		
-		_automaticCleanupPrograms = [[NSMutableSet alloc] init];
+		_automaticCleanupPrograms = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 
 		_filterFolder = nil;
 
@@ -78,6 +78,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		[_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 
 		_isRunning = NO;
+		
+		_allIconsConnection = [[NSObject alloc] init];
 
 		[self start];
 	}
@@ -121,6 +123,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[_numberFormatter release];
 
 	[_filterFolder release];
+	[_allIconsConnection release];
 
 	sharedInstance = nil;
 
@@ -213,9 +216,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)execEnableAutomaticCleanupCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	if ([@"" isEqualTo:sock.userData])
+	// Once automatic cleanup is enabled, if it can be re-enabled, then the old icons can't be cleaned up!
+	if (_allIconsConnection == sock.userData)
 	{
-		sock.userData = [[NSUUID UUID] UUIDString];
+		sock.userData = [[NSObject alloc] init];
 	
 		[_automaticCleanupPrograms addObject:sock];
 	}
@@ -403,7 +407,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		// The userData allows programs to specify that all registered icon overlays will be removed
 		// when the socket is broken, without interfearing with other programs that use liferay-
 		// nativity
-		[newSocket setUserData:@""];
+		[newSocket setUserData:_allIconsConnection];
 		
 		[_connectedListenSockets addObject:newSocket];
 	}
