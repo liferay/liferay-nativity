@@ -57,8 +57,8 @@ static ContentManager* sharedInstance = nil;
 
 	if (self)
 	{
-		_fileNamesCacheByConnection = [[NSMutableDictionary alloc] init];
-		_fileIconsEnabled = [[NSMutableSet alloc] init];
+		_fileNamesCacheByConnection = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:0];
+		_fileIconsEnabled = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 	}
 
 	return self;
@@ -66,9 +66,9 @@ static ContentManager* sharedInstance = nil;
 
 - (void)dealloc
 {
-	for(id connectionName in _fileNamesCacheByConnection)
+	for(id connection in _fileNamesCacheByConnection)
 	{
-		[self removeAllIconsFor:connectionName];
+		[self removeAllIconsFor:connection];
 	}
 	
 	[_fileNamesCacheByConnection release];
@@ -91,15 +91,15 @@ static ContentManager* sharedInstance = nil;
 	return sharedInstance;
 }
 
-- (void)enableFileIconsFor:(NSString*)connectionName enabled:(BOOL)enable
+- (void)enableFileIconsFor:(id)connection enabled:(BOOL)enable
 {
 	if (enable)
 	{
-		[_fileIconsEnabled addObject:connectionName];
+		[_fileIconsEnabled addObject:connection];
 	}
 	else
 	{
-		[_fileIconsEnabled removeObject:connectionName];
+		[_fileIconsEnabled removeObject:connection];
 	}
 
 	[self repaintAllWindows];
@@ -109,9 +109,9 @@ static ContentManager* sharedInstance = nil;
 {
 	NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 
-	for(id connectionName in _fileIconsEnabled)
+	for(id connection in _fileIconsEnabled)
 	{
-		NSDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connectionName];
+		NSDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 		
 		if (nil != fileNamesCache)
 		{
@@ -127,16 +127,16 @@ static ContentManager* sharedInstance = nil;
 	return nil;
 }
 
-- (void)removeAllIconsFor:(NSString*)connectionName 
+- (void)removeAllIconsFor:(id)connection
 {
-	[_fileNamesCacheByConnection removeObjectForKey:connectionName];
+	[_fileNamesCacheByConnection removeObjectForKey:connection];
 
 	[self repaintAllWindows];
 }
 
-- (void)removeIconsFor:(NSString*)connectionName paths:(NSArray*)paths
+- (void)removeIconsFor:(id)connection paths:(NSArray*)paths
 {
-	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connectionName];
+	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 	
 	if (nil != fileNamesCache)
 	{
@@ -251,14 +251,14 @@ static ContentManager* sharedInstance = nil;
 	}
 }
 
-- (void)setIconsFor:(NSString*)connectionName iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
+- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
 {
-	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connectionName];
+	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 	
 	if (nil == fileNamesCache)
 	{
 		fileNamesCache = [[NSMutableDictionary alloc] init];
-		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connectionName];
+		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connection];
 	}
 	
 	for (NSString* path in iconDictionary)
@@ -283,7 +283,7 @@ static ContentManager* sharedInstance = nil;
 
 	if (0 == fileNamesCache.count)
 	{
-		[_fileNamesCacheByConnection removeObjectForKey:connectionName];
+		[_fileNamesCacheByConnection removeObjectForKey:connection];
 	}
 	
 	[self repaintAllWindows];

@@ -45,17 +45,17 @@
 
 @interface ContentManager : NSObject
 {
-	NSMutableDictionary* _fileNamesCacheByConnection;
-	NSMutableSet* _fileIconsEnabled;
+	NSMapTable* _fileNamesCacheByConnection;
+	NSHashTable* _fileIconsEnabled;
 	// TODO: thread-safety! Should lock everything? Should caller lock or ensure that everything runs on the main thread?
 }
 
 + (ContentManager*)sharedInstance;
 
-- (void)enableFileIconsFor:(NSString*)connectionName enabled:(BOOL)enable;
+- (void)enableFileIconsFor:(id)connection enabled:(BOOL)enable;
 - (NSNumber*)iconByPath:(NSString*)path;
-- (void)removeAllIconsFor:(NSString*)connectionName;
-- (void)removeIconsFor:(NSString*)connectionName paths:(NSArray*)paths;
-- (void)setIconsFor:(NSString*)connectionName iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
+- (void)removeAllIconsFor:(id)connection;
+- (void)removeIconsFor:(id)connection paths:(NSArray*)paths;
+- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
 
 @end
