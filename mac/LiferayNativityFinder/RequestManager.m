@@ -40,6 +40,9 @@
  * - (Andrew Rondeau) Fixed a race condition in menuItemsForFiles:. Now clearing
  * _callbackMsgs before requesting menu items for given paths
  * - (Ivan Burlakov) Added ability to register an icon for use in context menus
+ * - (Andrew Rondeau) Started tracking programname in the socket's userData, so
+ * different programs don't conflict with each other
+ * - (Andrew Rondeau) Switched to NSMutableSet for performance reasons
  */
 
 #import "ContentManager.h"
@@ -63,9 +66,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		_callbackQueue = dispatch_queue_create("callback queue", nil);
 		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
 
-		_connectedListenSockets = [[NSMutableArray alloc] init];
-		_connectedCallbackSockets = [[NSMutableArray alloc] init];
+		_connectedListenSockets = [[NSMutableSet alloc] init];
+		_connectedCallbackSockets = [[NSMutableSet alloc] init];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
+		
+		_automaticCleanupPrograms = [[NSMutableSet alloc] init];
 
 		_filterFolder = nil;
 
@@ -93,6 +98,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[_callbackSocket release];
 
 	dispatch_release(_callbackQueue);
+	
+	[_automaticCleanupPrograms release];
 
 	for (GCDAsyncSocket* socket in _connectedListenSockets)
 	{
@@ -158,7 +165,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 		return;
 	}
-	if ([command isEqualToString:@"setFileIcons"])
+	else if ([command isEqualToString:@"enableAutomaticCleanup"])
+	{
+		[self execEnableAutomaticCleanupCmd:value replyTo:sock];
+	}
+	else if ([command isEqualToString:@"setFileIcons"])
 	{
 		[self execSetFileIconsCmd:value replyTo:sock];
 	}
@@ -200,12 +211,25 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 }
 
+- (void)execEnableAutomaticCleanupCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	if ([@"" isEqualTo:sock.userData])
+	{
+		sock.userData = [[NSUUID UUID] UUIDString];
+	
+		[_automaticCleanupPrograms addObject:sock];
+	}
+	
+	[self replyString:@"1" toSocket:sock];
+}
+
 - (void)execEnableFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	NSNumber* enabled = (NSNumber*)cmdData;
-
-	[[ContentManager sharedInstance] enableFileIcons:enabled];
-
+	NSNumber* enabledNumber = (NSNumber*)cmdData;
+	BOOL enabled = (BOOL)enabledNumber;
+	
+	[[ContentManager sharedInstance] enableFileIconsFor:sock.userData enabled:enabled];
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -239,7 +263,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	[[ContentManager sharedInstance] removeAllIcons];
+	[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
 
 	[self replyString:@"1" toSocket:sock];
 }
@@ -248,7 +272,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSArray* paths = (NSArray*)cmdData;
 
-	[[ContentManager sharedInstance] removeIcons:paths];
+	[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
 
 	[self replyString:@"1" toSocket:sock];
 }
@@ -257,7 +281,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
 
-	[[ContentManager sharedInstance] setIcons:iconDictionary filterByFolder:_filterFolder];
+	[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
 
 	[self replyString:@"1" toSocket:sock];
 }
@@ -376,6 +400,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	if (socket == _listenSocket)
 	{
+		// The userData allows programs to specify that all registered icon overlays will be removed
+		// when the socket is broken, without interfearing with other programs that use liferay-
+		// nativity
+		[newSocket setUserData:@""];
+		
 		[_connectedListenSockets addObject:newSocket];
 	}
 	if (socket == _callbackSocket)
@@ -424,7 +453,13 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	{
 		[_connectedListenSockets removeObject:socket];
 
-		[[ContentManager sharedInstance] enableFileIcons:false];
+		if (YES == [_automaticCleanupPrograms containsObject:socket])
+		{
+			[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
+		}
+
+		[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
+		[_automaticCleanupPrograms removeObject:socket.userData];
 	}
 
 	if ([_connectedCallbackSockets containsObject:socket])

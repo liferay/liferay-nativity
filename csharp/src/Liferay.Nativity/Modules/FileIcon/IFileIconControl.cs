@@ -57,7 +57,12 @@ namespace Liferay.Nativity.Modules.FileIcon
 		/// Enables file icon overlays
 		/// </summary>
 		void EnableFileIcons();
-		
+
+		/// <summary>
+		/// Mac-only: Enables automatic cleanup of icon overlays when a socket is broken. Only works for icon overlays set after this call is made
+		/// </summary>
+		void EnableAutomaticCleanup();
+
 		/// <summary>
 		/// Mac only
 		/// 

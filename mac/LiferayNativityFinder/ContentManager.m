@@ -12,6 +12,35 @@
  * details.
  */
 
+/**
+ * Syncplicity, LLC © 2014 
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * If you would like a copy of source code for this product, EMC will provide a
+ * copy of the source code that is required to be made available in accordance
+ * with the applicable open source license.  EMC may charge reasonable shipping
+ * and handling charges for such distribution.  Please direct requests in writing
+ * to EMC Legal, 176 South St., Hopkinton, MA 01748, ATTN: Open Source Program
+ * Office.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License along
+ * with this library; if not, write to the Free Software Foundation, Inc., 51
+ * Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * Changes:
+ * - (Andrew Rondeau) Added the ability to group icons by connection, this allows
+ * disabling / clearing icons for one program, while leaving another unaffected
+ */
+
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSWindow.h>
 #import "ContentManager.h"
@@ -27,8 +56,8 @@ static ContentManager* sharedInstance = nil;
 
 	if (self)
 	{
-		_fileNamesCache = [[NSMutableDictionary alloc] init];
-		_fileIconsEnabled = FALSE;
+		_fileNamesCacheByConnection = [[NSMutableDictionary alloc] init];
+		_fileIconsEnabled = [[NSMutableSet alloc] init];
 	}
 
 	return self;
@@ -36,8 +65,13 @@ static ContentManager* sharedInstance = nil;
 
 - (void)dealloc
 {
-	[self removeAllIcons];
-	[_fileNamesCache release];
+	for(id connectionName in _fileNamesCacheByConnection)
+	{
+		[self removeAllIconsFor:connectionName];
+	}
+	
+	[_fileNamesCacheByConnection release];
+	[_fileIconsEnabled release];
 	sharedInstance = nil;
 
 	[super dealloc];
@@ -56,41 +90,61 @@ static ContentManager* sharedInstance = nil;
 	return sharedInstance;
 }
 
-- (void)enableFileIcons:(BOOL)enable
+- (void)enableFileIconsFor:(NSString*)connectionName enabled:(BOOL)enable
 {
-	_fileIconsEnabled = enable;
+	if (enable)
+	{
+		[_fileIconsEnabled addObject:connectionName];
+	}
+	else
+	{
+		[_fileIconsEnabled removeObject:connectionName];
+	}
 
 	[self repaintAllWindows];
 }
 
 - (NSNumber*)iconByPath:(NSString*)path
 {
-	if (!_fileIconsEnabled)
-	{
-		return nil;
-	}
-
 	NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 
-	NSNumber* result = [_fileNamesCache objectForKey:normalizedPath];
-
-	return result;
+	for(id connectionName in _fileIconsEnabled)
+	{
+		NSDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connectionName];
+		
+		if (nil != fileNamesCache)
+		{
+			NSNumber* result = [fileNamesCache objectForKey:normalizedPath];
+		
+			if (nil != result)
+			{
+				return result;
+			}
+		}
+	}
+	
+	return nil;
 }
 
-- (void)removeAllIcons
+- (void)removeAllIconsFor:(NSString*)connectionName 
 {
-	[_fileNamesCache removeAllObjects];
+	[_fileNamesCacheByConnection removeObjectForKey:connectionName];
 
 	[self repaintAllWindows];
 }
 
-- (void)removeIcons:(NSArray*)paths
+- (void)removeIconsFor:(NSString*)connectionName paths:(NSArray*)paths
 {
-	for (NSString* path in paths)
+	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connectionName];
+	
+	if (nil != fileNamesCache)
 	{
-		NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
+		for (NSString* path in paths)
+		{
+			NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 
-		[_fileNamesCache removeObjectForKey:normalizedPath];
+			[fileNamesCache removeObjectForKey:normalizedPath];
+		}
 	}
 
 	[self repaintAllWindows];
@@ -185,8 +239,16 @@ static ContentManager* sharedInstance = nil;
 	}
 }
 
-- (void)setIcons:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
+- (void)setIconsFor:(NSString*)connectionName iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
 {
+	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connectionName];
+	
+	if (nil == fileNamesCache)
+	{
+		fileNamesCache = [[NSMutableDictionary alloc] init];
+		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connectionName];
+	}
+	
 	for (NSString* path in iconDictionary)
 	{
 		if (filterFolder && ![path hasPrefix:filterFolder])
@@ -199,14 +261,19 @@ static ContentManager* sharedInstance = nil;
 
 		if ([iconId intValue] == -1)
 		{
-			[_fileNamesCache removeObjectForKey:normalizedPath];
+			[fileNamesCache removeObjectForKey:normalizedPath];
 		}
 		else
 		{
-			[_fileNamesCache setObject:iconId forKey:normalizedPath];
+			[fileNamesCache setObject:iconId forKey:normalizedPath];
 		}
 	}
 
+	if (0 == fileNamesCache.count)
+	{
+		[_fileNamesCacheByConnection removeObjectForKey:connectionName];
+	}
+	
 	[self repaintAllWindows];
 }
 
