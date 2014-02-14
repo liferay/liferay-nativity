@@ -47,6 +47,8 @@ namespace Liferay.Nativity
 	 */
 	public static class Constants
 	{
+		public const string ENABLE_AUTOMATIC_CLEANUP = "enableAutomaticCleanup";
+
 		public const string CLEAR_FILE_ICON = "clearFileIcon";
 		
 		public const string ENABLE_FILE_ICONS = "enableFileIcons";

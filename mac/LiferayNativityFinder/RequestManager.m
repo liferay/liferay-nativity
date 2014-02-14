@@ -40,6 +40,10 @@
  * - (Andrew Rondeau) Fixed a race condition in menuItemsForFiles:. Now clearing
  * _callbackMsgs before requesting menu items for given paths
  * - (Ivan Burlakov) Added ability to register an icon for use in context menus
+ * - (Andrew Rondeau) Started tracking programname in the socket's userData, so
+ * different programs don't conflict with each other
+ * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
+ * - (Andrew Rondeau) Fixed a lot of thread safety issues issues via queuing
  */
 
 #import "ContentManager.h"
@@ -63,9 +67,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		_callbackQueue = dispatch_queue_create("callback queue", nil);
 		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
 
-		_connectedListenSockets = [[NSMutableArray alloc] init];
-		_connectedCallbackSockets = [[NSMutableArray alloc] init];
+		_connectedListenSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
+		_connectedCallbackSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
+		
+		_automaticCleanupPrograms = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 
 		_filterFolder = nil;
 
@@ -73,6 +79,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		[_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 
 		_isRunning = NO;
+		
+		_allIconsConnection = [[NSObject alloc] init];
 
 		[self start];
 	}
@@ -93,6 +101,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[_callbackSocket release];
 
 	dispatch_release(_callbackQueue);
+	
+	[_automaticCleanupPrograms release];
 
 	for (GCDAsyncSocket* socket in _connectedListenSockets)
 	{
@@ -114,6 +124,7 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[_numberFormatter release];
 
 	[_filterFolder release];
+	[_allIconsConnection release];
 
 	sharedInstance = nil;
 
@@ -158,7 +169,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 		return;
 	}
-	if ([command isEqualToString:@"setFileIcons"])
+	else if ([command isEqualToString:@"enableAutomaticCleanup"])
+	{
+		[self execEnableAutomaticCleanupCmd:value replyTo:sock];
+	}
+	else if ([command isEqualToString:@"setFileIcons"])
 	{
 		[self execSetFileIconsCmd:value replyTo:sock];
 	}
@@ -200,12 +215,28 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 }
 
+- (void)execEnableAutomaticCleanupCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	// Once automatic cleanup is enabled, if it can be re-enabled, then the old icons can't be cleaned up!
+	if (_allIconsConnection == sock.userData)
+	{
+		sock.userData = [[NSObject alloc] init];
+	
+		[_automaticCleanupPrograms addObject:sock];
+	}
+	
+	[self replyString:@"1" toSocket:sock];
+}
+
 - (void)execEnableFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	NSNumber* enabled = (NSNumber*)cmdData;
-
-	[[ContentManager sharedInstance] enableFileIcons:enabled];
-
+	NSNumber* enabledNumber = (NSNumber*)cmdData;
+	BOOL enabled = (BOOL)enabledNumber;
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] enableFileIconsFor:sock.userData enabled:enabled];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -213,8 +244,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSString* path = (NSString*)cmdData;
 
-	NSNumber* index = [[IconCache sharedInstance] registerIcon:path];
-
+	__block NSNumber* index;
+	dispatch_sync(dispatch_get_main_queue(), ^{
+		index = [[IconCache sharedInstance] registerIcon:path];
+	});
+	
 	if (!index)
 	{
 		index = [NSNumber numberWithInt:-1];
@@ -227,7 +261,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSString* path = (NSString*)cmdData;
 	
-	NSNumber* index = [[IconCache sharedInstance] registerMenuIcon:path];
+	__block NSNumber* index;
+	dispatch_sync(dispatch_get_main_queue(), ^{
+		index = [[IconCache sharedInstance] registerMenuIcon:path];
+	});
 	
 	if (!index)
 	{
@@ -239,8 +276,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	[[ContentManager sharedInstance] removeAllIcons];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -248,8 +287,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSArray* paths = (NSArray*)cmdData;
 
-	[[ContentManager sharedInstance] removeIcons:paths];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -257,8 +298,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
 
-	[[ContentManager sharedInstance] setIcons:iconDictionary filterByFolder:_filterFolder];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -273,8 +316,10 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 {
 	NSNumber* iconId = (NSNumber*)cmdData;
 
-	[[IconCache sharedInstance] unregisterIcon:iconId];
-
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[IconCache sharedInstance] unregisterIcon:iconId];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -376,6 +421,11 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	if (socket == _listenSocket)
 	{
+		// The userData allows programs to specify that all registered icon overlays will be removed
+		// when the socket is broken, without interfearing with other programs that use liferay-
+		// nativity
+		[newSocket setUserData:_allIconsConnection];
+		
 		[_connectedListenSockets addObject:newSocket];
 	}
 	if (socket == _callbackSocket)
@@ -424,7 +474,18 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	{
 		[_connectedListenSockets removeObject:socket];
 
-		[[ContentManager sharedInstance] enableFileIcons:false];
+		if (YES == [_automaticCleanupPrograms containsObject:socket])
+		{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
+			});
+		}
+
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
+		});
+		
+		[_automaticCleanupPrograms removeObject:socket.userData];
 	}
 
 	if ([_connectedCallbackSockets containsObject:socket])

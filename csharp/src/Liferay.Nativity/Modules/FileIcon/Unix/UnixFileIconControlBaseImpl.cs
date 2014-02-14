@@ -61,7 +61,7 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 		
 		public override void DisableFileIcons() 
 		{
-			var message = new NativityMessage(Constants.ENABLE_FILE_ICONS, true);
+			var message = new NativityMessage(Constants.ENABLE_FILE_ICONS, false);
 			this.nativityControl.SendMessage(message);
 		}
 		
@@ -70,7 +70,13 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 			var message = new NativityMessage(Constants.ENABLE_FILE_ICONS, true);
 			this.nativityControl.SendMessage(message);
 		}
-		
+
+		public override void EnableAutomaticCleanup ()
+		{
+			var message = new NativityMessage(Constants.ENABLE_AUTOMATIC_CLEANUP, true);
+			this.nativityControl.SendMessage(message);
+		}
+
 		public override int RegisterIcon (string path)
 		{
 			var message = new NativityMessage (Constants.REGISTER_ICON, path);
