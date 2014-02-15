@@ -133,10 +133,28 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 			this.nativityControl.SendMessage(message);
 		}
 		
-		public override void RemoveFileIcons(IEnumerable<string> paths)
+		public override void RemoveFileIcons (IEnumerable<string> paths)
 		{
-			var message = new NativityMessage(Constants.REMOVE_FILE_ICONS, paths);
-			this.nativityControl.SendMessage(message);
+			var list = new List<string> (UnixFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE);
+
+			foreach (var path in paths)
+			{
+				list.Add (path);
+
+				if (list.Count >= UnixFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE)
+				{
+					var message = new NativityMessage (Constants.REMOVE_FILE_ICONS, list);
+					this.nativityControl.SendMessage (message);
+
+					list.Clear ();
+				}
+			}
+
+			if (list.Count > 0)
+			{
+				var message = new NativityMessage (Constants.REMOVE_FILE_ICONS, list);
+				this.nativityControl.SendMessage (message);
+			}
 		}
 		
 		public override void SetFileIcon(string path, int iconId)
@@ -151,13 +169,13 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 		
 		public override void SetFileIcons(IDictionary<string, int> fileIconsMap)
 		{
-			var map = new Dictionary<string, int>(MESSAGE_BUFFER_SIZE);
+			var map = new Dictionary<string, int>(UnixFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE);
 			
 			foreach (var entry in fileIconsMap)
 			{
 				map[entry.Key] = entry.Value;
 				
-				if (map.Count >= MESSAGE_BUFFER_SIZE)
+				if (map.Count >= UnixFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE)
 				{
 					var message = new NativityMessage(Constants.SET_FILE_ICONS, map);
 					this.nativityControl.SendMessage(message);
