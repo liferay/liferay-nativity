@@ -56,6 +56,7 @@ static RequestManager* sharedInstance = nil;
 @implementation RequestManager
 
 static double maxMenuItemsRequestWaitMilliSec = 250;
+static double maxIconIdRequestWaitMilliSec = 10;
 
 - (id)init
 {
@@ -81,6 +82,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		_isRunning = NO;
 		
 		_allIconsConnection = [[NSObject alloc] init];
+		
+		_callbackSemaphore = dispatch_semaphore_create(0);
 
 		[self start];
 	}
@@ -127,6 +130,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	[_allIconsConnection release];
 
 	sharedInstance = nil;
+	
+	dispatch_release(_callbackSemaphore);
 
 	[super dealloc];
 }
@@ -348,7 +353,75 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 	}
 }
 
+
 - (NSArray*)menuItemsForFiles:(NSArray*)files
+{
+	if ([_connectedCallbackSockets count] == 0)
+	{
+		return nil;
+	}
+	
+	if (_filterFolder)
+	{
+		NSString* file = [files objectAtIndex:0];
+		
+		if (![file hasPrefix:_filterFolder])
+		{
+			return nil;
+		}
+	}
+	
+	NSDictionary* menuQueryDictionary = [[NSMutableDictionary alloc] init];
+	
+	[menuQueryDictionary setValue:@"getContextMenuList" forKey:@"command"];
+	[menuQueryDictionary setValue:files forKey:@"value"];
+	
+	NSString* jsonString = [menuQueryDictionary JSONString];
+	[menuQueryDictionary release];
+	
+	[_callbackMsgs removeAllObjects];
+	
+	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
+	
+	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
+	{
+		[callbackSocket writeData:data withTimeout:-1 tag:0];
+	}
+	
+	NSDate* startDate = [NSDate date];
+	
+	while ([_callbackMsgs count] < [_connectedCallbackSockets count])
+	{
+		dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 10000));
+		
+		if ([_connectedCallbackSockets count] == 0)
+		{
+			return nil;
+		}
+		
+		if (([startDate timeIntervalSinceNow] * -1000) > maxMenuItemsRequestWaitMilliSec)
+		{
+			NSLog(@"LiferayNativityFinder: menu item request timed out");
+			
+			break;
+		}
+	}
+	
+	NSMutableArray* menuItems = [[NSMutableArray alloc] init];
+	
+	for (NSValue* key in _callbackMsgs)
+	{
+		NSString* callbackMsg = [_callbackMsgs objectForKey:key];
+		NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
+		
+		[menuItems addObjectsFromArray:(NSArray*)[responseDictionary objectForKey:@"value"]];
+	}
+	
+	return [menuItems autorelease];
+}
+
+
+- (NSArray*)iconIdForFile:(NSString*)file
 {
 	if ([_connectedCallbackSockets count] == 0)
 	{
@@ -357,8 +430,6 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	if (_filterFolder)
 	{
-		NSString* file = [files objectAtIndex:0];
-
 		if (![file hasPrefix:_filterFolder])
 		{
 			return nil;
@@ -367,8 +438,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 
 	NSDictionary* menuQueryDictionary = [[NSMutableDictionary alloc] init];
 
-	[menuQueryDictionary setValue:@"getContextMenuList" forKey:@"command"];
-	[menuQueryDictionary setValue:files forKey:@"value"];
+	[menuQueryDictionary setValue:@"getFileIconId" forKey:@"command"];
+	[menuQueryDictionary setValue:file forKey:@"value"];
 
 	NSString* jsonString = [menuQueryDictionary JSONString];
 	[menuQueryDictionary release];
@@ -382,38 +453,37 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
 
-	NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
-
 	NSDate* startDate = [NSDate date];
 
 	while ([_callbackMsgs count] < [_connectedCallbackSockets count])
 	{
-		[runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+		dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 10000));
 
 		if ([_connectedCallbackSockets count] == 0)
 		{
 			return nil;
 		}
 
-		if (([startDate timeIntervalSinceNow] * -1000) > maxMenuItemsRequestWaitMilliSec)
+		if (([startDate timeIntervalSinceNow] * -1000) > maxIconIdRequestWaitMilliSec)
 		{
-			NSLog(@"LiferayNativityFinder: menu item request timed out");
+			NSLog(@"LiferayNativityFinder: file icon request timed out");
 
 			break;
 		}
 	}
 
-	NSMutableArray* menuItems = [[NSMutableArray alloc] init];
+	NSMutableArray* iconIds = [[NSMutableArray alloc] init];
 
 	for (NSValue* key in _callbackMsgs)
 	{
 		NSString* callbackMsg = [_callbackMsgs objectForKey:key];
 		NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
 
-		[menuItems addObjectsFromArray:(NSArray*)[responseDictionary objectForKey:@"value"]];
+		[iconIds addObject:[responseDictionary objectForKey:@"value"]];
+		
 	}
 
-	return [menuItems autorelease];
+	return [iconIds autorelease];
 }
 
 - (void)socket:(GCDAsyncSocket*)socket didAcceptNewSocket:(GCDAsyncSocket*)newSocket
@@ -456,7 +526,8 @@ static double maxMenuItemsRequestWaitMilliSec = 250;
 		NSString* callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 
 		[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
-
+		dispatch_semaphore_signal(_callbackSemaphore);
+		
 		[callbackString release];
 
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
