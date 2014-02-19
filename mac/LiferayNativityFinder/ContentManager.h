@@ -39,19 +39,24 @@
  * Changes:
  * - (Andrew Rondeau) Added the ability to group icons by connection, this allows
  * disabling / clearing icons for one program, while leaving another unaffected
+ * - (Andrew Rondeau) Made repaintAllWindows public
  */
 
 #import <Foundation/Foundation.h>
 
 @interface ContentManager : NSObject
 {
+	NSMapTable* _fileNamesCacheByConnection;
 	NSHashTable* _fileIconsEnabled;
 }
 
 + (ContentManager*)sharedInstance;
 
 - (void)enableFileIconsFor:(id)connection enabled:(BOOL)enable;
+- (NSNumber*)iconByPath:(NSString*)path;
+- (void)removeAllIconsFor:(id)connection;
+- (void)removeIconsFor:(id)connection paths:(NSArray*)paths;
+- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
 - (void)repaintAllWindows;
-- (uint)numConnectionsEnabled;
 
 @end

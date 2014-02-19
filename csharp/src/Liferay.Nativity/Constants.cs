@@ -47,12 +47,12 @@ namespace Liferay.Nativity
 	 */
 	public static class Constants
 	{
-		public const string ENABLE_AUTOMATIC_CLEANUP = "enableAutomaticCleanup";
-
 		public const string CLEAR_FILE_ICON = "clearFileIcon";
 		
 		public const string ENABLE_FILE_ICONS = "enableFileIcons";
-		
+
+		public const string ENABLE_FILE_ICONS_WITH_CALLBACK = "enableFileIconsWithCallback";
+
 		public const string ENABLE_OVERLAY_REGISTRY_NAME = "EnableOverlay";
 		
 		public const string FILES = "files";
@@ -86,6 +86,8 @@ namespace Liferay.Nativity
 		public const string REMOVE_FILE_ICONS = "removeFileIcons";
 		
 		public const string SET_FILE_ICONS = "setFileIcons";
+
+		public const string REPAINT_ALL_ICONS = "repaintAllIcons";
 		
 		public const string SET_FILTER_PATH = "setFilterPath";
 		

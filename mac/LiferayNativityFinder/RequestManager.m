@@ -44,6 +44,8 @@
  * different programs don't conflict with each other
  * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
  * - (Andrew Rondeau) Fixed a lot of thread safety issues issues via queuing
+ * - (Andrew Rondeau) Added command to repaint all windows, added ability to query
+ * the program for the file's icon, made getting the context manu faster
  */
 
 #import "ContentManager.h"
@@ -69,6 +71,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
 
 		_connectedListenSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
+		_connectedListenSocketsWithIconCallbacks = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_connectedCallbackSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
 		
@@ -114,6 +117,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	}
 
 	[_connectedListenSockets release];
+	[_connectedListenSocketsWithIconCallbacks release];
 
 	for (GCDAsyncSocket* socket in _connectedCallbackSockets)
 	{
@@ -194,6 +198,10 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	{
 		[self execEnableFileIconsCmd:value replyTo:sock];
 	}
+	else if ([command isEqualToString:@"enableFileIconsWithCallback"])
+	{
+		[self execEnableFileIconsWithCallbackCmd:value replyTo:sock];
+	}
 	else if ([command isEqualToString:@"registerIcon"])
 	{
 		[self execRegisterIconCmd:value replyTo:sock];
@@ -209,6 +217,10 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	else if ([command isEqualToString:@"setFilterPath"])
 	{
 		[self execSetFilterPathCmd:value replyTo:sock];
+	}
+	else if ([command isEqualToString:@"repaintAllIcons"])
+	{
+		[self execRepaintAllIcons:value replyTo:sock];
 	}
 	else
 	{
@@ -226,7 +238,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	if (_allIconsConnection == sock.userData)
 	{
 		sock.userData = [[NSObject alloc] init];
-	
+		
 		[_automaticCleanupPrograms addObject:sock];
 	}
 	
@@ -245,10 +257,28 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	[self replyString:@"1" toSocket:sock];
 }
 
+- (void)execEnableFileIconsWithCallbackCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	NSNumber* enabledNumber = (NSNumber*)cmdData;
+	BOOL enabled = (BOOL)enabledNumber;
+	
+	if (enabled) {
+		[_connectedListenSocketsWithIconCallbacks addObject:sock];
+	} else {
+		[_connectedListenSocketsWithIconCallbacks removeObject:sock];
+	}
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] repaintAllWindows];
+	});
+	
+	[self replyString:@"1" toSocket:sock];
+}
+
 - (void)execRegisterIconCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	NSString* path = (NSString*)cmdData;
-
+	
 	__block NSNumber* index;
 	dispatch_sync(dispatch_get_main_queue(), ^{
 		index = [[IconCache sharedInstance] registerIcon:path];
@@ -258,7 +288,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	{
 		index = [NSNumber numberWithInt:-1];
 	}
-
+	
 	[self replyString:[_numberFormatter stringFromNumber:index] toSocket:sock];
 }
 
@@ -282,7 +312,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] repaintAllWindows];
+		[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -290,8 +320,10 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 - (void)execRemoveFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
+	NSArray* paths = (NSArray*)cmdData;
+	
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] repaintAllWindows];
+		[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -299,8 +331,10 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 - (void)execSetFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
+	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
+	
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] repaintAllWindows];
+		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -309,16 +343,25 @@ static double maxIconIdRequestWaitMilliSec = 10;
 - (void)execSetFilterPathCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	[self setFilterFolder:(NSString*)cmdData];
-
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
 - (void)execUnregisterIconCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	NSNumber* iconId = (NSNumber*)cmdData;
-
+	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[IconCache sharedInstance] unregisterIcon:iconId];
+	});
+	
+	[self replyString:@"1" toSocket:sock];
+}
+
+- (void)execRepaintAllIcons:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -419,16 +462,25 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 - (NSArray*)iconIdForFile:(NSString*)file
 {
-	if ([[ContentManager sharedInstance] numConnectionsEnabled] == 0)
+	NSMutableArray* iconIds = [[NSMutableArray alloc] init];
+	
+	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:file];
+	
+	if ([imageIndex intValue] > 0)
 	{
-		return [NSArray array];
+		[iconIds addObject:imageIndex];
+	}
+
+	if (_connectedListenSocketsWithIconCallbacks.count == 0)
+	{
+		return iconIds;
 	}
 
 	if (_filterFolder)
 	{
 		if (![file hasPrefix:_filterFolder])
 		{
-			return [NSArray array];
+			return iconIds;
 		}
 	}
 
@@ -451,13 +503,13 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 	NSDate* startDate = [NSDate date];
 
-	while ([_callbackMsgs count] < [[ContentManager sharedInstance] numConnectionsEnabled])
+	while ([_callbackMsgs count] < _connectedListenSocketsWithIconCallbacks.count)
 	{
 		dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 10000));
 
-		if ([[ContentManager sharedInstance] numConnectionsEnabled] == 0)
+		if (_connectedListenSocketsWithIconCallbacks.count == 0)
 		{
-			return [NSArray array];
+			return iconIds;
 		}
 
 		if (([startDate timeIntervalSinceNow] * -1000) > maxIconIdRequestWaitMilliSec)
@@ -467,8 +519,6 @@ static double maxIconIdRequestWaitMilliSec = 10;
 			break;
 		}
 	}
-
-	NSMutableArray* iconIds = [[NSMutableArray alloc] init];
 
 	for (NSValue* key in _callbackMsgs)
 	{
@@ -540,6 +590,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	if ([_connectedListenSockets containsObject:socket])
 	{
 		[_connectedListenSockets removeObject:socket];
+		[_connectedListenSocketsWithIconCallbacks removeObject:socket];
 
 		if (YES == [_automaticCleanupPrograms containsObject:socket])
 		{

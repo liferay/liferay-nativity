@@ -14,7 +14,11 @@
 
 package com.liferay.nativity.modules.fileicon.unix;
 
+import java.util.Map;
+
+import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 
 /**
@@ -29,4 +33,47 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		super(nativityControl, fileIconControlCallback);
 	}
 
+	@Override
+	public void disableFileIcons() {
+		NativityMessage message = new NativityMessage(
+			Constants.ENABLE_FILE_ICONS_WITH_CALLBACK, Boolean.FALSE);
+
+		nativityControl.sendMessage(message);
+	}
+
+	@Override
+	public void enableFileIcons() {
+		NativityMessage message = new NativityMessage(
+			Constants.ENABLE_FILE_ICONS_WITH_CALLBACK, Boolean.TRUE);
+
+		nativityControl.sendMessage(message);
+	}
+
+	public void removeFileIcon(String path) {
+		NativityMessage message = new NativityMessage(
+			Constants.REPAINT_ALL_ICONS, "");
+
+		nativityControl.sendMessage(message);
+	}
+
+	public void removeFileIcons(String[] paths) {
+		NativityMessage message = new NativityMessage(
+				Constants.REPAINT_ALL_ICONS, "");
+
+		nativityControl.sendMessage(message);
+	}
+
+	public void setFileIcon(String path, int iconId) {
+		NativityMessage message = new NativityMessage(
+				Constants.REPAINT_ALL_ICONS, "");
+
+		nativityControl.sendMessage(message);
+	}
+
+	public void setFileIcons(Map<String, Integer> fileIconsMap) {
+		NativityMessage message = new NativityMessage(
+				Constants.REPAINT_ALL_ICONS, "");
+
+		nativityControl.sendMessage(message);
+	}
 }
