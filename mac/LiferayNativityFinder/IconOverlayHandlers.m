@@ -28,8 +28,6 @@
 
 	NSURL* url = [[NSClassFromString(@"FINode") nodeFromNodeRef:[(TIconAndTextCell*)self node]->fNodeRef] previewItemURL];
 
-	//NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
-
 	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
 	{
 		if ([imageIndex intValue] > 0)
@@ -53,8 +51,6 @@
 	FINode* node = (FINode*)[realSelf representedItem];
 
 	NSURL* url = [node previewItemURL];
-
-//	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
 
 	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
 	{
@@ -113,8 +109,6 @@
 		} else {
 			return;
 		}
-		
-		//NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[fp path]];
 		
 		for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[fp path]])
 		{

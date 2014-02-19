@@ -56,7 +56,6 @@ static ContentManager* sharedInstance = nil;
 
 	if (self)
 	{
-		_fileNamesCacheByConnection = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:0];
 		_fileIconsEnabled = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 	}
 
@@ -65,12 +64,6 @@ static ContentManager* sharedInstance = nil;
 
 - (void)dealloc
 {
-	for(id connection in _fileNamesCacheByConnection)
-	{
-		[self removeAllIconsFor:connection];
-	}
-	
-	[_fileNamesCacheByConnection release];
 	[_fileIconsEnabled release];
 	sharedInstance = nil;
 
@@ -104,50 +97,9 @@ static ContentManager* sharedInstance = nil;
 	[self repaintAllWindows];
 }
 
-- (NSNumber*)iconByPath:(NSString*)path
+- (uint)numConnectionsEnabled
 {
-	NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
-
-	for(id connection in _fileIconsEnabled)
-	{
-		NSDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
-		
-		if (nil != fileNamesCache)
-		{
-			NSNumber* result = [fileNamesCache objectForKey:normalizedPath];
-		
-			if (nil != result)
-			{
-				return result;
-			}
-		}
-	}
-	
-	return nil;
-}
-
-- (void)removeAllIconsFor:(id)connection
-{
-	[_fileNamesCacheByConnection removeObjectForKey:connection];
-
-	[self repaintAllWindows];
-}
-
-- (void)removeIconsFor:(id)connection paths:(NSArray*)paths
-{
-	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
-	
-	if (nil != fileNamesCache)
-	{
-		for (NSString* path in paths)
-		{
-			NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
-
-			[fileNamesCache removeObjectForKey:normalizedPath];
-		}
-	}
-
-	[self repaintAllWindows];
+	return (uint)_fileIconsEnabled.count;
 }
 
 - (void)repaintAllWindows
@@ -237,44 +189,6 @@ static ContentManager* sharedInstance = nil;
 			}
 		}
 	}
-}
-
-- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
-{
-	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
-	
-	if (nil == fileNamesCache)
-	{
-		fileNamesCache = [[NSMutableDictionary alloc] init];
-		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connection];
-	}
-	
-	for (NSString* path in iconDictionary)
-	{
-		if (filterFolder && ![path hasPrefix:filterFolder])
-		{
-			continue;
-		}
-
-		NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
-		NSNumber* iconId = [iconDictionary objectForKey:path];
-
-		if ([iconId intValue] == -1)
-		{
-			[fileNamesCache removeObjectForKey:normalizedPath];
-		}
-		else
-		{
-			[fileNamesCache setObject:iconId forKey:normalizedPath];
-		}
-	}
-
-	if (0 == fileNamesCache.count)
-	{
-		[_fileNamesCacheByConnection removeObjectForKey:connection];
-	}
-	
-	[self repaintAllWindows];
 }
 
 @end

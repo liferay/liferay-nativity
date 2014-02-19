@@ -45,16 +45,13 @@
 
 @interface ContentManager : NSObject
 {
-	NSMapTable* _fileNamesCacheByConnection;
 	NSHashTable* _fileIconsEnabled;
 }
 
 + (ContentManager*)sharedInstance;
 
 - (void)enableFileIconsFor:(id)connection enabled:(BOOL)enable;
-- (NSNumber*)iconByPath:(NSString*)path;
-- (void)removeAllIconsFor:(id)connection;
-- (void)removeIconsFor:(id)connection paths:(NSArray*)paths;
-- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
+- (void)repaintAllWindows;
+- (uint)numConnectionsEnabled;
 
 @end

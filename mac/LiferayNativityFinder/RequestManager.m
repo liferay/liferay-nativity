@@ -282,7 +282,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
+		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -290,10 +290,8 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 - (void)execRemoveFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	NSArray* paths = (NSArray*)cmdData;
-
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
+		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -301,10 +299,8 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 - (void)execSetFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
-
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
+		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	
 	[self replyString:@"1" toSocket:sock];
@@ -423,16 +419,16 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 - (NSArray*)iconIdForFile:(NSString*)file
 {
-	if ([_connectedCallbackSockets count] == 0)
+	if ([[ContentManager sharedInstance] numConnectionsEnabled] == 0)
 	{
-		return nil;
+		return [NSArray array];
 	}
 
 	if (_filterFolder)
 	{
 		if (![file hasPrefix:_filterFolder])
 		{
-			return nil;
+			return [NSArray array];
 		}
 	}
 
@@ -455,13 +451,13 @@ static double maxIconIdRequestWaitMilliSec = 10;
 
 	NSDate* startDate = [NSDate date];
 
-	while ([_callbackMsgs count] < [_connectedCallbackSockets count])
+	while ([_callbackMsgs count] < [[ContentManager sharedInstance] numConnectionsEnabled])
 	{
 		dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 10000));
 
-		if ([_connectedCallbackSockets count] == 0)
+		if ([[ContentManager sharedInstance] numConnectionsEnabled] == 0)
 		{
-			return nil;
+			return [NSArray array];
 		}
 
 		if (([startDate timeIntervalSinceNow] * -1000) > maxIconIdRequestWaitMilliSec)
@@ -548,7 +544,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 		if (YES == [_automaticCleanupPrograms containsObject:socket])
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
+				[[ContentManager sharedInstance] repaintAllWindows];
 			});
 		}
 
