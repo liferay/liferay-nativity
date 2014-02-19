@@ -50,6 +50,7 @@
 {
 	dispatch_queue_t _listenQueue;
 	dispatch_queue_t _callbackQueue;
+	dispatch_semaphore_t _callbackSemaphore;
 	
 	GCDAsyncSocket* _listenSocket;
 	GCDAsyncSocket* _callbackSocket;
@@ -74,6 +75,7 @@
 
 - (void)menuItemClicked:(NSDictionary*)actionDictionary;
 - (NSArray*)menuItemsForFiles:(NSArray*)files;
+- (NSArray*)iconIdForFile:(NSString*)file;
 - (void)start;
 
 @end
