@@ -14,16 +14,13 @@
 
 package com.liferay.nativity.modules.fileicon.win;
 
+import java.util.Map;
+
 import com.liferay.nativity.Constants;
-import com.liferay.nativity.control.MessageListener;
 import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 import com.liferay.nativity.util.win.RegistryUtil;
-
-import java.util.List;
-import java.util.Map;
 
 /**
 * @author Dennis Ju

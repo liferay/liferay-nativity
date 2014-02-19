@@ -48,70 +48,91 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 	/**
 	 * @author Dennis Ju, ported to C# by Andrew Rondeau. Support for icons added by Ivan Burlakov
 	 */
-	public abstract class UnixFileIconControlBaseImpl : FileIconControlBase
+	public abstract class LinuxFileIconControlBaseImpl : FileIconControlBase
 	{
 		private const int MESSAGE_BUFFER_SIZE = 500;
-
-		public UnixFileIconControlBaseImpl(
+		
+		public LinuxFileIconControlBaseImpl(
 			NativityControl nativityControl,
 			FileIconControlCallback fileIconControlCallback)
 			: base(nativityControl, fileIconControlCallback)
 		{
 		}
-
-		public override int RegisterIcon (string path)
-		{
-			var message = new NativityMessage (Constants.REGISTER_ICON, path);
-			
-			var reply = nativityControl.SendMessage (message);
-			
-			if (string.IsNullOrEmpty (reply))
-			{
-				return -1;
-			}
-
-			int replyInt;
-			if (int.TryParse (reply, out replyInt))
-			{
-				return replyInt;
-			}
-			else
-			{
-				return -1;
-			}
-		}
-
-        public override int RegisterMenuIcon (string path)
-        {
-            var message = new NativityMessage (Constants.REGISTER_MENU_ICON, path);
-            
-            var reply = nativityControl.SendMessage (message);
-            
-            if (string.IsNullOrEmpty (reply))
-            {
-                return -1;
-            }
-            
-            int replyInt;
-            if (int.TryParse (reply, out replyInt))
-            {
-                return replyInt;
-            }
-            else
-            {
-                return -1;
-            }
-        }
 		
-		public override void RemoveAllFileIcons()
+		public override void DisableFileIcons() 
 		{
-			var message = new NativityMessage(Constants.REMOVE_ALL_FILE_ICONS, string.Empty);
+			var message = new NativityMessage(Constants.ENABLE_FILE_ICONS, false);
 			this.nativityControl.SendMessage(message);
 		}
 		
-		public override void UnregisterIcon(int id)
+		public override void EnableFileIcons()
 		{
-			var message = new NativityMessage(Constants.UNREGISTER_ICON, id);
+			var message = new NativityMessage(Constants.ENABLE_FILE_ICONS, true);
 			this.nativityControl.SendMessage(message);
 		}
-	}}
+
+		public override void RemoveFileIcon(string path)
+		{
+			var message = new NativityMessage(Constants.REMOVE_FILE_ICONS, new string[] { path });
+			this.nativityControl.SendMessage(message);
+		}
+		
+		public override void RemoveFileIcons (IEnumerable<string> paths)
+		{
+			var list = new List<string> (LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE);
+			
+			foreach (var path in paths)
+			{
+				list.Add (path);
+				
+				if (list.Count >= LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE)
+				{
+					var message = new NativityMessage (Constants.REMOVE_FILE_ICONS, list);
+					this.nativityControl.SendMessage (message);
+					
+					list.Clear ();
+				}
+			}
+			
+			if (list.Count > 0)
+			{
+				var message = new NativityMessage (Constants.REMOVE_FILE_ICONS, list);
+				this.nativityControl.SendMessage (message);
+			}
+		}
+		
+		public override void SetFileIcon(string path, int iconId)
+		{
+			var map = new Dictionary<string, int>(1);
+			
+			map[path] = iconId;
+			
+			var message = new NativityMessage(Constants.SET_FILE_ICONS, map);
+			this.nativityControl.SendMessage(message);
+		}
+		
+		public override void SetFileIcons(IDictionary<string, int> fileIconsMap)
+		{
+			var map = new Dictionary<string, int>(LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE);
+			
+			foreach (var entry in fileIconsMap)
+			{
+				map[entry.Key] = entry.Value;
+				
+				if (map.Count >= LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE)
+				{
+					var message = new NativityMessage(Constants.SET_FILE_ICONS, map);
+					this.nativityControl.SendMessage(message);
+					
+					map.Clear();
+				}
+			}
+			
+			if (map.Count > 0)
+			{
+				var message = new NativityMessage(Constants.SET_FILE_ICONS, map);
+				this.nativityControl.SendMessage(message);
+			}
+		}
+	}
+}

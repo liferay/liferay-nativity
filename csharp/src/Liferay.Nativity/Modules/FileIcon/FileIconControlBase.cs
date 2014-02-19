@@ -88,7 +88,6 @@ namespace Liferay.Nativity.Modules.FileIcon
 			return this.fileIconControlCallback(path);
 		}
 
-		public abstract void EnableAutomaticCleanup ();
 		public abstract void DisableFileIcons ();
 		public abstract void EnableFileIcons ();
 		public abstract int RegisterIcon (string path);

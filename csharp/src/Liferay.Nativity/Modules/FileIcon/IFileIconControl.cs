@@ -59,11 +59,6 @@ namespace Liferay.Nativity.Modules.FileIcon
 		void EnableFileIcons();
 
 		/// <summary>
-		/// Mac-only: Enables automatic cleanup of icon overlays when a socket is broken. Only works for icon overlays set after this call is made
-		/// </summary>
-		void EnableAutomaticCleanup();
-
-		/// <summary>
 		/// Mac only
 		/// 
 		/// Register an overlay icon
@@ -82,32 +77,32 @@ namespace Liferay.Nativity.Modules.FileIcon
         int RegisterMenuIcon(string path);
 		
 		/// <summary>
-		/// Mac only
+		/// Mac and Linux only
 		/// 
-		/// Removes all file icon overlays
+		/// Removes all file icon overlays on Linux, redraws all Finder windows on Mac
 		/// </summary>
 		void RemoveAllFileIcons();
 		
 		/// <summary>
-		/// Mac only
+		/// Mac and Linux only
 		/// 
-		/// Removes file icon overlay
+		/// Removes file icon overlay on Linux, redraws all Finder windows on Mac
 		/// </summary>
 		/// <param name="path">file path to remove the file icon overlay</param>
 		void RemoveFileIcon(string path);
 		
 		/// <summary>
-		/// Mac only
+		/// Mac and Linux only
 		/// 
-		/// Removes file icon overlays
+		/// Removes file icon overlays on Linux, redraws all Finder windows on Mac
 		/// </summary>
 		/// <param name="paths">file paths to remove file icon overlays</param>
 		void RemoveFileIcons(IEnumerable<string> paths);
 		
 		/// <summary>
-		/// Mac only
+		/// Mac and Linux only
 		/// 
-		/// Set file icon overlay
+		/// Set file icon overlay on Linux, redraws all Finder windows on Mac
 		/// </summary>
 		/// <param name="path">file path to set file icon overlays</param>
 		/// <param name="iconId">id of file icon overlay. Value of -1 will remove the overlay
@@ -115,9 +110,9 @@ namespace Liferay.Nativity.Modules.FileIcon
 		void SetFileIcon(string path, int iconId);
 		
 		/// <summary>
-		/// Mac only
+		/// Mac and Linux only
 		/// 
-		/// Set file icon overlays
+		/// Set file icon overlays on Linux, redraws all Finder windows on Mac
 		/// </summary>
 		/// <param name="fileIconsMap">map containing paths and file icon overlay ids</param>
 		void SetFileIcons(IDictionary<string, int> fileIconsMap);

@@ -57,7 +57,6 @@ namespace Liferay.Nativity.Example
 			
 			var fileIconControl = FileIconControlUtil.GetFileIconControl(NativityControlUtil.NativityControl, fileIconControlCallback);
 
-			fileIconControl.EnableAutomaticCleanup();
 			fileIconControl.EnableFileIcons();
 			
 			testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/resources/cocoa/overlay_Check.icns");
