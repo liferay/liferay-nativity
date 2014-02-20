@@ -64,6 +64,7 @@
     <Compile Include="Control\MessageListener.cs" />
     <Compile Include="JsonExtensions.cs" />
     <Compile Include="Modules\ContextMenu\Model\ContextMenuAction.cs" />
+    <Compile Include="Modules\FileIcon\Unix\LinuxFileIconControlImpl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

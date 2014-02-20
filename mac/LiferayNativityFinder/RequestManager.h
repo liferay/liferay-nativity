@@ -40,6 +40,8 @@
  * - (Andrew Rondeau) Started tracking programname in the socket's userData, so
  * different programs don't conflict with each other
  * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
+ * - (Andrew Rondeau) Added command to repaint all windows, added ability to query
+ * the program for the file's icon, made getting the context manu faster
  */
 
 #import <Foundation/Foundation.h>
@@ -51,10 +53,14 @@
 	dispatch_queue_t _listenQueue;
 	dispatch_queue_t _callbackQueue;
 	
+	dispatch_semaphore_t _callbackSemaphore;
+	int _expectedCallbackResults;
+	
 	GCDAsyncSocket* _listenSocket;
 	GCDAsyncSocket* _callbackSocket;
 
 	NSHashTable* _connectedListenSockets;
+	NSHashTable* _connectedListenSocketsWithIconCallbacks;
 	NSHashTable* _connectedCallbackSockets;
 	NSMutableDictionary* _callbackMsgs;
 	
@@ -74,6 +80,7 @@
 
 - (void)menuItemClicked:(NSDictionary*)actionDictionary;
 - (NSArray*)menuItemsForFiles:(NSArray*)files;
+- (NSArray*)iconIdForFile:(NSString*)file;
 - (void)start;
 
 @end

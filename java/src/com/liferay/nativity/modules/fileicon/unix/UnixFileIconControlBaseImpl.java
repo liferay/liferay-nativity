@@ -20,10 +20,6 @@ import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 /**
  * @author Dennis Ju
  */
@@ -34,22 +30,6 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 		FileIconControlCallback fileIconControlCallback) {
 
 		super(nativityControl, fileIconControlCallback);
-	}
-
-	@Override
-	public void disableFileIcons() {
-		NativityMessage message = new NativityMessage(
-			Constants.ENABLE_FILE_ICONS, Boolean.FALSE);
-
-		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void enableFileIcons() {
-		NativityMessage message = new NativityMessage(
-			Constants.ENABLE_FILE_ICONS, Boolean.TRUE);
-
-		nativityControl.sendMessage(message);
 	}
 
 	@Override
@@ -74,61 +54,6 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 		nativityControl.sendMessage(message);
 	}
 
-	public void removeFileIcon(String path) {
-		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_FILE_ICONS, new String[] { path });
-
-		nativityControl.sendMessage(message);
-	}
-
-	public void removeFileIcons(String[] paths) {
-		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_FILE_ICONS, paths);
-
-		nativityControl.sendMessage(message);
-	}
-
-	public void setFileIcon(String path, int iconId) {
-		Map<String, Integer> map = new HashMap<String, Integer>(1);
-
-		map.put(path, iconId);
-
-		NativityMessage message = new NativityMessage(
-			Constants.SET_FILE_ICONS, map);
-
-		nativityControl.sendMessage(message);
-	}
-
-	public void setFileIcons(Map<String, Integer> fileIconsMap) {
-		Map<String, Integer> map = new HashMap<String, Integer>(
-			_messageBufferSize);
-
-		int i = 0;
-
-		for (Entry<String, Integer> entry : fileIconsMap.entrySet()) {
-			map.put(entry.getKey(), entry.getValue());
-
-			i++;
-
-			if (i == _messageBufferSize) {
-				NativityMessage message = new NativityMessage(
-					Constants.SET_FILE_ICONS, map);
-
-				nativityControl.sendMessage(message);
-
-				map.clear();
-				i = 0;
-			}
-		}
-
-		if (i > 0) {
-			NativityMessage message = new NativityMessage(
-				Constants.SET_FILE_ICONS, map);
-
-			nativityControl.sendMessage(message);
-		}
-	}
-
 	@Override
 	public void unregisterIcon(int id) {
 		NativityMessage message = new NativityMessage(
@@ -136,7 +61,5 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 
 		nativityControl.sendMessage(message);
 	}
-
-	private static int _messageBufferSize = 500;
 
 }

@@ -39,6 +39,7 @@
  * Changes:
  * - (Andrew Rondeau) Added the ability to group icons by connection, this allows
  * disabling / clearing icons for one program, while leaving another unaffected
+ * - (Andrew Rondeau) Made repaintAllWindows public
  */
 
 #import <Foundation/Foundation.h>
@@ -56,5 +57,6 @@
 - (void)removeAllIconsFor:(id)connection;
 - (void)removeIconsFor:(id)connection paths:(NSArray*)paths;
 - (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
+- (void)repaintAllWindows;
 
 @end

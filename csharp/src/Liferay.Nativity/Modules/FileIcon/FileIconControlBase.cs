@@ -39,8 +39,10 @@
  */
 
 using System;
+using System.Linq;
 
 using Liferay.Nativity.Control;
+using Newtonsoft.Json.Linq;
 
 namespace Liferay.Nativity.Modules.FileIcon
 {
@@ -58,6 +60,27 @@ namespace Liferay.Nativity.Modules.FileIcon
 		{
 			this.nativityControl = nativityControl;
 			this.fileIconControlCallback = fileIconControlCallback;
+
+			this.nativityControl.RegisterMessageListener(Constants.GET_FILE_ICON_ID, this.GetFileIconId);
+		}
+
+		private NativityMessage GetFileIconId (NativityMessage message)
+		{
+			string filePath = null;
+			
+			if (message.Value is JArray)
+			{
+				var filePaths = ((JArray)message.Value).Cast<string>();
+				filePath = filePaths.FirstOrDefault();
+			}
+			else
+			{
+				filePath = message.Value.ToString();
+			}
+			
+			var icon = this.GetIconForFile(filePath);
+			
+			return new NativityMessage(Constants.GET_FILE_ICON_ID, icon);
 		}
 		
 		public int GetIconForFile(string path)
@@ -65,7 +88,6 @@ namespace Liferay.Nativity.Modules.FileIcon
 			return this.fileIconControlCallback(path);
 		}
 
-		public abstract void EnableAutomaticCleanup ();
 		public abstract void DisableFileIcons ();
 		public abstract void EnableFileIcons ();
 		public abstract int RegisterIcon (string path);

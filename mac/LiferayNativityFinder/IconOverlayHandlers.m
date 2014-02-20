@@ -15,32 +15,36 @@
 #import "ContentManager.h"
 #import "IconCache.h"
 #import "IconOverlayHandlers.h"
+#import "RequestManager.h"
 #import "Finder/Finder.h"
 #import <objc/runtime.h>
 
 @implementation NSObject (IconOverlayHandlers)
 
+// 10.7 & 10.8 & 10.9 Column View
 - (void)IconOverlayHandlers_drawIconWithFrame:(struct CGRect)arg1
 {
 	[self IconOverlayHandlers_drawIconWithFrame:arg1];
 
 	NSURL* url = [[NSClassFromString(@"FINode") nodeFromNodeRef:[(TIconAndTextCell*)self node]->fNodeRef] previewItemURL];
 
-	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
-
-	if ([imageIndex intValue] > 0)
+	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
 	{
-		NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
-
-		if (image != nil)
+		if ([imageIndex intValue] > 0)
 		{
-			struct CGRect arg2 = [(TIconViewCell*)self imageRectForBounds:arg1];
+			NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
 
-			[image drawInRect:NSMakeRect(arg2.origin.x, arg2.origin.y, arg2.size.width, arg2.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+			if (image != nil)
+			{
+				struct CGRect arg2 = [(TIconViewCell*)self imageRectForBounds:arg1];
+
+				[image drawInRect:NSMakeRect(arg2.origin.x, arg2.origin.y, arg2.size.width, arg2.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+			}
 		}
 	}
 }
 
+// 10.7 & 10.8 & 10.9 (Icon View)
 - (void)IconOverlayHandlers_drawImage:(id)arg1
 {
 	TIconViewCell* realSelf = (TIconViewCell*)self;
@@ -48,43 +52,41 @@
 
 	NSURL* url = [node previewItemURL];
 
-	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[url path]];
-
-	if ([imageIndex intValue] > 0)
+	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
 	{
-		NSImage* icon = [arg1 _nsImage];
-
-		[icon lockFocus];
-
-		CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
-
-		NSImage* iconimage = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
-
-		if (iconimage != nil)
+		if ([imageIndex intValue] > 0)
 		{
-			CGImageSourceRef source;
-			NSData* data = [iconimage TIFFRepresentation];
+			NSImage* icon = [arg1 _nsImage];
 
-			source = CGImageSourceCreateWithData((CFDataRef)data, NULL);
-			CGImageRef maskRef = CGImageSourceCreateImageAtIndex(source, 0, NULL);
-			CGContextDrawImage(myContext, CGRectMake(0, 0, [icon size].width, [icon size].height), maskRef);
-			CFRelease(source);
-			CFRelease(maskRef);
+			[icon lockFocus];
+
+			CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
+
+			NSImage* iconimage = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
+
+			if (iconimage != nil)
+			{
+				CGImageSourceRef source;
+				NSData* data = [iconimage TIFFRepresentation];
+
+				source = CGImageSourceCreateWithData((CFDataRef)data, NULL);
+				CGImageRef maskRef = CGImageSourceCreateImageAtIndex(source, 0, NULL);
+				CGContextDrawImage(myContext, CGRectMake(0, 0, [icon size].width, [icon size].height), maskRef);
+				CFRelease(source);
+				CFRelease(maskRef);
+			}
+
+			[icon unlockFocus];
+
+			arg1 = [[IKImageWrapper alloc] initWithNSImage:icon];
+			[arg1 autorelease];
 		}
-
-		[icon unlockFocus];
-
-		IKImageWrapper* imgWrapper = [[IKImageWrapper alloc] initWithNSImage:icon];
-
-		[self IconOverlayHandlers_drawImage:imgWrapper];
-		[imgWrapper release];
 	}
-	else
-	{
-		[self IconOverlayHandlers_drawImage:arg1];
-	}
+
+	[self IconOverlayHandlers_drawImage:arg1];
 }
 
+// 10.9 (List and Coverflow Views)
 - (void)IconOverlayHandlers_drawRect:(struct CGRect)arg1
 {
 	[self IconOverlayHandlers_drawRect:arg1];
@@ -108,18 +110,18 @@
 			return;
 		}
 		
-		NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[fp path]];
-		
-		if ([imageIndex intValue] > 0)
+		for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[fp path]])
 		{
-			NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
-			
-			if (image != nil)
+			if ([imageIndex intValue] > 0)
 			{
-				[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+				NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
+			
+				if (image != nil)
+				{
+					[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+				}
 			}
 		}
-
 	}
 }
 

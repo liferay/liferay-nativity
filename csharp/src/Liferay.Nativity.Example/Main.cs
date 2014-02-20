@@ -49,24 +49,23 @@ namespace Liferay.Nativity.Example
 			NativityControlUtil.NativityControl.Connect();
 
 			// File Icons
-			
-			// FileIconControlCallback only used by Windows
-			Modules.FileIcon.FileIconControlCallback fileIconControlCallback = path => 1;
+			var testIconId = -1;
+			var testFilePath = "/Users/rondea/bar.txt";
+
+			// FileIconControlCallback not used on Linux
+			Modules.FileIcon.FileIconControlCallback fileIconControlCallback = path =>
+			{
+				return path == testFilePath ? testIconId : -1;
+			};
 			
 			var fileIconControl = FileIconControlUtil.GetFileIconControl(NativityControlUtil.NativityControl, fileIconControlCallback);
 
-			fileIconControl.EnableAutomaticCleanup();
 			fileIconControl.EnableFileIcons();
 			
-			var testFilePath = "/Users/rondea/bar.txt";
-			var testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/resources/cocoa/overlay_Check.icns");
+			testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/resources/cocoa/overlay_Check.icns");
 
 			// FileIconControl.setFileIcon() method only used by Mac and Linux
 			fileIconControl.SetFileIcon(testFilePath, testIconId);
-			
-			testFilePath = "/Users/rondea/foo";
-			fileIconControl.SetFileIcon(testFilePath, testIconId);
-			fileIconControl.RemoveFileIcon(testFilePath);
 
 			// Context Menus
 			ContextMenuControlUtil.GetContextMenuControl(NativityControlUtil.NativityControl, MainClass.ContextMenuControlCallback);
