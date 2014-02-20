@@ -57,9 +57,6 @@ static RequestManager* sharedInstance = nil;
 
 @implementation RequestManager
 
-static double maxMenuItemsRequestWaitMilliSec = 250;
-static double maxIconIdRequestWaitMilliSec = 10;
-
 - (id)init
 {
 	if ((self = [super init]))
