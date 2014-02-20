@@ -57,6 +57,9 @@ static RequestManager* sharedInstance = nil;
 
 @implementation RequestManager
 
+static double maxMenuItemsRequestWaitMilliSec = 250;
+static double maxIconIdRequestWaitMilliSec = 30;
+
 - (id)init
 {
 	if ((self = [super init]))
@@ -436,7 +439,7 @@ static RequestManager* sharedInstance = nil;
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
 	
-	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 0));
+	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * maxMenuItemsRequestWaitMilliSec));
 		
 	if ([_callbackMsgs count] < _expectedCallbackResults)
 	{
@@ -499,7 +502,7 @@ static RequestManager* sharedInstance = nil;
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
 
-	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 0));
+	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * maxMenuItemsRequestWaitMilliSec));
 	
 	if ([_callbackMsgs count] < _expectedCallbackResults)
 	{
