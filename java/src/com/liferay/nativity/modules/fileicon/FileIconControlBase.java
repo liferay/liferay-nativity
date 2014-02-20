@@ -47,7 +47,7 @@ public abstract class FileIconControlBase implements FileIconControl {
 						filePath = args.get(0).toString();
 					}
 				}
-				else {
+				else if (null != message.getValue()) {
 					filePath = message.getValue().toString();
 				}
 
