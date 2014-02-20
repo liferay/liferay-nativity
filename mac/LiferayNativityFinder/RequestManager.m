@@ -272,6 +272,17 @@ static double maxIconIdRequestWaitMilliSec = 10;
 		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	
+	// Finder needs to be prompted to redraw a few times in order for the overlays to appear
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 100), dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] repaintAllWindows];
+	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 200), dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] repaintAllWindows];
+	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 300), dispatch_get_main_queue(), ^{
+		[[ContentManager sharedInstance] repaintAllWindows];
+	});
+	
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -419,6 +430,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	[menuQueryDictionary release];
 	
 	[_callbackMsgs removeAllObjects];
+	_expectedCallbackResults = [_connectedCallbackSockets count];
 	
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 	
@@ -427,23 +439,11 @@ static double maxIconIdRequestWaitMilliSec = 10;
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
 	
-	NSDate* startDate = [NSDate date];
-	
-	while ([_callbackMsgs count] < [_connectedCallbackSockets count])
+	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 0));
+		
+	if ([_callbackMsgs count] < _expectedCallbackResults)
 	{
-		dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 10000));
-		
-		if ([_connectedCallbackSockets count] == 0)
-		{
-			return nil;
-		}
-		
-		if (([startDate timeIntervalSinceNow] * -1000) > maxMenuItemsRequestWaitMilliSec)
-		{
-			NSLog(@"LiferayNativityFinder: menu item request timed out");
-			
-			break;
-		}
+		NSLog(@"LiferayNativityFinder: menu item request timed out");
 	}
 	
 	NSMutableArray* menuItems = [[NSMutableArray alloc] init];
@@ -493,6 +493,7 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	[menuQueryDictionary release];
 
 	[_callbackMsgs removeAllObjects];
+	_expectedCallbackResults = [_connectedListenSocketsWithIconCallbacks count];
 	
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -501,23 +502,11 @@ static double maxIconIdRequestWaitMilliSec = 10;
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
 	}
 
-	NSDate* startDate = [NSDate date];
-
-	while ([_callbackMsgs count] < _connectedListenSocketsWithIconCallbacks.count)
+	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 0));
+	
+	if ([_callbackMsgs count] < _expectedCallbackResults)
 	{
-		dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_FOREVER, 10000));
-
-		if (_connectedListenSocketsWithIconCallbacks.count == 0)
-		{
-			return iconIds;
-		}
-
-		if (([startDate timeIntervalSinceNow] * -1000) > maxIconIdRequestWaitMilliSec)
-		{
-			NSLog(@"LiferayNativityFinder: file icon request timed out");
-
-			break;
-		}
+		NSLog(@"LiferayNativityFinder: file icon request timed out");
 	}
 
 	for (NSValue* key in _callbackMsgs)
@@ -572,7 +561,10 @@ static double maxIconIdRequestWaitMilliSec = 10;
 		NSString* callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 
 		[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
-		dispatch_semaphore_signal(_callbackSemaphore);
+		
+		if ([_callbackMsgs count] >= _expectedCallbackResults) {
+			dispatch_semaphore_signal(_callbackSemaphore);
+		}
 		
 		[callbackString release];
 
@@ -590,12 +582,20 @@ static double maxIconIdRequestWaitMilliSec = 10;
 	if ([_connectedListenSockets containsObject:socket])
 	{
 		[_connectedListenSockets removeObject:socket];
+
+		if (YES == [_connectedListenSocketsWithIconCallbacks containsObject:socket])
+		{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[[ContentManager sharedInstance] repaintAllWindows];
+			});
+		}
+		
 		[_connectedListenSocketsWithIconCallbacks removeObject:socket];
 
 		if (YES == [_automaticCleanupPrograms containsObject:socket])
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[[ContentManager sharedInstance] repaintAllWindows];
+				[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
 			});
 		}
 
