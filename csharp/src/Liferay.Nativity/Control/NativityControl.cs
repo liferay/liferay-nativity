@@ -83,7 +83,8 @@ namespace Liferay.Nativity.Control
 		/// <param name="message">NativityMessage received from the native service</param>
 		public NativityMessage FireMessage (NativityMessage message)
 		{
-			logger.DebugFormat("Firing message: {0}", message.Command);
+			// This causes too much SPAM in the log
+			//logger.DebugFormat("Firing message: {0}", message.Command);
 
 			MessageListener messageListener;
 			if (this.commandMap.TryGetValue (message.Command, out messageListener))

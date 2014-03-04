@@ -53,7 +53,7 @@
 	dispatch_queue_t _listenQueue;
 	dispatch_queue_t _callbackQueue;
 	
-	dispatch_semaphore_t _callbackSemaphore;
+	NSConditionLock* _callbackLock;
 	int _expectedCallbackResults;
 	
 	GCDAsyncSocket* _listenSocket;

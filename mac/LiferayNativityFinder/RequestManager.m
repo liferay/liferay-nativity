@@ -13,29 +13,29 @@
  */
 
 /**
- * Syncplicity, LLC © 2014 
- * 
+ * Syncplicity, LLC © 2014
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * 
+ *
  * If you would like a copy of source code for this product, EMC will provide a
  * copy of the source code that is required to be made available in accordance
  * with the applicable open source license.  EMC may charge reasonable shipping
  * and handling charges for such distribution.  Please direct requests in writing
  * to EMC Legal, 176 South St., Hopkinton, MA 01748, ATTN: Open Source Program
  * Office.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
  * details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along
  * with this library; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * Changes:
  * - (Andrew Rondeau) Fixed a race condition in menuItemsForFiles:. Now clearing
  * _callbackMsgs before requesting menu items for given paths
@@ -47,6 +47,8 @@
  * - (Andrew Rondeau) Added command to repaint all windows, added ability to query
  * the program for the file's icon, made getting the context manu faster
  */
+
+#include <libkern/OSAtomic.h>
 
 #import "ContentManager.h"
 #import "IconCache.h"
@@ -66,31 +68,31 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	{
 		_listenQueue = dispatch_queue_create("listen queue", nil);
 		_listenSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_listenQueue];
-
+		
 		_callbackQueue = dispatch_queue_create("callback queue", nil);
 		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
-
+		
 		_connectedListenSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_connectedListenSocketsWithIconCallbacks = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_connectedCallbackSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
 		
 		_automaticCleanupPrograms = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
-
+		
 		_filterFolder = nil;
-
+		
 		_numberFormatter = [[NSNumberFormatter alloc] init];
 		[_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-
+		
 		_isRunning = NO;
 		
 		_allIconsConnection = [[NSObject alloc] init];
 		
-		_callbackSemaphore = dispatch_semaphore_create(0);
-
+		_callbackLock = [[NSConditionLock alloc] init];
+		
 		[self start];
 	}
-
+	
 	return self;
 }
 
@@ -99,44 +101,44 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	[_listenSocket setDelegate:nil delegateQueue:NULL];
 	[_listenSocket disconnect];
 	[_listenSocket release];
-
+	
 	dispatch_release(_listenQueue);
-
+	
 	[_callbackSocket setDelegate:nil delegateQueue:NULL];
 	[_callbackSocket disconnect];
 	[_callbackSocket release];
-
+	
 	dispatch_release(_callbackQueue);
 	
 	[_automaticCleanupPrograms release];
-
+	
 	for (GCDAsyncSocket* socket in _connectedListenSockets)
 	{
 		[socket setDelegate:nil delegateQueue:NULL];
 		[socket disconnect];
 	}
-
+	
 	[_connectedListenSockets release];
 	[_connectedListenSocketsWithIconCallbacks release];
-
+	
 	for (GCDAsyncSocket* socket in _connectedCallbackSockets)
 	{
 		[socket setDelegate:nil delegateQueue:NULL];
 		[socket disconnect];
 	}
-
+	
 	[_connectedCallbackSockets release];
 	[_callbackMsgs release];
-
+	
 	[_numberFormatter release];
-
+	
 	[_filterFolder release];
 	[_allIconsConnection release];
-
+	
 	sharedInstance = nil;
 	
-	dispatch_release(_callbackSemaphore);
-
+	[_callbackLock release];
+	
 	[super dealloc];
 }
 
@@ -149,7 +151,7 @@ static double maxIconIdRequestWaitMilliSec = 30;
 			sharedInstance = [[self alloc] init];
 		}
 	}
-
+	
 	return sharedInstance;
 }
 
@@ -158,24 +160,24 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	if (!data || [data length] == 0)
 	{
 		NSLog(@"LiferayNativityFinder: cannot parse empty data");
-
+		
 		[self replyString:@"-1" toSocket:sock];
-
+		
 		return;
 	}
-
+	
 	NSDictionary* jsonDictionary = [data objectFromJSONData];
-
+	
 	NSString* command = [jsonDictionary objectForKey:@"command"];
 	NSData* value = [jsonDictionary objectForKey:@"value"];
-
+	
 	if (!command)
 	{
 		NSString* strData = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
 		NSLog(@"LiferayNativityFinder: failed to parse data: %@", strData);
-
+		
 		[self replyString:@"-1" toSocket:sock];
-
+		
 		return;
 	}
 	else if ([command isEqualToString:@"enableAutomaticCleanup"])
@@ -225,9 +227,9 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	else
 	{
 		NSLog(@"LiferayNativityFinder: failed to find command: %@", command);
-
+		
 		[self replyString:@"-1" toSocket:sock];
-
+		
 		return;
 	}
 }
@@ -384,19 +386,19 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	{
 		return;
 	}
-
+	
 	NSDictionary* menuExecDictionary = [[NSMutableDictionary alloc] init];
-
+	
 	[menuExecDictionary setValue:@"contextMenuAction" forKey:@"command"];
-
+	
 	[menuExecDictionary setValue:actionDictionary forKey:@"value"];
-
+	
 	NSString* jsonString = [menuExecDictionary JSONString];
-
+	
 	[menuExecDictionary release];
-
+	
 	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
-
+	
 	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
 	{
 		[callbackSocket writeData:data withTimeout:-1 tag:0];
@@ -429,34 +431,51 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	NSString* jsonString = [menuQueryDictionary JSONString];
 	[menuQueryDictionary release];
 	
-	[_callbackMsgs removeAllObjects];
-	_expectedCallbackResults = [_connectedCallbackSockets count];
+	[_callbackLock lock];
 	
-	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
-	
-	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
-	{
-		[callbackSocket writeData:data withTimeout:-1 tag:0];
-	}
-	
-	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * maxMenuItemsRequestWaitMilliSec));
+	@try {
+		[_callbackMsgs removeAllObjects];
+		_expectedCallbackResults = [_connectedCallbackSockets count];
 		
-	if ([_callbackMsgs count] < _expectedCallbackResults)
-	{
-		NSLog(@"LiferayNativityFinder: menu item request timed out");
-	}
-	
-	NSMutableArray* menuItems = [[NSMutableArray alloc] init];
-	
-	for (NSValue* key in _callbackMsgs)
-	{
-		NSString* callbackMsg = [_callbackMsgs objectForKey:key];
-		NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
+		OSMemoryBarrier();
 		
-		[menuItems addObjectsFromArray:(NSArray*)[responseDictionary objectForKey:@"value"]];
+		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
+		
+		for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
+		{
+			[callbackSocket writeData:data withTimeout:-1 tag:0];
+		}
+	}
+	@finally {
+		[_callbackLock unlockWithCondition:421];
 	}
 	
-	return [menuItems autorelease];
+	[_callbackLock lockWhenCondition:420];
+	
+	@try {
+		OSMemoryBarrier();
+		
+		if ([_callbackMsgs count] < _expectedCallbackResults)
+		{
+			NSLog(@"LiferayNativityFinder: menu item request timed out");
+		}
+		
+		NSMutableArray* menuItems = [[NSMutableArray alloc] init];
+		
+		for (NSValue* key in _callbackMsgs)
+		{
+			NSString* callbackMsg = [_callbackMsgs objectForKey:key];
+			NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
+			
+			[menuItems addObjectsFromArray:(NSArray*)[responseDictionary objectForKey:@"value"]];
+		}
+		
+		return [menuItems autorelease];
+	}
+	@finally {
+		[_callbackMsgs removeAllObjects];
+		[_callbackLock unlock];
+	}
 }
 
 
@@ -470,12 +489,12 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	{
 		[iconIds addObject:imageIndex];
 	}
-
+	
 	if (_connectedListenSocketsWithIconCallbacks.count == 0)
 	{
 		return iconIds;
 	}
-
+	
 	if (_filterFolder)
 	{
 		if (![file hasPrefix:_filterFolder])
@@ -483,47 +502,64 @@ static double maxIconIdRequestWaitMilliSec = 30;
 			return iconIds;
 		}
 	}
-
+	
 	NSDictionary* menuQueryDictionary = [[NSMutableDictionary alloc] init];
-
+	
 	[menuQueryDictionary setValue:@"getFileIconId" forKey:@"command"];
 	[menuQueryDictionary setValue:file forKey:@"value"];
-
+	
 	NSString* jsonString = [menuQueryDictionary JSONString];
 	[menuQueryDictionary release];
 
-	[_callbackMsgs removeAllObjects];
-	_expectedCallbackResults = [_connectedListenSocketsWithIconCallbacks count];
-	
-	NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
+	[_callbackLock lock];
 
-	for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
-	{
-		[callbackSocket writeData:data withTimeout:-1 tag:0];
-	}
+	@try {
+		[_callbackMsgs removeAllObjects];
+		_expectedCallbackResults = [_connectedListenSocketsWithIconCallbacks count];
 
-	dispatch_semaphore_wait(_callbackSemaphore, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * maxMenuItemsRequestWaitMilliSec));
-	
-	if ([_callbackMsgs count] < _expectedCallbackResults)
-	{
-		NSLog(@"LiferayNativityFinder: file icon request timed out");
-	}
+		OSMemoryBarrier();
 
-	for (NSValue* key in _callbackMsgs)
-	{
-		NSString* callbackMsg = [_callbackMsgs objectForKey:key];
-		NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
-
-		[iconIds addObject:[responseDictionary objectForKey:@"value"]];
+		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		
+		for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
+		{
+			[callbackSocket writeData:data withTimeout:-1 tag:0];
+		}
 	}
+	@finally {
+		[_callbackLock unlockWithCondition:421];
+	}
+	
+	[_callbackLock lockWhenCondition:420];
 
-	return [iconIds autorelease];
+	@try {
+		OSMemoryBarrier();
+		
+		if ([_callbackMsgs count] < _expectedCallbackResults)
+		{
+			NSLog(@"LiferayNativityFinder: file icon request timed out");
+		}
+		
+		for (NSValue* key in _callbackMsgs)
+		{
+			NSString* callbackMsg = [_callbackMsgs objectForKey:key];
+			NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
+			
+			[iconIds addObject:[responseDictionary objectForKey:@"value"]];
+			
+		}
+		
+		return [iconIds autorelease];
+	}
+	@finally {
+		[_callbackMsgs removeAllObjects];
+		[_callbackLock unlock];
+	}
 }
 
 - (void)socket:(GCDAsyncSocket*)socket didAcceptNewSocket:(GCDAsyncSocket*)newSocket
 {
-
+	
 	if (socket == _listenSocket)
 	{
 		// The userData allows programs to specify that all registered icon overlays will be removed
@@ -537,7 +573,7 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	{
 		[_connectedCallbackSockets addObject:newSocket];
 	}
-
+	
 	[newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 }
 
@@ -551,23 +587,35 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	if ([_connectedListenSockets containsObject:socket])
 	{
 		[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:socket];
-
+		
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 	}
-
+	
 	if ([_connectedCallbackSockets containsObject:socket])
 	{
 		NSData* strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
 		NSString* callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
-
-		[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
 		
-		if ([_callbackMsgs count] >= _expectedCallbackResults) {
-			dispatch_semaphore_signal(_callbackSemaphore);
+		[_callbackLock lock];
+		@try {
+
+			OSMemoryBarrier();
+
+			[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
+
+			OSMemoryBarrier();
+		}
+		@finally {
+			if ([_callbackMsgs count] >= _expectedCallbackResults) {
+				[_callbackLock unlockWithCondition:420];
+			} else {
+				[_callbackLock unlockWithCondition:421];
+			}
 		}
 		
+		
 		[callbackString release];
-
+		
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 	}
 }
@@ -582,7 +630,7 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	if ([_connectedListenSockets containsObject:socket])
 	{
 		[_connectedListenSockets removeObject:socket];
-
+		
 		if (YES == [_connectedListenSocketsWithIconCallbacks containsObject:socket])
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
@@ -591,21 +639,21 @@ static double maxIconIdRequestWaitMilliSec = 30;
 		}
 		
 		[_connectedListenSocketsWithIconCallbacks removeObject:socket];
-
+		
 		if (YES == [_automaticCleanupPrograms containsObject:socket])
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
 			});
 		}
-
+		
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
 		});
 		
 		[_automaticCleanupPrograms removeObject:socket.userData];
 	}
-
+	
 	if ([_connectedCallbackSockets containsObject:socket])
 	{
 		[_connectedCallbackSockets removeObject:socket];
@@ -615,7 +663,7 @@ static double maxIconIdRequestWaitMilliSec = 30;
 - (void)replyString:(NSString*)text toSocket:(GCDAsyncSocket*)socket
 {
 	NSData* data = [[text stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
-
+	
 	[socket writeData:data withTimeout:-1 tag:0];
 }
 
@@ -624,17 +672,17 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	if (!_isRunning)
 	{
 		NSError* error = nil;
-
+		
 		if (![_listenSocket acceptOnInterface:@"localhost" port:33001 error:&error])
 		{
 			return;
 		}
-
+		
 		if (![_callbackSocket acceptOnInterface:@"localhost" port:33002 error:&error])
 		{
 			return;
 		}
-
+		
 		_isRunning = YES;
 	}
 }
