@@ -279,19 +279,10 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[_connectedListenSocketsWithIconCallbacks removeObject:sock];
 	}
 	_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
-	
+
+	OSMemoryBarrier();
+
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] repaintAllWindows];
-	});
-	
-	// Finder needs to be prompted to redraw a few times in order for the overlays to appear
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 100), dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] repaintAllWindows];
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 200), dispatch_get_main_queue(), ^{
-		[[ContentManager sharedInstance] repaintAllWindows];
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_MSEC * 300), dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	
@@ -418,7 +409,11 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (NSArray*)menuItemsForFiles:(NSArray*)files
 {
-	if ([_connectedCallbackSockets count] == 0)
+	// Why not just call [_connectedCallbackSockets count] directly?
+	// Thread-safety! _connectedCallbackSockets is manipulated on the socket's thread,
+	// but this method is called on the main thread
+	OSMemoryBarrier();
+	if (_connectedCallbackSocketsCount == 0)
 	{
 		return nil;
 	}
@@ -445,20 +440,19 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	
 	@try {
 		[_callbackMsgs removeAllObjects];
-
-		// Why not just call [_connectedCallbackSockets count] directly?
-		// Thread-safety! _connectedListenSocketsWithIconCallbacks is manipulated on the socket's thread,
-		// but this method is called on the main thread
 		_expectedCallbackResults = _connectedCallbackSocketsCount;
 		
 		OSMemoryBarrier();
 		
 		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		
-		for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
-		{
-			[callbackSocket writeData:data withTimeout:-1 tag:0];
-		}
+		// Perform the callbacks on the _callbackQueue for thread-safety
+		dispatch_async(_callbackQueue, ^{
+			for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
+			{
+				[callbackSocket writeData:data withTimeout:-1 tag:0];
+			}
+		});
 	}
 	@finally {
 		[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
@@ -519,7 +513,11 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[iconIds addObject:imageIndex];
 	}
 	
-	if (_connectedListenSocketsWithIconCallbacks.count == 0)
+	// Why not just call [_connectedListenSocketsWithIconCallbacks count] directly?
+	// Thread-safety! _connectedListenSocketsWithIconCallbacks is manipulated on the socket's thread,
+	// but this method is called on the main thread
+	OSMemoryBarrier();
+	if (_connectedListenSocketsWithIconCallbacksCount == 0)
 	{
 		return [iconIds autorelease];
 	}
@@ -549,20 +547,19 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 	@try {
 		[_callbackMsgs removeAllObjects];
-
-		// Why not just call [_connectedListenSocketsWithIconCallbacks count] directly?
-		// Thread-safety! _connectedListenSocketsWithIconCallbacks is manipulated on the socket's thread,
-		// but this method is called on the main thread
-		_expectedCallbackResults = _connectedListenSocketsWithIconCallbacks.count;
+		_expectedCallbackResults = _connectedListenSocketsWithIconCallbacksCount;
 
 		OSMemoryBarrier();
 
 		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		
-		for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
-		{
-			[callbackSocket writeData:data withTimeout:-1 tag:0];
-		}
+		// Perform the callbacks on the _callbackQueue for thread-safety
+		dispatch_async(_callbackQueue, ^{
+			for (GCDAsyncSocket* callbackSocket in _connectedCallbackSockets)
+			{
+				[callbackSocket writeData:data withTimeout:-1 tag:0];
+			}
+		});
 	}
 	@finally {
 		[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
@@ -689,39 +686,46 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (void)socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)err
 {
-	if ([_connectedListenSockets containsObject:socket])
-	{
-		[_connectedListenSockets removeObject:socket];
-		
-		if (YES == [_connectedListenSocketsWithIconCallbacks containsObject:socket])
-		{
-			[_connectedListenSocketsWithIconCallbacks removeObject:socket];
-			_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
-
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[[ContentManager sharedInstance] repaintAllWindows];
-			});
-		}
-		
-		if (YES == [_automaticCleanupPrograms containsObject:socket])
-		{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
-			});
-		}
-		
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
-		});
-		
-		[_automaticCleanupPrograms removeObject:socket.userData];
-	}
+	// This callback can happen on either queue, yet each queue has private data
+	// In order to ensure thread-safe reads from each collection, perform the actual disconnect logic on the appropriate queue
 	
-	if ([_connectedCallbackSockets containsObject:socket])
-	{
-		[_connectedCallbackSockets removeObject:socket];
-		_connectedCallbackSocketsCount = [_connectedCallbackSockets count];
-	}
+	dispatch_async(_listenQueue, ^{
+		if ([_connectedListenSockets containsObject:socket])
+		{
+			[_connectedListenSockets removeObject:socket];
+			
+			if (YES == [_connectedListenSocketsWithIconCallbacks containsObject:socket])
+			{
+				[_connectedListenSocketsWithIconCallbacks removeObject:socket];
+				_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
+				
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[[ContentManager sharedInstance] repaintAllWindows];
+				});
+			}
+			
+			if (YES == [_automaticCleanupPrograms containsObject:socket])
+			{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
+				});
+			}
+			
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
+			});
+			
+			[_automaticCleanupPrograms removeObject:socket.userData];
+		}
+	});
+
+	dispatch_async(_callbackQueue, ^{
+		if ([_connectedCallbackSockets containsObject:socket])
+		{
+			[_connectedCallbackSockets removeObject:socket];
+			_connectedCallbackSocketsCount = [_connectedCallbackSockets count];
+		}
+	});
 }
 
 - (void)replyString:(NSString*)text toSocket:(GCDAsyncSocket*)socket
