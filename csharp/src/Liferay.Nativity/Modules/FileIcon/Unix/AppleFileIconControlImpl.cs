@@ -40,6 +40,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Liferay.Nativity.Control;
 using Liferay.Nativity.Modules.FileIcon;
@@ -69,25 +70,25 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 
 		public override void RemoveFileIcon(string path)
 		{
-			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, string.Empty);
+			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, new string[0]);
 			this.nativityControl.SendMessage(message);
 		}
 		
 		public override void RemoveFileIcons (IEnumerable<string> paths)
 		{
-			var message = new NativityMessage (Constants.REPAINT_ALL_ICONS, string.Empty);
+			var message = new NativityMessage (Constants.REPAINT_ALL_ICONS, paths.ToArray());
 			this.nativityControl.SendMessage (message);
 		}
 		
 		public override void SetFileIcon(string path, int iconId)
 		{
-			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, string.Empty);
+			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, new string[0]);
 			this.nativityControl.SendMessage(message);
 		}
 		
 		public override void SetFileIcons(IDictionary<string, int> fileIconsMap)
 		{
-			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, string.Empty);
+			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, fileIconsMap.Keys.ToArray());
 			this.nativityControl.SendMessage(message);
 		}
 	}
