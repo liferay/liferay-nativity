@@ -76,7 +76,9 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		_callbackSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_callbackQueue];
 		
 		_connectedListenSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
+		_connectedCallbackSocketsCount = 0;
 		_connectedListenSocketsWithIconCallbacks = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
+		_connectedListenSocketsWithIconCallbacksCount = 0;
 		_connectedCallbackSockets = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 		_callbackMsgs = [[NSMutableDictionary alloc] init];
 		
@@ -276,6 +278,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	} else {
 		[_connectedListenSocketsWithIconCallbacks removeObject:sock];
 	}
+	_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] repaintAllWindows];
@@ -442,7 +445,11 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	
 	@try {
 		[_callbackMsgs removeAllObjects];
-		_expectedCallbackResults = [_connectedCallbackSockets count];
+
+		// Why not just call [_connectedCallbackSockets count] directly?
+		// Thread-safety! _connectedListenSocketsWithIconCallbacks is manipulated on the socket's thread,
+		// but this method is called on the main thread
+		_expectedCallbackResults = _connectedCallbackSocketsCount;
 		
 		OSMemoryBarrier();
 		
@@ -542,7 +549,11 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 	@try {
 		[_callbackMsgs removeAllObjects];
-		_expectedCallbackResults = [_connectedListenSocketsWithIconCallbacks count];
+
+		// Why not just call [_connectedListenSocketsWithIconCallbacks count] directly?
+		// Thread-safety! _connectedListenSocketsWithIconCallbacks is manipulated on the socket's thread,
+		// but this method is called on the main thread
+		_expectedCallbackResults = _connectedListenSocketsWithIconCallbacks.count;
 
 		OSMemoryBarrier();
 
@@ -622,6 +633,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	if (socket == _callbackSocket)
 	{
 		[_connectedCallbackSockets addObject:newSocket];
+		_connectedCallbackSocketsCount = [_connectedCallbackSockets count];
 	}
 	
 	[newSocket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
@@ -683,12 +695,13 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		
 		if (YES == [_connectedListenSocketsWithIconCallbacks containsObject:socket])
 		{
+			[_connectedListenSocketsWithIconCallbacks removeObject:socket];
+			_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
+
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[[ContentManager sharedInstance] repaintAllWindows];
 			});
 		}
-		
-		[_connectedListenSocketsWithIconCallbacks removeObject:socket];
 		
 		if (YES == [_automaticCleanupPrograms containsObject:socket])
 		{
@@ -707,6 +720,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	if ([_connectedCallbackSockets containsObject:socket])
 	{
 		[_connectedCallbackSockets removeObject:socket];
+		_connectedCallbackSocketsCount = [_connectedCallbackSockets count];
 	}
 }
 
