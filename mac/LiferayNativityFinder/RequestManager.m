@@ -46,9 +46,9 @@
  * - (Andrew Rondeau) Fixed a lot of thread safety issues issues via queuing
  * - (Andrew Rondeau) Added command to repaint all windows, added ability to query
  * the program for the file's icon, made getting the context manu faster
+ * - (Andrew Rondeau) Switched from semaphores to NSConditionLock for to resolve
+ * unreliability issues
  */
-
-#include <libkern/OSAtomic.h>
 
 #import "ContentManager.h"
 #import "IconCache.h"
@@ -59,8 +59,11 @@ static RequestManager* sharedInstance = nil;
 
 @implementation RequestManager
 
-static double maxMenuItemsRequestWaitMilliSec = 250;
-static double maxIconIdRequestWaitMilliSec = 30;
+static NSTimeInterval MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL = 0.25f;
+static NSTimeInterval DISABLE_ICON_OVERLAYS_ON_TIMEOUT_TIMEINTERVAL = 5.0f;
+
+static NSInteger WAITING_FOR_CALLBACK_RESPONSE = 1;
+static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (id)init
 {
@@ -89,6 +92,8 @@ static double maxIconIdRequestWaitMilliSec = 30;
 		_allIconsConnection = [[NSObject alloc] init];
 		
 		_callbackLock = [[NSConditionLock alloc] init];
+		_waitForIconOverlaysUntil = [[NSDate distantPast] retain];
+		_disableIconOverlaysUntil = [[NSDate distantPast] retain];
 		
 		[self start];
 	}
@@ -138,6 +143,8 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	sharedInstance = nil;
 	
 	[_callbackLock release];
+	[_waitForIconOverlaysUntil release];
+	[_disableIconOverlaysUntil release];
 	
 	[super dealloc];
 }
@@ -447,27 +454,42 @@ static double maxIconIdRequestWaitMilliSec = 30;
 		}
 	}
 	@finally {
-		[_callbackLock unlockWithCondition:421];
+		[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
 	}
 	
-	[_callbackLock lockWhenCondition:420];
+	if (NO == [_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]]) {
+		NSLog(@"LiferayNativityFinder: menu item request timed out");
+		[_callbackLock lock];
+	}
 	
 	@try {
 		OSMemoryBarrier();
-		
-		if ([_callbackMsgs count] < _expectedCallbackResults)
-		{
-			NSLog(@"LiferayNativityFinder: menu item request timed out");
-		}
 		
 		NSMutableArray* menuItems = [[NSMutableArray alloc] init];
 		
 		for (NSValue* key in _callbackMsgs)
 		{
 			NSString* callbackMsg = [_callbackMsgs objectForKey:key];
-			NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
 			
-			[menuItems addObjectsFromArray:(NSArray*)[responseDictionary objectForKey:@"value"]];
+			@try {
+				NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
+				NSArray* menuItemDictionaries = [responseDictionary objectForKey:@"value"];
+				
+				if ([menuItemDictionaries isKindOfClass:[NSArray class]]) {
+					for (NSDictionary* menuItemDictionary in (NSArray*)[responseDictionary objectForKey:@"value"]) {
+						if ([menuItemDictionary isKindOfClass:[NSDictionary class]]) {
+							[menuItems addObject:menuItemDictionary];
+						} else {
+							NSLog(@"Invalid context menu response: %@", callbackMsg);
+						}
+					}
+				} else {
+					NSLog(@"Invalid context menu response: %@", callbackMsg);
+				}
+			}
+			@catch (NSException *exception) {
+				NSLog(@"Invalid context menu response: %@", callbackMsg);
+			}
 		}
 		
 		return [menuItems autorelease];
@@ -492,15 +514,20 @@ static double maxIconIdRequestWaitMilliSec = 30;
 	
 	if (_connectedListenSocketsWithIconCallbacks.count == 0)
 	{
-		return iconIds;
+		return [iconIds autorelease];
 	}
 	
 	if (_filterFolder)
 	{
 		if (![file hasPrefix:_filterFolder])
 		{
-			return iconIds;
+			return [iconIds autorelease];
 		}
+	}
+
+	// If there are timeout problems with icon overlays, then they are outright disabled
+	if (NSOrderedDescending == [_disableIconOverlaysUntil compare:[NSDate date]]) {
+		return [iconIds autorelease];
 	}
 	
 	NSDictionary* menuQueryDictionary = [[NSMutableDictionary alloc] init];
@@ -527,26 +554,49 @@ static double maxIconIdRequestWaitMilliSec = 30;
 		}
 	}
 	@finally {
-		[_callbackLock unlockWithCondition:421];
+		[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
 	}
 	
-	[_callbackLock lockWhenCondition:420];
+	// Picking a date to wait on icon overlays is difficult. We can run 100s of queries in a single repaint,
+	// yet having a wait of 100 milliseconds on each call would mean that Finder will crawl to a stop in
+	// the case of problems.
+	// Furthermore, we don't know when Finder starts to draw icons, thus this algorithm attempts to mitigate this issue
+	// by starting with a generous timeout, and then attempting to detect when it needs to reset the timeout
+	if (NSOrderedAscending == [_waitForIconOverlaysUntil compare:[NSDate date]]) {
+		[_waitForIconOverlaysUntil release];
+		_waitForIconOverlaysUntil = [[[NSDate date] dateByAddingTimeInterval:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL] retain];
+	}
+	
+	if (NO == [_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]]) {
+		NSLog(@"LiferayNativityFinder: file icon request timed out: %@", file);
+		
+		[_disableIconOverlaysUntil release];
+		_disableIconOverlaysUntil = [[[NSDate date] dateByAddingTimeInterval:DISABLE_ICON_OVERLAYS_ON_TIMEOUT_TIMEINTERVAL] retain];
+
+		return [iconIds autorelease];
+	}
 
 	@try {
 		OSMemoryBarrier();
 		
-		if ([_callbackMsgs count] < _expectedCallbackResults)
-		{
-			NSLog(@"LiferayNativityFinder: file icon request timed out");
-		}
-		
 		for (NSValue* key in _callbackMsgs)
 		{
 			NSString* callbackMsg = [_callbackMsgs objectForKey:key];
-			NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
 			
-			[iconIds addObject:[responseDictionary objectForKey:@"value"]];
-			
+			@try {
+				NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
+				NSNumber* imageIndex = [responseDictionary objectForKey:@"value"];
+
+				if ([imageIndex isKindOfClass:[NSNumber class]]) {
+					[iconIds addObject:imageIndex];
+				} else {
+					NSLog(@"Invalid icon overlay response: %@", callbackMsg);
+				}
+			}
+			@catch (NSException *exception) {
+				NSLog(@"Invalid icon overlay response: %@", callbackMsg);
+			}
+
 		}
 		
 		return [iconIds autorelease];
@@ -607,9 +657,9 @@ static double maxIconIdRequestWaitMilliSec = 30;
 		}
 		@finally {
 			if ([_callbackMsgs count] >= _expectedCallbackResults) {
-				[_callbackLock unlockWithCondition:420];
+				[_callbackLock unlockWithCondition:GOT_CALLBACK_RESPONSE];
 			} else {
-				[_callbackLock unlockWithCondition:421];
+				[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
 			}
 		}
 		

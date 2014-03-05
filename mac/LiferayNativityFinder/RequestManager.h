@@ -42,6 +42,8 @@
  * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
  * - (Andrew Rondeau) Added command to repaint all windows, added ability to query
  * the program for the file's icon, made getting the context manu faster
+ * - (Andrew Rondeau) Switched from semaphores to NSConditionLock for to resolve
+ * unreliability issues
  */
 
 #import <Foundation/Foundation.h>
@@ -55,6 +57,8 @@
 	
 	NSConditionLock* _callbackLock;
 	int _expectedCallbackResults;
+	NSDate* _waitForIconOverlaysUntil;
+	NSDate* _disableIconOverlaysUntil;
 	
 	GCDAsyncSocket* _listenSocket;
 	GCDAsyncSocket* _callbackSocket;
