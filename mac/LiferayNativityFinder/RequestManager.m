@@ -279,10 +279,12 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[_connectedListenSocketsWithIconCallbacks removeObject:sock];
 	}
 	_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
-
+	
 	OSMemoryBarrier();
 
 	dispatch_async(dispatch_get_main_queue(), ^{
+		[_disableIconOverlaysUntil autorelease];
+		_disableIconOverlaysUntil = [[NSDate distantPast] retain];
 		[[ContentManager sharedInstance] repaintAllWindows];
 	});
 	

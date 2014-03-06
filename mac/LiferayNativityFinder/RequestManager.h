@@ -71,8 +71,8 @@
 	// Why not just call [... count] directly?
 	// Thread-safety! these collections are manipulated on the socket's thread,
 	// but this value is read on the main thread
-	volatile int _connectedCallbackSocketsCount;
-	volatile int _connectedListenSocketsWithIconCallbacksCount;
+	int _connectedCallbackSocketsCount;
+	int _connectedListenSocketsWithIconCallbacksCount;
 
 	NSHashTable* _automaticCleanupPrograms;
 
