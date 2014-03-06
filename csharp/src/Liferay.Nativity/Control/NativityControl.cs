@@ -89,7 +89,11 @@ namespace Liferay.Nativity.Control
 			MessageListener messageListener;
 			if (this.commandMap.TryGetValue (message.Command, out messageListener))
 			{
-				return messageListener(message);
+				return messageListener (message);
+			}
+			else
+			{
+				logger.WarnFormat("Can not handle message: {0}", message.Command);
 			}
 
 			return null;

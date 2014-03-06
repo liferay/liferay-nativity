@@ -442,8 +442,6 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[_callbackMsgs removeAllObjects];
 		_expectedCallbackResults = _connectedCallbackSocketsCount;
 		
-		OSMemoryBarrier();
-		
 		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		
 		// Perform the callbacks on the _callbackQueue for thread-safety
@@ -548,8 +546,6 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	@try {
 		[_callbackMsgs removeAllObjects];
 		_expectedCallbackResults = _connectedListenSocketsWithIconCallbacksCount;
-
-		OSMemoryBarrier();
 
 		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 		

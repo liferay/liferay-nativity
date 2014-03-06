@@ -269,6 +269,11 @@ namespace Liferay.Nativity.Control.Unix
 									responseMessageString);
 							}*/
 						}
+						// Use to diagnose missing messages
+						//else
+						//{
+						//	logger.WarnFormat("No response to {0}", message.Command);
+						//}
 					}
 					catch (Exception e)
 					{
