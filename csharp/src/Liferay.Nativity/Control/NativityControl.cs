@@ -87,16 +87,16 @@ namespace Liferay.Nativity.Control
 			//logger.DebugFormat("Firing message: {0}", message.Command);
 
 			MessageListener messageListener;
-			if (this.commandMap.TryGetValue (message.Command, out messageListener))
+			lock (this.commandMap)
 			{
-				return messageListener (message);
-			}
-			else
-			{
-				logger.WarnFormat("Can not handle message: {0}", message.Command);
+				if (!this.commandMap.TryGetValue (message.Command, out messageListener))
+				{
+					logger.WarnFormat ("Can not handle message: {0}", message.Command);
+					return null;
+				}
 			}
 
-			return null;
+			return messageListener (message);
 		}
 		
 		/// <summary>
@@ -132,9 +132,12 @@ namespace Liferay.Nativity.Control
 		/// </summary>
 		/// <param name="command">The command to listen for</param>
 		/// <param name="messageListener">MessageListener to register</param>
-		public void RegisterMessageListener(string command, MessageListener messageListener)
+		public void RegisterMessageListener (string command, MessageListener messageListener)
 		{
-			this.commandMap[command] = messageListener;
+			lock (this.commandMap)
+			{
+				this.commandMap [command] = messageListener;
+			}
 		}
 
 		/// <summary>
