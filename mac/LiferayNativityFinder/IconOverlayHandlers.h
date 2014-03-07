@@ -18,5 +18,6 @@
 
 - (void)IconOverlayHandlers_drawIconWithFrame:(struct CGRect)arg1;
 - (void)IconOverlayHandlers_drawImage:(id)arg1;
+- (void)IconOverlayHandlers_drawRect:(struct CGRect)arg1;
 
 @end
