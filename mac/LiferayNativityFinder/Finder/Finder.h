@@ -979,4 +979,38 @@ struct TIconRef {
 
 
 
+@interface TDimmableIconImageView : NSImageView
+{
+}
 
+- (void)drawRect:(struct CGRect)arg1;
+
+@end
+
+@interface TListRowView : NSTableRowView
+{
+    struct TFENode _node;
+    TListViewController *_listViewController;
+//    struct TNSRef<TListRowSelectionView *> _selectionView;
+    _Bool _isDropTarget;
+}
+
+@property(nonatomic) _Bool isDropTarget; // @synthesize isDropTarget=_isDropTarget;
+@property(nonatomic) TListViewController *listViewController; // @synthesize listViewController=_listViewController;
+@property(nonatomic) struct TFENode node; // @synthesize node=_node;
+- (void)openNode;
+- (void)setSelected:(BOOL)arg1;
+- (void)updateCellSelectedStateAppearance;
+- (void)layout;
+- (void)setNeedsLayout:(BOOL)arg1;
+- (struct CGRect)selectionFrame;
+- (void)updateLayer;
+- (_Bool)isRowAfterSelected;
+- (_Bool)isRowBeforeSelected;
+- (long long)selectionHighlightStyle;
+- (void)forceDisclosureTriangleBackgroundStyle;
+- (id)disclosureTriangleButton;
+- (void)dealloc;
+- (id)initWithFrame:(struct CGRect)arg1;
+
+@end

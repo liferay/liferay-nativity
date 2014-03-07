@@ -16,6 +16,7 @@
 #import "IconCache.h"
 #import "IconOverlayHandlers.h"
 #import "Finder/Finder.h"
+#import <objc/runtime.h>
 
 @implementation NSObject (IconOverlayHandlers)
 
@@ -33,7 +34,7 @@
 
 		if (image != nil)
 		{
-			struct CGRect arg2 = [(TIconViewCell*)self imageRectForBounds : arg1];
+			struct CGRect arg2 = [(TIconViewCell*)self imageRectForBounds:arg1];
 
 			[image drawInRect:NSMakeRect(arg2.origin.x, arg2.origin.y, arg2.size.width, arg2.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
 		}
@@ -81,6 +82,44 @@
 	else
 	{
 		[self IconOverlayHandlers_drawImage:arg1];
+	}
+}
+
+- (void)IconOverlayHandlers_drawRect:(struct CGRect)arg1
+{
+	[self IconOverlayHandlers_drawRect:arg1];
+
+	//TODO: [ContentManager repaintWindows] does not seem to redraw the list/coverflow views.
+
+	NSView* supersuperView = [[(NSView*)self superview] superview];
+	
+	id cTListRowView = objc_getClass("TListRowView");
+		
+	if([supersuperView isKindOfClass:cTListRowView]) {
+		TListRowView *lrv = (TListRowView*)supersuperView;
+		FINode *finode;
+		
+		object_getInstanceVariable(lrv, "_node", (void**)&finode);
+		NSURL *fp;
+		
+		if([finode respondsToSelector:@selector(previewItemURL)]) {
+			fp = [finode previewItemURL];
+		} else {
+			return;
+		}
+		
+		NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:[fp path]];
+		
+		if ([imageIndex intValue] > 0)
+		{
+			NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
+			
+			if (image != nil)
+			{
+				[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+			}
+		}
+
 	}
 }
 
