@@ -32,6 +32,7 @@
 		0BFAF21A16F8E6C10017EA7E /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		0BFAF21B16F8E6C10017EA7E /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		0BFC9ACB173C57E400CDD329 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		253DE1E018CAAA3700D2DA3C /* MethodNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodNames.h; sourceTree = "<group>"; };
 		692C18A316660C4600BF6A53 /* ContextMenuHandlers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextMenuHandlers.h; sourceTree = "<group>"; };
 		692C18A416660C4600BF6A53 /* ContextMenuHandlers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContextMenuHandlers.m; sourceTree = "<group>"; };
 		692C18A7166617F500BF6A53 /* IconOverlayHandlers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconOverlayHandlers.h; sourceTree = "<group>"; };
@@ -119,6 +120,7 @@
 				8C99F6931622D145002D2135 /* IconCache.m */,
 				692C18AA1666392700BF6A53 /* MenuManager.h */,
 				692C18AB1666392700BF6A53 /* MenuManager.m */,
+				253DE1E018CAAA3700D2DA3C /* MethodNames.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
