@@ -42,6 +42,8 @@
  * - (Andrew Rondeau) Switched to NSHashTable for performance reasons
  * - (Andrew Rondeau) Added command to repaint all windows, added ability to query
  * the program for the file's icon, made getting the context manu faster
+ * - (Andrew Rondeau) Switched from semaphores to NSConditionLock for to resolve
+ * unreliability issues
  */
 
 #import <Foundation/Foundation.h>
@@ -53,8 +55,10 @@
 	dispatch_queue_t _listenQueue;
 	dispatch_queue_t _callbackQueue;
 	
-	dispatch_semaphore_t _callbackSemaphore;
+	NSConditionLock* _callbackLock;
 	int _expectedCallbackResults;
+	NSDate* _waitForIconOverlaysUntil;
+	NSDate* _disableIconOverlaysUntil;
 	
 	GCDAsyncSocket* _listenSocket;
 	GCDAsyncSocket* _callbackSocket;
@@ -64,6 +68,12 @@
 	NSHashTable* _connectedCallbackSockets;
 	NSMutableDictionary* _callbackMsgs;
 	
+	// Why not just call [... count] directly?
+	// Thread-safety! these collections are manipulated on the socket's thread,
+	// but this value is read on the main thread
+	int _connectedCallbackSocketsCount;
+	int _connectedListenSocketsWithIconCallbacksCount;
+
 	NSHashTable* _automaticCleanupPrograms;
 
 	NSNumberFormatter* _numberFormatter;
