@@ -41,7 +41,21 @@
 	}
 }
 
-- (void)IconOverlayHandlers_drawImage:(id)arg1
+- (void)IconOverlayHandlers_IKImageBrowserCell_drawImage:(id)arg1
+{
+	IKImageWrapper*imageWrapper = [self IconOverlayHandlers_imageWrapper:arg1];
+
+	[self IconOverlayHandlers_IKImageBrowserCell_drawImage:imageWrapper];
+}
+
+- (void)IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:(id)arg1
+{
+	IKImageWrapper*imageWrapper = [self IconOverlayHandlers_imageWrapper:arg1];
+
+	[self IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:imageWrapper];
+}
+
+- (IKImageWrapper*)IconOverlayHandlers_imageWrapper:(id)arg1
 {
 	TIconViewCell* realSelf = (TIconViewCell*)self;
 	FINode* node = (FINode*)[realSelf representedItem];
@@ -74,14 +88,11 @@
 
 		[icon unlockFocus];
 
-		IKImageWrapper* imgWrapper = [[IKImageWrapper alloc] initWithNSImage:icon];
-
-		[self IconOverlayHandlers_drawImage:imgWrapper];
-		[imgWrapper release];
+		return [[[IKImageWrapper alloc] initWithNSImage:icon] autorelease];
 	}
 	else
 	{
-		[self IconOverlayHandlers_drawImage:arg1];
+		return arg1;
 	}
 }
 
