@@ -102,20 +102,30 @@ static BOOL installed = NO;
 	[[RequestManager sharedInstance] dealloc];
 
 	// Icons
-	[self hookMethod:@selector(IconOverlayHandlers_drawImage:) inClass:@"TIconViewCell" toCallToTheNewMethod:@selector(drawImage:)];     // 10.7 & 10.8 & 10.9
+	[self hookMethod:@selector(IconOverlayHandlers_IKImageBrowserCell_drawImage:) inClass:@"IKImageBrowserCell" toCallToTheNewMethod:@selector(drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by name)
 
-	[self hookMethod:@selector(IconOverlayHandlers_drawIconWithFrame:) inClass:@"TListViewIconAndTextCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9
+	[self hookMethod:@selector(IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:) inClass:@"IKFinderReflectiveIconCell" toCallToTheNewMethod:@selector(drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by everything else)
+
+	[self hookMethod:@selector(IconOverlayHandlers_drawIconWithFrame:) inClass:@"TListViewIconAndTextCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 Column View
+
+	[self hookMethod:@selector(IconOverlayHandlers_drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(drawRect:)];     // 10.9 (List and Coverflow Views)
 
 	// Context Menus
 	[self hookClassMethod:@selector(ContextMenuHandlers_addViewSpecificStuffToMenu:browserViewController:context:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(addViewSpecificStuffToMenu:browserViewController:context:)];     // 10.7 & 10.8
 
-	[self hookClassMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:view:windowController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(handleContextMenuCommon:nodes:event:view:windowController:addPlugIns:)];     // 10.7
+	[self hookClassMethod:@selector(ContextMenuHandlers_addViewSpecificStuffToMenu:clickedView:browserViewController:context:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(addViewSpecificStuffToMenu:clickedView:browserViewController:context:)];     // 10.9
 
-	[self hookMethod:@selector(ContextMenuHandlers_configureWithNodes:windowController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureWithNodes:windowController:container:)];     // 10.7
+	[self hookClassMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:view:windowController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(handleContextMenuCommon:nodes:event:view:windowController:addPlugIns:)];     // 10.7
 
 	[self hookClassMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:view:browserController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(handleContextMenuCommon:nodes:event:view:browserController:addPlugIns:)];     // 10.8
 
+	[self hookClassMethod:@selector(ContextMenuHandlers_handleContextMenuCommon:nodes:event:clickedView:browserViewController:addPlugIns:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(handleContextMenuCommon:nodes:event:clickedView:browserViewController:addPlugIns:)];     // 10.9
+
+	[self hookMethod:@selector(ContextMenuHandlers_configureWithNodes:windowController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureWithNodes:windowController:container:)];     // 10.7
+
 	[self hookMethod:@selector(ContextMenuHandlers_configureWithNodes:browserController:container:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureWithNodes:browserController:container:)];     // 10.8
+
+	[self hookMethod:@selector(ContextMenuHandlers_configureFromMenuNeedsUpdate:clickedView:container:event:selectedNodes:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(configureFromMenuNeedsUpdate:clickedView:container:event:selectedNodes:)];     // 10.9
 
 	installed = NO;
 

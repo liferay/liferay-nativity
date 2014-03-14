@@ -17,7 +17,8 @@
 @interface NSObject (IconOverlayHandlers)
 
 - (void)IconOverlayHandlers_drawIconWithFrame:(struct CGRect)arg1;
-- (void)IconOverlayHandlers_drawImage:(id)arg1;
 - (void)IconOverlayHandlers_drawRect:(struct CGRect)arg1;
+- (void)IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:(id)arg1;
+- (void)IconOverlayHandlers_IKImageBrowserCell_drawImage:(id)arg1;
 
 @end
