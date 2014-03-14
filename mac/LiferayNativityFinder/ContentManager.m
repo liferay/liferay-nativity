@@ -254,6 +254,18 @@ static ContentManager* sharedInstance = nil;
 - (void)setNeedsDisplayForListView:(NSView*)view
 {
 	NSArray* subviews = [view subviews];
+
+	for (int i = 0; i < [subviews count]; i++)
+	{
+		NSView* subview = [subviews objectAtIndex:i];
+
+		if ([subview isKindOfClass:(id)objc_getClass("TListRowView")])
+		{
+			[self setNeedsDisplayForListView:subview];
+		}
+		else if ([subview isKindOfClass:(id)objc_getClass("TListNameCellView")])
+		{
+			dispatch_async(dispatch_get_main_queue(), ^{[subview setNeedsDisplay:YES];});
 		}
 	}
 }

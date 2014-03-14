@@ -122,7 +122,7 @@
 			return;
 		}
 		
-		for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[fp path]])
+		for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
 		{
 			if ([imageIndex intValue] > 0)
 			{
