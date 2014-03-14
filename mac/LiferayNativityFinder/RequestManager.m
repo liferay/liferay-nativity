@@ -184,6 +184,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	{
 		NSString* strData = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
 		NSLog(@"LiferayNativityFinder: failed to parse data: %@", strData);
+		[strData release];
 
 		[self replyString:@"-1" toSocket:sock];
 

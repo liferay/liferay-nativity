@@ -276,7 +276,7 @@ static ContentManager* sharedInstance = nil;
 
 	if (nil == fileNamesCache)
 	{
-		fileNamesCache = [[NSMutableDictionary alloc] init];
+		fileNamesCache = [[[NSMutableDictionary alloc] init] autorelease];
 		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connection];
 	}
 
