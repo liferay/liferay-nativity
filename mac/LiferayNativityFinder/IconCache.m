@@ -122,13 +122,14 @@ static IconCache* sharedInstance = nil;
 - (NSNumber*)registerMenuIcon:(NSString*)path
 {
 	NSNumber* menuIconId = [self registerIcon:path];
-	
+
 	NSImage* menuIconImage = [self getIcon:menuIconId];
-	
+
 	NSSize size;
+
 	size.width = size.height = [[NSFont menuFontOfSize:0] pointSize];
 	[menuIconImage setSize:size];
-	
+
 	return menuIconId;
 }
 

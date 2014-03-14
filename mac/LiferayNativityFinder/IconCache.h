@@ -45,7 +45,7 @@
 @interface IconCache : NSObject {
 	int _currentIconId;
 	NSMutableDictionary* _iconIdDictionary;
-    NSMutableDictionary* _iconPathDictionary;
+	NSMutableDictionary* _iconPathDictionary;
 }
 
 + (IconCache*)sharedInstance;

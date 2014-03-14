@@ -92,9 +92,9 @@
 	[menuManager addItemsToMenu:realSelf forFiles:selectedItems];
 }
 
-- (void)ContextMenuHandlers_configureFromMenuNeedsUpdate:(id)arg1 clickedView:(id)arg2 container:(BOOL)arg3 event:(id)arg4 selectedNodes:(const struct TFENodeVector *)arg5  // 10.9
+- (void)ContextMenuHandlers_configureFromMenuNeedsUpdate:(id)arg1 clickedView:(id)arg2 container:(BOOL)arg3 event:(id)arg4 selectedNodes:(const struct TFENodeVector*)arg5   // 10.9
 {
-	[self ContextMenuHandlers_configureFromMenuNeedsUpdate:arg1 clickedView:arg2 container:arg3 event:arg4 selectedNodes:arg5];  // 10.8
+	[self ContextMenuHandlers_configureFromMenuNeedsUpdate:arg1 clickedView:arg2 container:arg3 event:arg4 selectedNodes:arg5];      // 10.8
 
 	TContextMenu* realSelf = (TContextMenu*)self;
 	MenuManager* menuManager = [MenuManager sharedInstance];

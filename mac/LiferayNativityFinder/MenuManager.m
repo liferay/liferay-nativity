@@ -144,15 +144,15 @@ static MenuManager* sharedInstance = nil;
 
 		if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
 		{
-			NSMenuItem *mainMenuItem = [[NSMenuItem alloc] initWithTitle:mainMenuTitle action:nil keyEquivalent:@""];
-			
+			NSMenuItem* mainMenuItem = [[NSMenuItem alloc] initWithTitle:mainMenuTitle action:nil keyEquivalent:@""];
+
 			if (nil != mainMenuImage)
 			{
 				[mainMenuItem setOffStateImage:mainMenuImage];
 			}
-			
+
 			[menu insertItem:mainMenuItem atIndex:menuIndex];
-			
+
 			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else

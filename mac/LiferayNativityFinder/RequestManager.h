@@ -54,12 +54,12 @@
 {
 	dispatch_queue_t _listenQueue;
 	dispatch_queue_t _callbackQueue;
-	
+
 	NSConditionLock* _callbackLock;
 	int _expectedCallbackResults;
 	NSDate* _waitForIconOverlaysUntil;
 	NSDate* _disableIconOverlaysUntil;
-	
+
 	GCDAsyncSocket* _listenSocket;
 	GCDAsyncSocket* _callbackSocket;
 
@@ -67,7 +67,7 @@
 	NSHashTable* _connectedListenSocketsWithIconCallbacks;
 	NSHashTable* _connectedCallbackSockets;
 	NSMutableDictionary* _callbackMsgs;
-	
+
 	// Why not just call [... count] directly?
 	// Thread-safety! these collections are manipulated on the socket's thread,
 	// but this value is read on the main thread
@@ -80,7 +80,7 @@
 	NSString* _filterFolder; // TODO: This should probably be a dictionary at some point
 
 	BOOL _isRunning;
-	
+
 	id _allIconsConnection; // Key for identifying icon management requests that are global. This is purely for backwards compatibility
 }
 

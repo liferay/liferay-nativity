@@ -66,11 +66,11 @@ static ContentManager* sharedInstance = nil;
 
 - (void)dealloc
 {
-	for(id connection in _fileNamesCacheByConnection)
+	for (id connection in _fileNamesCacheByConnection)
 	{
 		[self removeAllIconsFor:connection];
 	}
-	
+
 	[_fileNamesCacheByConnection release];
 	[_fileIconsEnabled release];
 	sharedInstance = nil;
@@ -109,21 +109,21 @@ static ContentManager* sharedInstance = nil;
 {
 	NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 
-	for(id connection in _fileIconsEnabled)
+	for (id connection in _fileIconsEnabled)
 	{
 		NSDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
-		
+
 		if (nil != fileNamesCache)
 		{
 			NSNumber* result = [fileNamesCache objectForKey:normalizedPath];
-		
+
 			if (nil != result)
 			{
 				return result;
 			}
 		}
 	}
-	
+
 	return nil;
 }
 
@@ -137,7 +137,7 @@ static ContentManager* sharedInstance = nil;
 - (void)removeIconsFor:(id)connection paths:(NSArray*)paths
 {
 	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
-	
+
 	if (nil != fileNamesCache)
 	{
 		for (NSString* path in paths)
@@ -220,7 +220,7 @@ static ContentManager* sharedInstance = nil;
 
 					NSObject* browserView = [browserViewController browserView];
 
-					dispatch_async(dispatch_get_main_queue(), ^{[browserView setNeedsDisplay:YES];});
+					dispatch_async(dispatch_get_main_queue(), ^{ [browserView setNeedsDisplay:YES]; });
 				}
 				else if ([browserWindowController respondsToSelector:@selector(activeBrowserViewController)])
 				{
@@ -237,7 +237,7 @@ static ContentManager* sharedInstance = nil;
 					else
 					{
 						// Icon or Column View
-						dispatch_async(dispatch_get_main_queue(), ^{[browserView setNeedsDisplay:YES];});
+						dispatch_async(dispatch_get_main_queue(), ^{ [browserView setNeedsDisplay:YES]; });
 					}
 				}
 				else
@@ -265,7 +265,7 @@ static ContentManager* sharedInstance = nil;
 		}
 		else if ([subview isKindOfClass:(id)objc_getClass("TListNameCellView")])
 		{
-			dispatch_async(dispatch_get_main_queue(), ^{[subview setNeedsDisplay:YES];});
+			dispatch_async(dispatch_get_main_queue(), ^{ [subview setNeedsDisplay:YES]; });
 		}
 	}
 }
@@ -273,13 +273,13 @@ static ContentManager* sharedInstance = nil;
 - (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
 {
 	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
-	
+
 	if (nil == fileNamesCache)
 	{
 		fileNamesCache = [[NSMutableDictionary alloc] init];
 		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connection];
 	}
-	
+
 	for (NSString* path in iconDictionary)
 	{
 		if (filterFolder && ![path hasPrefix:filterFolder])
@@ -304,9 +304,8 @@ static ContentManager* sharedInstance = nil;
 	{
 		[_fileNamesCacheByConnection removeObjectForKey:connection];
 	}
-	
+
 	[self repaintAllWindows];
 }
 
 @end
-
