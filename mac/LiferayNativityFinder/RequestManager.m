@@ -155,7 +155,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 {
 	@synchronized(self)
 	{
-		if (sharedInstance == nil)
+		if (!sharedInstance)
 		{
 			sharedInstance = [[self alloc] init];
 		}
@@ -265,7 +265,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] enableFileIconsFor:sock.userData enabled:enabled];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -291,7 +291,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		_disableIconOverlaysUntil = [[NSDate distantPast] retain];
 		[[ContentManager sharedInstance] repaintAllWindows];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -304,7 +304,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_sync(dispatch_get_main_queue(), ^{
 		index = [[IconCache sharedInstance] registerIcon:path];
 	});
-	
+
 	if (!index)
 	{
 		index = [NSNumber numberWithInt:-1];
@@ -322,7 +322,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_sync(dispatch_get_main_queue(), ^{
 		index = [[IconCache sharedInstance] registerMenuIcon:path];
 	});
-	
+
 	if (!index)
 	{
 		index = [NSNumber numberWithInt:-1];
@@ -336,7 +336,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] removeAllIconsFor:sock.userData];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -347,7 +347,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] removeIconsFor:sock.userData paths:paths];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -358,7 +358,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolder:_filterFolder];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -376,7 +376,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[IconCache sharedInstance] unregisterIcon:iconId];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -385,7 +385,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] repaintAllWindows];
 	});
-	
+
 	[self replyString:@"1" toSocket:sock];
 }
 
@@ -464,7 +464,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
 	}
 
-	if (NO == [_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]])
+	if (![_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]])
 	{
 		NSLog(@"LiferayNativityFinder: menu item request timed out");
 		[_callbackLock lock];
@@ -493,17 +493,17 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 						}
 						else
 						{
-							NSLog(@"Invalid context menu response: %@", callbackMsg);
+							NSLog(@"LiferayNativityFinder: Invalid context menu response: %@", callbackMsg);
 						}
 					}
 				}
 				else
 				{
-					NSLog(@"Invalid context menu response: %@", callbackMsg);
+					NSLog(@"LiferayNativityFinder: Invalid context menu response: %@", callbackMsg);
 				}
 			}
 			@catch (NSException* exception) {
-				NSLog(@"Invalid context menu response: %@", callbackMsg);
+				NSLog(@"LiferayNativityFinder: Invalid context menu response: %@", callbackMsg);
 			}
 		}
 
@@ -589,7 +589,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		_waitForIconOverlaysUntil = [[[NSDate date] dateByAddingTimeInterval:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL] retain];
 	}
 
-	if (NO == [_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]])
+	if (![_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]])
 	{
 		NSLog(@"LiferayNativityFinder: file icon request timed out: %@", file);
 
@@ -616,13 +616,12 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 				}
 				else
 				{
-					NSLog(@"Invalid icon overlay response: %@", callbackMsg);
+					NSLog(@"LiferayNativityFinder: Invalid icon overlay response: %@", callbackMsg);
 				}
 			}
 			@catch (NSException* exception) {
-				NSLog(@"Invalid icon overlay response: %@", callbackMsg);
+				NSLog(@"LiferayNativityFinder: Invalid icon overlay response: %@", callbackMsg);
 			}
-
 		}
 
 		return [iconIds autorelease];
@@ -635,11 +634,10 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (void)socket:(GCDAsyncSocket*)socket didAcceptNewSocket:(GCDAsyncSocket*)newSocket
 {
-
 	if (socket == _listenSocket)
 	{
 		// The userData allows programs to specify that all registered icon overlays will be removed
-		// when the socket is broken, without interfearing with other programs that use liferay-
+		// when the socket is broken, without interfering with other programs that use liferay-
 		// nativity
 		[newSocket setUserData:_allIconsConnection];
 
@@ -714,28 +712,28 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		if ([_connectedListenSockets containsObject:socket])
 		{
 			[_connectedListenSockets removeObject:socket];
-			
-			if (YES == [_connectedListenSocketsWithIconCallbacks containsObject:socket])
+
+			if ([_connectedListenSocketsWithIconCallbacks containsObject:socket])
 			{
 				[_connectedListenSocketsWithIconCallbacks removeObject:socket];
 				_connectedListenSocketsWithIconCallbacksCount = _connectedListenSocketsWithIconCallbacks.count;
-				
+
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[[ContentManager sharedInstance] repaintAllWindows];
 				});
 			}
-			
-			if (YES == [_automaticCleanupPrograms containsObject:socket])
+
+			if ([_automaticCleanupPrograms containsObject:socket])
 			{
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[[ContentManager sharedInstance] removeAllIconsFor:socket.userData];
 				});
 			}
-			
+
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[[ContentManager sharedInstance] enableFileIconsFor:socket.userData enabled:false];
 			});
-			
+
 			[_automaticCleanupPrograms removeObject:socket.userData];
 		}
 	});

@@ -47,7 +47,7 @@
 @interface ContentManager : NSObject
 {
 	NSMapTable* _fileNamesCacheByConnection;
-	NSHashTable* _fileIconsEnabled;
+	NSHashTable* _fileIconsEnabledConnections;
 }
 
 + (ContentManager*)sharedInstance;

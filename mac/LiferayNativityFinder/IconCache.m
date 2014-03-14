@@ -73,7 +73,7 @@ static IconCache* sharedInstance = nil;
 {
 	@synchronized(self)
 	{
-		if (sharedInstance == nil)
+		if (!sharedInstance)
 		{
 			sharedInstance = [[self alloc] init];
 		}
@@ -90,21 +90,21 @@ static IconCache* sharedInstance = nil;
 
 - (NSNumber*)registerIcon:(NSString*)path
 {
-	if (path == nil)
+	if (!path)
 	{
 		return [NSNumber numberWithInt:-1];
 	}
 
 	NSImage* image = [[NSImage alloc]initWithContentsOfFile:path];
 
-	if (image == nil)
+	if (!image)
 	{
 		return [NSNumber numberWithInt:-1];
 	}
 
 	NSNumber* iconId = [_iconPathDictionary objectForKey:path];
 
-	if (iconId == nil)
+	if (!iconId)
 	{
 		_currentIconId++;
 

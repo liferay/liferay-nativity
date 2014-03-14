@@ -53,7 +53,7 @@ static MenuManager* sharedInstance = nil;
 {
 	@synchronized(self)
 	{
-		if (sharedInstance == nil)
+		if (!sharedInstance)
 		{
 			sharedInstance = [[self alloc] init];
 		}
@@ -83,7 +83,7 @@ static MenuManager* sharedInstance = nil;
 		{
 			[menu addItem:[NSMenuItem separatorItem]];
 		}
-		else if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
+		else if (childrenSubMenuItems && [childrenSubMenuItems count] != 0)
 		{
 			NSMenuItem* submenuItem = [menu addItemWithTitle:submenuTitle action:nil keyEquivalent:@""];
 
@@ -104,12 +104,7 @@ static MenuManager* sharedInstance = nil;
 {
 	NSArray* menuItemsArray = [[RequestManager sharedInstance] menuItemsForFiles:files];
 
-	if (menuItemsArray == nil)
-	{
-		return;
-	}
-
-	if ([menuItemsArray count] == 0)
+	if (!menuItemsArray || [menuItemsArray count] == 0)
 	{
 		return;
 	}
@@ -142,11 +137,11 @@ static MenuManager* sharedInstance = nil;
 		NSString* uuid = [menuItemDictionary objectForKey:@"uuid"];
 		NSArray* childrenSubMenuItems = (NSArray*)[menuItemDictionary objectForKey:@"contextMenuItems"];
 
-		if (childrenSubMenuItems != nil && [childrenSubMenuItems count] != 0)
+		if (childrenSubMenuItems && [childrenSubMenuItems count] != 0)
 		{
 			NSMenuItem* mainMenuItem = [[NSMenuItem alloc] initWithTitle:mainMenuTitle action:nil keyEquivalent:@""];
 
-			if (nil != mainMenuImage)
+			if (mainMenuImage)
 			{
 				[mainMenuItem setOffStateImage:mainMenuImage];
 			}

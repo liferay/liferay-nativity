@@ -58,7 +58,7 @@ static ContentManager* sharedInstance = nil;
 	if (self)
 	{
 		_fileNamesCacheByConnection = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:0];
-		_fileIconsEnabled = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
+		_fileIconsEnabledConnections = [[NSHashTable alloc] initWithOptions:NSHashTableObjectPointerPersonality capacity:0];
 	}
 
 	return self;
@@ -72,7 +72,7 @@ static ContentManager* sharedInstance = nil;
 	}
 
 	[_fileNamesCacheByConnection release];
-	[_fileIconsEnabled release];
+	[_fileIconsEnabledConnections release];
 	sharedInstance = nil;
 
 	[super dealloc];
@@ -82,7 +82,7 @@ static ContentManager* sharedInstance = nil;
 {
 	@synchronized(self)
 	{
-		if (sharedInstance == nil)
+		if (!sharedInstance)
 		{
 			sharedInstance = [[self alloc] init];
 		}
@@ -95,11 +95,11 @@ static ContentManager* sharedInstance = nil;
 {
 	if (enable)
 	{
-		[_fileIconsEnabled addObject:connection];
+		[_fileIconsEnabledConnections addObject:connection];
 	}
 	else
 	{
-		[_fileIconsEnabled removeObject:connection];
+		[_fileIconsEnabledConnections removeObject:connection];
 	}
 
 	[self repaintAllWindows];
@@ -109,18 +109,13 @@ static ContentManager* sharedInstance = nil;
 {
 	NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 
-	for (id connection in _fileIconsEnabled)
+	for (id connection in _fileIconsEnabledConnections)
 	{
 		NSDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 
-		if (nil != fileNamesCache)
+		if (fileNamesCache)
 		{
-			NSNumber* result = [fileNamesCache objectForKey:normalizedPath];
-
-			if (nil != result)
-			{
-				return result;
-			}
+			return [fileNamesCache objectForKey:normalizedPath];
 		}
 	}
 
@@ -138,14 +133,18 @@ static ContentManager* sharedInstance = nil;
 {
 	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 
-	if (nil != fileNamesCache)
+	if (fileNamesCache)
 	{
+		NSMutableArray *pathsToRemove = [NSMutableArray array];
+
 		for (NSString* path in paths)
 		{
 			NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
 
-			[fileNamesCache removeObjectForKey:normalizedPath];
+			[pathsToRemove addObject:normalizedPath];
 		}
+
+		[fileNamesCache removeObjectsForKeys:pathsToRemove];
 	}
 
 	[self repaintAllWindows];
@@ -155,7 +154,7 @@ static ContentManager* sharedInstance = nil;
 {
 	NSArray* windows = [[NSApplication sharedApplication] windows];
 
-	for (int i = 0; i < [windows count]; i++)
+	for (int i = 0; i < [windows count]; ++i)
 	{
 		NSWindow* window = [windows objectAtIndex:i];
 
@@ -167,105 +166,88 @@ static ContentManager* sharedInstance = nil;
 		MenuManager* menuManager = [MenuManager sharedInstance];
 		RequestManager* requestManager = [RequestManager sharedInstance];
 
-		if ([[window className] isEqualToString:@"TBrowserWindow"])
+		if (![[window className] isEqualToString:@"TBrowserWindow"])
 		{
-			NSObject* browserWindowController = [window browserWindowController];
+			continue;
+		}
 
-			BOOL repaintWindow = YES;
+		NSObject* browserWindowController = [window browserWindowController];
 
-			NSString* filterFolder = [requestManager filterFolder];
+		BOOL repaintWindow = YES;
 
-			if (filterFolder)
+		NSString* filterFolder = [requestManager filterFolder];
+
+		if (filterFolder)
+		{
+			repaintWindow = NO;
+
+			struct TFENodeVector* targetPath;
+
+			if ([browserWindowController respondsToSelector:@selector(targetPath)])
 			{
-				repaintWindow = NO;
+				// 10.7 & 10.8
+				targetPath = [browserWindowController targetPath];
+			}
+			else if ([browserWindowController respondsToSelector:@selector(activeContainer)])
+			{
+				// 10.9
+				targetPath = [[browserWindowController activeContainer] targetPath];
+			}
+			else
+			{
+				NSLog(@"LiferayNativityFinder: refreshing icon badges failed");
 
-				struct TFENodeVector* targetPath;
+				return;
+			}
 
-				if ([browserWindowController respondsToSelector:@selector(targetPath)])
+			NSArray* folderPaths = [menuManager pathsForNodes:targetPath];
+
+			for (NSString* folderPath in folderPaths)
+			{
+				if ([folderPath hasPrefix:filterFolder] || [filterFolder hasPrefix:folderPath])
 				{
-					// 10.7 & 10.8
-					targetPath = [browserWindowController targetPath];
-				}
-				else if ([browserWindowController respondsToSelector:@selector(activeContainer)])
-				{
-					// 10.9
-					targetPath = [[browserWindowController activeContainer] targetPath];
-				}
-				else
-				{
-					NSLog(@"LiferayNativityFinder: refreshing icon badges failed");
+					repaintWindow = YES;
 
-					return;
-				}
-
-				NSArray* folderPaths = [menuManager pathsForNodes:targetPath];
-
-				for (NSString* folderPath in folderPaths)
-				{
-					if ([folderPath hasPrefix:filterFolder] || [filterFolder hasPrefix:folderPath])
-					{
-						repaintWindow = YES;
-
-						break;
-					}
+					break;
 				}
 			}
 
-			if (repaintWindow)
+			if (!repaintWindow)
 			{
-				if ([browserWindowController respondsToSelector:@selector(browserViewController)])
-				{
-					// 10.7 & 10.8
-					NSObject* browserViewController = [browserWindowController browserViewController];
-
-					NSObject* browserView = [browserViewController browserView];
-
-					dispatch_async(dispatch_get_main_queue(), ^{ [browserView setNeedsDisplay:YES]; });
-				}
-				else if ([browserWindowController respondsToSelector:@selector(activeBrowserViewController)])
-				{
-					// 10.9
-					NSObject* browserViewController = [browserWindowController activeBrowserViewController];
-
-					NSObject* browserView = [browserViewController browserView];
-
-					if ([browserView isKindOfClass:(id)objc_getClass("TListView")])
-					{
-						// List or Coverflow View
-						[self setNeedsDisplayForListView:browserView];
-					}
-					else
-					{
-						// Icon or Column View
-						dispatch_async(dispatch_get_main_queue(), ^{ [browserView setNeedsDisplay:YES]; });
-					}
-				}
-				else
-				{
-					NSLog(@"LiferayNativityFinder: refreshing icon badges failed");
-
-					return;
-				}
+				return;
 			}
 		}
-	}
-}
 
-- (void)setNeedsDisplayForListView:(NSView*)view
-{
-	NSArray* subviews = [view subviews];
-
-	for (int i = 0; i < [subviews count]; i++)
-	{
-		NSView* subview = [subviews objectAtIndex:i];
-
-		if ([subview isKindOfClass:(id)objc_getClass("TListRowView")])
+		if ([browserWindowController respondsToSelector:@selector(browserViewController)])
 		{
-			[self setNeedsDisplayForListView:subview];
+			// 10.7 & 10.8
+			NSObject* browserViewController = [browserWindowController browserViewController];
+
+			NSObject* browserView = [browserViewController browserView];
+
+			dispatch_async(dispatch_get_main_queue(), ^{ [browserView setNeedsDisplay:YES]; });
 		}
-		else if ([subview isKindOfClass:(id)objc_getClass("TListNameCellView")])
+		else if ([browserWindowController respondsToSelector:@selector(activeBrowserViewController)])
 		{
-			dispatch_async(dispatch_get_main_queue(), ^{ [subview setNeedsDisplay:YES]; });
+			// 10.9
+			NSObject* browserViewController = [browserWindowController activeBrowserViewController];
+
+			NSObject* browserView = [browserViewController browserView];
+
+			if ([browserView isKindOfClass:(id)objc_getClass("TListView")])
+			{
+				// List or Coverflow View
+				[self setNeedsDisplayForListView:browserView];
+			}
+			else
+			{
+				// Icon or Column View
+				dispatch_async(dispatch_get_main_queue(), ^{ [browserView setNeedsDisplay:YES]; });
+			}
+		}
+		else
+		{
+			NSLog(@"LiferayNativityFinder: refreshing icon badges failed");
 		}
 	}
 }
@@ -274,7 +256,7 @@ static ContentManager* sharedInstance = nil;
 {
 	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 
-	if (nil == fileNamesCache)
+	if (!fileNamesCache)
 	{
 		fileNamesCache = [[[NSMutableDictionary alloc] init] autorelease];
 		[_fileNamesCacheByConnection setObject:fileNamesCache forKey:connection];
@@ -300,12 +282,31 @@ static ContentManager* sharedInstance = nil;
 		}
 	}
 
-	if (0 == fileNamesCache.count)
+	if (fileNamesCache.count == 0)
 	{
 		[_fileNamesCacheByConnection removeObjectForKey:connection];
 	}
 
 	[self repaintAllWindows];
+}
+
+- (void)setNeedsDisplayForListView:(NSView*)view
+{
+	NSArray* subviews = [view subviews];
+
+	for (int i = 0; i < [subviews count]; ++i)
+	{
+		NSView* subview = [subviews objectAtIndex:i];
+
+		if ([subview isKindOfClass:(id)objc_getClass("TListRowView")])
+		{
+			[self setNeedsDisplayForListView:subview];
+		}
+		else if ([subview isKindOfClass:(id)objc_getClass("TListNameCellView")])
+		{
+			dispatch_async(dispatch_get_main_queue(), ^{ [subview setNeedsDisplay:YES]; });
+		}
+	}
 }
 
 @end

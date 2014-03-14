@@ -34,11 +34,13 @@
 		{
 			NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
 
-			if (image != nil)
+			if (image)
 			{
 				struct CGRect arg2 = [(TIconViewCell*)self imageRectForBounds:arg1];
 
 				[image drawInRect:NSMakeRect(arg2.origin.x, arg2.origin.y, arg2.size.width, arg2.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
+
+				return;
 			}
 		}
 	}
@@ -75,12 +77,12 @@
 
 			CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
 
-			NSImage* iconimage = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
+			NSImage* iconImage = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
 
-			if (iconimage != nil)
+			if (iconImage)
 			{
 				CGImageSourceRef source;
-				NSData* data = [iconimage TIFFRepresentation];
+				NSData* data = [iconImage TIFFRepresentation];
 
 				source = CGImageSourceCreateWithData((CFDataRef)data, NULL);
 				CGImageRef maskRef = CGImageSourceCreateImageAtIndex(source, 0, NULL);
@@ -105,34 +107,38 @@
 
 	NSView* supersuperview = [[(NSView*)self superview] superview];
 
-	if ([supersuperview isKindOfClass:(id)objc_getClass("TListRowView")])
+	if (![supersuperview isKindOfClass:(id)objc_getClass("TListRowView")])
 	{
-		TListRowView* listRowView = (TListRowView*)supersuperview;
-		FINode* fiNode;
+		return;
+	}
 
-		object_getInstanceVariable(listRowView, "_node", (void**)&fiNode);
+	TListRowView* listRowView = (TListRowView*)supersuperview;
+	FINode* fiNode;
 
-		NSURL* url;
+	object_getInstanceVariable(listRowView, "_node", (void**)&fiNode);
 
-		if ([fiNode respondsToSelector:@selector(previewItemURL)])
+	NSURL* url;
+
+	if ([fiNode respondsToSelector:@selector(previewItemURL)])
+	{
+		url = [fiNode previewItemURL];
+	}
+	else
+	{
+		return;
+	}
+
+	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
+	{
+		if ([imageIndex intValue] > 0)
 		{
-			url = [fiNode previewItemURL];
-		}
-		else
-		{
-			return;
-		}
+			NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
 
-		for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
-		{
-			if ([imageIndex intValue] > 0)
+			if (image)
 			{
-				NSImage* image = [[IconCache sharedInstance] getIcon:imageIndex];
+				[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
 
-				if (image != nil)
-				{
-					[image drawInRect:NSMakeRect(arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0 respectFlipped:TRUE hints:nil];
-				}
+				return;
 			}
 		}
 	}
