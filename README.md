@@ -69,7 +69,7 @@ After cloning the liferay-nativity project, open LiferayNativity.xcworkspace and
 
 ### Deployment
 
-Copy LiferayNativity.osax (LiferayNativityInjector's target) into /Library/ScriptingAdditions (this will prompt for root privileges). Alternatively, LiferayNativity.osax can be copied into the user's ~/Library/ScriptingAdditions but is not recommended because each request to run a script will prompt for root privileges.
+Copy LiferayNativity.osax (LiferayNativityInjector's target) into /Library/ScriptingAdditions (this will prompt for administrator privileges). Alternatively, LiferayNativity.osax can be copied into the user's ~/Library/ScriptingAdditions but is not recommended because each request to run a script will prompt for administrator privileges.
 
 After the scripts have been copied, the following scripting commands will be available. Send the NVTYload event using the example below to inject the LiferayNativityFinder bundle into the running instance of Finder.
 
