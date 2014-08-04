@@ -14,14 +14,14 @@
 
 package com.liferay.nativity.modules.fileicon.unix;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Dennis Ju
@@ -115,4 +115,5 @@ public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 	}
 
 	private static int _messageBufferSize = 500;
+
 }

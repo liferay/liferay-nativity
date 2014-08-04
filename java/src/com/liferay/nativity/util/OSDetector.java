@@ -195,11 +195,12 @@ public class OSDetector {
 		return _windows.booleanValue();
 	}
 
+	private static Logger _logger = LoggerFactory.getLogger(
+		OSDetector.class.getName());
+
 	private static Boolean _aix;
 	private static Boolean _apple;
 	private static Boolean _linux;
-	private static Logger _logger = LoggerFactory.getLogger(
-		OSDetector.class.getName());
 	private static Boolean _unix;
 	private static String _version;
 	private static Boolean _windows;

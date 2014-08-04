@@ -249,10 +249,11 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 
 	private static final String _RETURN_NEW_LINE = "\r\n";
 
-	private static int _callbackSocketPort = 33002;
-	private static int _commandSocketPort = 33001;
 	private static Logger _logger = LoggerFactory.getLogger(
 		UnixNativityControlBaseImpl.class.getName());
+
+	private static int _callbackSocketPort = 33002;
+	private static int _commandSocketPort = 33001;
 	private static ObjectMapper _objectMapper =
 		new ObjectMapper().configure(
 			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);

@@ -14,12 +14,12 @@
 
 package com.liferay.nativity.modules.fileicon;
 
-import java.util.List;
-
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.MessageListener;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
+
+import java.util.List;
 
 /**
 * @author Michael Young

@@ -235,9 +235,10 @@ public class WindowsNativityUtil {
 	private static final String _NATIVITY_LIB_x86_DLL =
 		"LiferayNativityWindowsUtil_x86.dll";
 
-	private static boolean _load = true;
-	private static boolean _loaded;
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsNativityUtil.class.getName());
+
+	private static boolean _load = true;
+	private static boolean _loaded;
 
 }

@@ -57,6 +57,7 @@ public class NativityControlUtil {
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		NativityControlUtil.class.getName());
+
 	private static NativityControl _nativityControl;
 
 }

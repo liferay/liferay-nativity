@@ -23,7 +23,8 @@ public class Constants {
 
 	public static final String ENABLE_FILE_ICONS = "enableFileIcons";
 
-	public static final String ENABLE_FILE_ICONS_WITH_CALLBACK = "enableFileIconsWithCallback";
+	public static final String ENABLE_FILE_ICONS_WITH_CALLBACK =
+		"enableFileIconsWithCallback";
 
 	public static final String ENABLE_OVERLAY_REGISTRY_NAME = "EnableOverlay";
 
@@ -56,9 +57,9 @@ public class Constants {
 
 	public static final String REMOVE_FILE_ICONS = "removeFileIcons";
 
-	public static final String SET_FILE_ICONS = "setFileIcons";
-
 	public static final String REPAINT_ALL_ICONS = "repaintAllIcons";
+
+	public static final String SET_FILE_ICONS = "setFileIcons";
 
 	public static final String SET_FILTER_PATH = "setFilterPath";
 

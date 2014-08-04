@@ -194,9 +194,10 @@ public class RegistryUtil {
 	private static final String WINDOWS_REG_SET_VALUE_EX =
 		"WindowsRegSetValueEx";
 
-	private static Class<? extends Preferences> _clazz = null;
 	private static Logger _logger = LoggerFactory.getLogger(
 		RegistryUtil.class.getName());
+
+	private static Class<? extends Preferences> _clazz = null;
 	private static Preferences _userRoot = null;
 
 }

@@ -14,12 +14,12 @@
 
 package com.liferay.nativity.modules.fileicon.unix;
 
-import java.util.Map;
-
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
+
+import java.util.Map;
 
 /**
  * @author Dennis Ju
@@ -68,7 +68,7 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 	@Override
 	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
-				Constants.REPAINT_ALL_ICONS, "");
+			Constants.REPAINT_ALL_ICONS, "");
 
 		nativityControl.sendMessage(message);
 	}
@@ -76,7 +76,7 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 	@Override
 	public void setFileIcon(String path, int iconId) {
 		NativityMessage message = new NativityMessage(
-				Constants.REPAINT_ALL_ICONS, "");
+			Constants.REPAINT_ALL_ICONS, "");
 
 		nativityControl.sendMessage(message);
 	}
@@ -84,8 +84,9 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 	@Override
 	public void setFileIcons(Map<String, Integer> fileIconsMap) {
 		NativityMessage message = new NativityMessage(
-				Constants.REPAINT_ALL_ICONS, "");
+			Constants.REPAINT_ALL_ICONS, "");
 
 		nativityControl.sendMessage(message);
 	}
+
 }
