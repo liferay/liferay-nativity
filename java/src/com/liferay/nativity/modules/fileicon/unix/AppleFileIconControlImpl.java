@@ -49,6 +49,15 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
+	public void refreshIcons() {
+		NativityMessage message = new NativityMessage(
+			Constants.REPAINT_ALL_ICONS, "");
+
+		nativityControl.sendMessage(message);
+	}
+
+	@Override
 	public void removeFileIcon(String path) {
 		NativityMessage message = new NativityMessage(
 			Constants.REPAINT_ALL_ICONS, "");
@@ -56,6 +65,7 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
 	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
 				Constants.REPAINT_ALL_ICONS, "");
@@ -63,6 +73,7 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
 	public void setFileIcon(String path, int iconId) {
 		NativityMessage message = new NativityMessage(
 				Constants.REPAINT_ALL_ICONS, "");
@@ -70,6 +81,7 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
 	public void setFileIcons(Map<String, Integer> fileIconsMap) {
 		NativityMessage message = new NativityMessage(
 				Constants.REPAINT_ALL_ICONS, "");

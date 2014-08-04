@@ -49,6 +49,10 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	}
 
 	@Override
+	public void refreshIcons() {
+	}
+
+	@Override
 	public int registerIcon(String path) {
 		return 0;
 	}

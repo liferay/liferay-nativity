@@ -34,6 +34,16 @@ public interface FileIconControl extends FileIconControlCallback {
 	/**
 	 * Mac only
 	 *
+	 * Refresh icons. When using callbacks for setting the file icons, this
+	 * must be called when new icons are set to refresh stale windows. Finder
+	 * will not request new icons from the client unless there is interaction
+	 * with the Finder window.
+	 */
+	public void refreshIcons();
+
+	/**
+	 * Mac only
+	 *
 	 * Register an overlay icon
 	 *
 	 * @param path to the overlay icon

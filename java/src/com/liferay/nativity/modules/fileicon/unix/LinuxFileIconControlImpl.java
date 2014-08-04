@@ -51,6 +51,11 @@ public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
+	public void refreshIcons() {
+	}
+
+	@Override
 	public void removeFileIcon(String path) {
 		NativityMessage message = new NativityMessage(
 			Constants.REMOVE_FILE_ICONS, new String[] { path });
@@ -58,6 +63,7 @@ public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
 	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
 			Constants.REMOVE_FILE_ICONS, paths);
@@ -65,6 +71,7 @@ public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
 	public void setFileIcon(String path, int iconId) {
 		Map<String, Integer> map = new HashMap<String, Integer>(1);
 
@@ -76,6 +83,7 @@ public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
+	@Override
 	public void setFileIcons(Map<String, Integer> fileIconsMap) {
 		Map<String, Integer> map = new HashMap<String, Integer>(
 			_messageBufferSize);
