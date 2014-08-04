@@ -15,11 +15,11 @@
 	<key>CFBundlePackageType</key>
 	<string>osax</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.6</string>
+	<string>1.0.2</string>
 	<key>CFBundleSignature</key>
 	<string>NVTY</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.6</string>
+	<string>1.0.2</string>
 	<key>OSAScriptingDefinition</key>
 	<string>LiferayNativityInjector.sdef</string>
 	<key>OSAXHandlers</key>
