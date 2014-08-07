@@ -14,7 +14,7 @@
 
 #include "LiferayNativityContextMenus.h"
 
-#include "ContextMenuContants.h"
+#include "ContextMenuConstants.h"
 #include "ContextMenuAction.h"
 
 #include <Shellapi.h>

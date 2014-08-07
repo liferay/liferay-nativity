@@ -53,9 +53,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ContextMenuContants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -65,11 +62,14 @@
     <ClInclude Include="ContextMenuAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ContextMenuConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LiferayNativityContextMenu.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="ContextMenuContants.h.original" />
+    <None Include="ContextMenuConstants.h.original" />
   </ItemGroup>
 </Project>

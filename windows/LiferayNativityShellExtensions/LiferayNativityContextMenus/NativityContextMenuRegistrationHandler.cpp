@@ -13,7 +13,7 @@
  */
 
 #include "NativityContextMenuRegistrationHandler.h"
-#include "ContextMenuContants.h"
+#include "ContextMenuConstants.h"
 
 HRESULT NativityContextMenuRegistrationHandler::MakeRegistryEntries(const CLSID& clsid)
 {

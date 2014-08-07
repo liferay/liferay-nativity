@@ -14,7 +14,7 @@
 
 #include "ContextMenuFactory.h"
 #include "NativityContextMenuRegistrationHandler.h"
-#include "ContextMenuContants.h"
+#include "ContextMenuConstants.h"
 #include <Guiddef.h>
 #include <windows.h>
 

@@ -194,4 +194,3 @@ TITLE Microsoft Windows 7 %TARGET_CPU% Release Build Environment
 
 MSBuild.exe %CODE_PATH%/LiferayNativityShellExtensions/LiferayNativityShellExtensions.sln /t:%COMPONENT%:Clean /p:Configuration=Release;Platform=Win32
 MSBuild.exe %CODE_PATH%\LiferayNativityShellExtensions\LiferayNativityShellExtensions.sln /t:%COMPONENT%:Rebuild /p:Configuration=Release;Platform=Win32
-
