@@ -41,7 +41,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 		_receiveExecutor.execute(_receive);
 
-		return true;
+		return loaded;
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean loaded() {
-		return WindowsNativityUtil.load();
+		return true;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 			return;
 		}
 
-		if (!WindowsNativityUtil.load()) {
+		if (!WindowsNativityUtil.loaded()) {
 			return;
 		}
 
@@ -92,7 +92,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void setSystemFolder(String folder) {
-		if (!WindowsNativityUtil.load()) {
+		if (!WindowsNativityUtil.loaded()) {
 			return;
 		}
 
@@ -106,7 +106,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean unload() throws Exception {
-		return false;
+		return true;
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(
