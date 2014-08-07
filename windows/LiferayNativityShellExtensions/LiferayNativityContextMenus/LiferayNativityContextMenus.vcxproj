@@ -101,6 +101,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>LiferayNativityContextMenu.def</ModuleDefinitionFile>
+      <AdditionalDependencies>LiferayNativityUtil_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\$(Configuration)\$(Platform);</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,7 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ContextMenuAction.h" />
-    <ClInclude Include="ContextMenuContants.h" />
+    <ClInclude Include="ContextMenuConstants.h" />
     <ClInclude Include="ContextMenuFactory.h" />
     <ClInclude Include="ContextMenuItem.h" />
     <ClInclude Include="ContextMenuUtil.h" />
@@ -171,7 +173,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ContextMenuContants.h.original" />
+    <None Include="ContextMenuConstants.h.original" />
     <None Include="LiferayNativityContextMenu.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
