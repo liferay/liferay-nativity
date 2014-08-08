@@ -38,8 +38,6 @@ public class Constants {
 
 	public static final String GET_FILE_ICON_ID = "getFileIconId";
 
-	public static final String ID = "id";
-
 	public static final String MENU_INDEX = "menuIndex";
 
 	public static final String MENU_ITEMS = "menuItems";
@@ -68,5 +66,7 @@ public class Constants {
 	public static final String UNREGISTER_ICON = "unregisterIcon";
 
 	public static final String UPDATE_FILE_ICON = "updateFileIcon";
+
+	public static final String UUID = "uuid";
 
 }

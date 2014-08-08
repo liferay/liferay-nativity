@@ -12,14 +12,14 @@
  * details.
  */
 
-#include "ContextMenuUtil.h"
 #include "ContextMenuConstants.h"
+#include "ContextMenuUtil.h"
 #include "ContextMenuItem.h"
-
-#include "RegistryUtil.h"
 #include "FileUtil.h"
-#include "UtilConstants.h"
 #include "ParserUtil.h"
+#include "RegistryUtil.h"
+#include "UtilConstants.h"
+#include "json/json.h"
 
 #include <vector>
 
@@ -105,51 +105,114 @@ bool ContextMenuUtil::IsMenuNeeded(void)
 
 bool ContextMenuUtil::InitMenus(void)
 {
-	wstring* getMenuMessage = new wstring();
-	wstring* getMenuReceived = new wstring();
 	_menuList = new vector<ContextMenuItem*>();
 
-	bool success = false;
+	Json::Value jsonRoot;
 
-	wstring* files = new wstring();
+	jsonRoot[NATIVITY_COMMAND] = NATIVITY_GET_CONTEXT_MENU_LIST;
 
-	if(!ParserUtil::SerializeList(_selectedFiles, files, false))
+	for (vector<wstring>::iterator it = _selectedFiles->begin(); it != _selectedFiles->end(); it++)
 	{
-		delete files;
-
-		return false;
+		jsonRoot[NATIVITY_VALUE].append(ParserUtil::toString(*it));
 	}
 
-	NativityMessage* nativityMessage = new NativityMessage();
-	nativityMessage->SetCommand(new wstring(GET_CONTEXT_MENU_LIST));
-	nativityMessage->SetValue(files);
+	Json::FastWriter jsonWriter;
 
-	if(!ParserUtil::SerializeMessage(nativityMessage, getMenuMessage))
-	{
-		delete getMenuMessage;
-		delete nativityMessage;
-		delete files;
+	wstring* getMenuMessage = new wstring();
+	
+	getMenuMessage->append(ParserUtil::toWstring(jsonWriter.write(jsonRoot)));
 
-		return false;
-	}
+	bool success = true;
+
+	wstring* getMenuReceived = new wstring();
 
 	if(_communicationSocket->SendMessageReceiveResponse(getMenuMessage->c_str(), getMenuReceived))
 	{
-		NativityMessage* nativityMessage = new NativityMessage();
+		Json::Value jsonContextMenuItemsList = ParserUtil::GetJsonValue(NATIVITY_VALUE, getMenuReceived);
 
-		if(nativityMessage->InitFromMessage(getMenuReceived))
+		for (unsigned int i = 0; i < jsonContextMenuItemsList.size(); i++)
 		{
-			if(_ProcessContextMenus(nativityMessage))
+			Json::Value jsonContextMenuItem = jsonContextMenuItemsList[i];
+
+			ContextMenuItem* contextMenuItem = new ContextMenuItem();
+
+			if (!_ParseContextMenuItem(jsonContextMenuItem, contextMenuItem))
 			{
-				success = true;
+				success = false;
+
+				break;
 			}
+
+			_menuList->push_back(contextMenuItem);
 		}
 	}
 
-	delete getMenuMessage;
 	delete getMenuReceived;
+	delete getMenuMessage;
 
 	return success;
+}
+
+bool ContextMenuUtil::_ParseContextMenuItem(const Json::Value &jsonContextMenuItem, ContextMenuItem* contextMenuItem)
+{
+	// enabled
+	bool enabled = jsonContextMenuItem.get(NATIVITY_ENABLED, true).asBool();
+
+	contextMenuItem->SetEnabled(enabled);
+
+	// title
+	wstring *title = new wstring();
+
+	title->append(ParserUtil::toWstring(jsonContextMenuItem.get(NATIVITY_TITLE, "").asString()));
+
+	if (title->size() == 0)
+	{
+		return false;
+	}
+
+	contextMenuItem->SetTitle(title);
+
+	// uuid
+
+	wstring *uuid = new wstring();
+	
+	uuid->append(ParserUtil::toWstring(jsonContextMenuItem.get(NATIVITY_UUID, "").asString()));
+
+	if (uuid->size() == 0)
+	{
+		return false;
+	}
+
+	contextMenuItem->SetUuid(uuid);
+
+	// help text
+
+	wstring* helpText = new wstring();
+	
+	helpText->append(ParserUtil::toWstring(jsonContextMenuItem.get(NATIVITY_HELP_TEXT, "").asString()));
+
+	contextMenuItem->SetHelpText(helpText);
+
+	// children context menu items
+
+	Json::Value jsonChildrenContextMenuItems = jsonContextMenuItem.get(NATIVITY_CONTEXT_MENU_ITEMS, "");
+
+	vector<ContextMenuItem*>* childrenContextMenuItems = new vector<ContextMenuItem*>();
+
+	for (unsigned int i = 0; i < jsonChildrenContextMenuItems.size(); i++)
+	{
+		Json::Value jsonChildContextMenuItem = jsonChildrenContextMenuItems[i];
+
+		ContextMenuItem* childContextMenuItem = new ContextMenuItem();
+
+		_ParseContextMenuItem(jsonChildContextMenuItem, childContextMenuItem);
+
+		childrenContextMenuItems->push_back(childContextMenuItem);
+	}
+
+	contextMenuItem->SetContextMenuItems(childrenContextMenuItems);
+
+	return true;
 }
 
 bool ContextMenuUtil::GetContextMenuAction(std::wstring* title, ContextMenuAction** item)
@@ -179,13 +242,13 @@ bool ContextMenuUtil::GetContextMenuAction(int action, ContextMenuAction** item)
 
 	if(GetContextMenuItem(action, &contextMenuItem))
 	{
-			ContextMenuAction* action = new ContextMenuAction();
-			action->SetUuid(contextMenuItem->GetUuid());
-			action->SetFiles(_selectedFiles);
+		ContextMenuAction* action = new ContextMenuAction();
+		action->SetUuid(contextMenuItem->GetUuid());
+		action->SetFiles(_selectedFiles);
 
-			item = &action;
+		item = &action;
 			
-			return true;
+		return true;
 	}
 
 	return false;
@@ -193,174 +256,38 @@ bool ContextMenuUtil::GetContextMenuAction(int action, ContextMenuAction** item)
 
 bool ContextMenuUtil::PerformAction(int command)
 {
-	ContextMenuItem*  item;
+	ContextMenuItem* contextMenuItem;
 	
-	if(!GetContextMenuItem(command, &item))
+	if(!GetContextMenuItem(command, &contextMenuItem))
 	{
 		return false;
 	}
 
-	wstring* list = new wstring();
-	
-	if(!ParserUtil::SerializeList(_selectedFiles, list, true))
+	Json::Value jsonValue;
+
+	jsonValue[NATIVITY_UUID] = ParserUtil::toString(contextMenuItem->GetUuid()->c_str());
+
+	for (vector<wstring>::iterator it = _selectedFiles->begin(); it != _selectedFiles->end(); it++)
 	{
-		return false;
-	}
-	
-	map<wstring*, wstring*>* message = new map<wstring*, wstring*>();
-	wstring* id = new wstring(ID);
-	wstring* files = new wstring(FILES);
+		wstring selectedFile = *it;
 
-	wstring* idString = new wstring(L"\\\"");
-	idString->append(item->GetUuid()->c_str());
-	idString->append(L"\\\"");
-
-	message->insert(make_pair(id, idString));
-	message->insert(make_pair(files, list));
-
-	wstring* messageString = new wstring();
-
-	if(!ParserUtil::SerializeMessage(message, messageString, true))
-	{
-		return false;
+		jsonValue[NATIVITY_FILES].append(ParserUtil::toString(selectedFile));
 	}
 
-	NativityMessage* nativityMessage = new NativityMessage();
-	
-	wstring* title = new wstring(CONTEXT_MENU_ACTION);
-	nativityMessage->SetCommand(title);
-	nativityMessage->SetValue(messageString);
+	Json::Value jsonRoot;
 
-	wstring* nativityMessageString = new wstring();
+	jsonRoot[NATIVITY_COMMAND] = NATIVITY_CONTEXT_MENU_ACTION;
+	jsonRoot[NATIVITY_VALUE] = jsonValue;
 
-	if(!ParserUtil::SerializeMessage(nativityMessage, nativityMessageString))
-	{
-		return false;
-	}
+	Json::FastWriter jsonWriter;
+
+	wstring* jsonMessage = new wstring();
+
+	jsonMessage->append(ParserUtil::toWstring(jsonWriter.write(jsonRoot)));
 	
 	wstring* response = new wstring();
 
-	if(!_communicationSocket->SendMessageReceiveResponse(nativityMessageString->c_str(), response))
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool ContextMenuUtil::_ParseContextMenu(wstring* contextMenu, ContextMenuItem* contextMenuItem)
-{
-	wstring* id = new wstring();
-
-	if(!ParserUtil::GetItem(ID, contextMenu, id))
-	{
-		return false;
-	}
-
-	int id_i = _wtoi(id->c_str());
-
-	contextMenuItem->SetId(id_i);
-
-	wstring* enabled = new wstring();
-	
-	if(!ParserUtil::GetItem(ENABLED, contextMenu, enabled))
-	{
-		return false;
-	}
-
-	if(enabled->compare(TRUE_TEXT) == 0)
-	{
-		contextMenuItem->SetEnabled(true);
-	}
-	else
-	{
-		contextMenuItem->SetEnabled(false);
-	}
-
-	wstring* title =  new wstring();
-
-	if(!ParserUtil::GetItem(TITLE, contextMenu, title))
-	{
-		return false;
-	}
-
-	contextMenuItem->SetTitle(title);
-
-	wstring* uuid =  new wstring();
-
-	if(!ParserUtil::GetItem(UUID, contextMenu, uuid))
-	{
-		return false;
-	}
-
-	contextMenuItem->SetUuid(uuid);
-
-	wstring* helpText = new wstring();
-
-	if(!ParserUtil::GetItem(HELP_TEXT, contextMenu, helpText))
-	{
-		return false;
-	}
-
-	contextMenuItem->SetHelpText(helpText);
-
-	wstring* contextMenuItems = new wstring();
-
-	if(!ParserUtil::GetItem(CONTEXT_MENU_ITEMS, contextMenu, contextMenuItems))
-	{
-		return false;
-	}
-
-	vector<ContextMenuItem*>* contextMenus = new vector<ContextMenuItem*>();
-	if(!_ParseContextMenuList(contextMenuItems, contextMenus))
-	{
-		return false;
-	}
-
-	contextMenuItem->SetContextMenuItems(contextMenus);
-
-	return true;
-}
-
-bool ContextMenuUtil::_ParseContextMenuList(wstring* contextMenuList, vector<ContextMenuItem*>* contextMenus)
-{
-	size_t currentLocation = contextMenuList->find(OPEN_CURLY_BRACE, 0);
-
-	vector<wstring*>* menus = new vector<wstring*>();
-
-	while(currentLocation < contextMenuList->size())
-	{
-		wstring* contextMenu = new wstring();
-
-		currentLocation = ParserUtil::GetNextNativityItemInList(contextMenuList, currentLocation, contextMenu);
-
-		currentLocation++;
-
-		menus->push_back(contextMenu);
-	}
-	
-	for(vector<wstring*>::iterator it = menus->begin(); it != menus->end(); it++)
-	{
-		wstring* temp = *it;
-
-		ContextMenuItem* contextMenuItem = new ContextMenuItem();
-		
-		if(!_ParseContextMenu(temp, contextMenuItem))
-		{
-			return false;
-		}
-
-		contextMenus->push_back(contextMenuItem);
-	}
-
-	return true;
-}
-
-bool ContextMenuUtil::_ProcessContextMenus(NativityMessage* message)
-{
-	wstring* value = message->GetValue();
-
-	if(!_ParseContextMenuList(value, _menuList))
+	if(!_communicationSocket->SendMessageReceiveResponse(jsonMessage->c_str(), response))
 	{
 		return false;
 	}

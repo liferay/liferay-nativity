@@ -68,10 +68,10 @@ public abstract class UnixContextMenuControlBaseImpl
 				Map<String, Object> map =
 					(Map<String, Object>)message.getValue();
 
-				String uuid = (String)map.get("uuid");
+				String uuid = (String)map.get(Constants.UUID);
 
 				@SuppressWarnings("unchecked")
-				List<String> files = (List<String>)map.get("files");
+				List<String> files = (List<String>)map.get(Constants.FILES);
 
 				String[] filesArray = (String[])files.toArray(
 					new String[files.size()]);

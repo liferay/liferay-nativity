@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\jsoncpp">
+      <UniqueIdentifier>{50e44661-90e4-4e31-a341-03988fac827b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jsoncpp">
+      <UniqueIdentifier>{434f4d23-9035-45b7-b3e7-aeefab03141a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommunicationSocket.h">
@@ -33,6 +39,9 @@
     <ClInclude Include="ParserUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="json\json.h">
+      <Filter>Header Files\jsoncpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommunicationSocket.cpp">
@@ -49,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="ParserUtil.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp.cpp">
+      <Filter>Source Files\jsoncpp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

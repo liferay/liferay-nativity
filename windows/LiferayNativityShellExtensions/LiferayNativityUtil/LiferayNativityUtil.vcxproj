@@ -90,6 +90,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;JSON_DLL_BUILD</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -100,6 +101,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;JSON_DLL_BUILD</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -112,6 +114,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;JSON_DLL_BUILD</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -126,6 +129,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions);JSON_IS_AMALGAMATION;JSON_DLL_BUILD</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -135,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="json\json.h" />
     <ClInclude Include="ParserUtil.h" />
     <ClInclude Include="NativityMessage.h" />
     <ClInclude Include="UtilConstants.h" />
@@ -145,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="CommunicationSocket.cpp" />
     <ClCompile Include="FileUtil.cpp" />
+    <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="NativityMessage.cpp" />
     <ClCompile Include="ParserUtil.cpp" />
     <ClCompile Include="RegistryUtil.cpp" />

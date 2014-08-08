@@ -25,8 +25,6 @@ public:
     NativityMessage(void);
 	~NativityMessage(void);
 
-	bool InitFromMessage(const std::wstring*);
-
 	std::wstring* GetCommand();
 	std::wstring* GetValue();
 
@@ -34,7 +32,6 @@ public:
 	void SetValue(std::wstring*);
 
 private:
-
     std::wstring* _command;
 	std::wstring* _value;
 };

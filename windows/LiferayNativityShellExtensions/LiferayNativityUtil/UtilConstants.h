@@ -12,19 +12,21 @@
  *  details.
  */
 
-#define PLUG_IN_SOCKET_ADDRESS			"127.0.0.1"
+#define REGISTRY_ROOT_KEY						L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
 
-#define BACK_SLASH						L"\\"
-#define CLOSE_BRACE						L"]"
-#define CLOSE_CURLY_BRACE				L"}"
-#define COLON							L":"
-#define COMMAND							L"command"
-#define COMMA							L","
-#define OPEN_BRACE						L"["
-#define OPEN_CURLY_BRACE				L"{"
-#define QUOTE							L"\""
-#define VALUE							L"value"
+#define REGISTRY_ENABLE_OVERLAY					L"EnableOverlay"
+#define REGISTRY_FILTER_FOLDER					L"FilterFolder"
 
-#define REGISTRY_ROOT_KEY			 L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
-#define REGISTRY_ENABLE_OVERLAY		 L"EnableOverlay"
-#define REGISTRY_FILTER_FOLDER		 L"FilterFolder"
+#define PORT									33001
+
+#define NATIVITY_COMMAND						"command"
+#define NATIVITY_CONTEXT_MENU_ACTION			"contextMenuAction"
+#define NATIVITY_CONTEXT_MENU_ITEMS				"contextMenuItems"
+#define NATIVITY_ENABLED						"enabled"
+#define NATIVITY_FILES							"files"
+#define NATIVITY_GET_CONTEXT_MENU_LIST			"getContextMenuList"
+#define NATIVITY_GET_FILE_ICON_ID				"getFileIconId"
+#define NATIVITY_HELP_TEXT						"helpText"
+#define NATIVITY_TITLE							"title"
+#define NATIVITY_UUID							"uuid"
+#define NATIVITY_VALUE							"value"

@@ -16,10 +16,9 @@
 #include "ParserUtil.h"
 #include "UtilConstants.h"
 
-#include <string>
-
 #include <fstream>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -31,26 +30,6 @@ NativityMessage::NativityMessage(void)
 
 NativityMessage::~NativityMessage(void)
 {
-}
-
-bool NativityMessage::InitFromMessage(const wstring* message)
-{
-	if(message->length() == 0)
-	{
-		return false;
-	}
-	
-	if(!ParserUtil::GetItem(COMMAND, message, _command))
-	{
-		return false;
-	}
-
-	if(!ParserUtil::GetItem(VALUE, message, _value))
-	{
-		return false;
-	}
-
-	return true;
 }
 	
 std::wstring* NativityMessage::GetCommand()

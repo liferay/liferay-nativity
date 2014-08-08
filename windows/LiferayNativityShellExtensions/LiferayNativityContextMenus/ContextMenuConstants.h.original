@@ -12,7 +12,6 @@
  * details.
  */
 
-#define PORT							33001
 #define CONTEXT_MENU_GUID				L"[$context.menu.guid$]"
 
 //DLL Registration information
@@ -25,22 +24,4 @@
 #define REGISTRY_VERSION				L"Version"
 #define REGISTRY_VERSION_NUMBER			L"1.0"
 
-//Menu Util
 #define SEPARATOR						L"_SEPARATOR_"
-
-//Remote Functions
-#define GET_CONTEXT_MENU_LIST			L"getContextMenuList"
-#define CONTEXT_MENU_ACTION				L"contextMenuAction"
-
-//Model
-#define ID								L"id"
-#define FILES							L"files"
-
-#define SEPARATOR						L"_SEPARATOR_"
-#define CONTEXT_MENU_ITEMS				L"contextMenuItems"
-#define ENABLED							L"enabled"
-#define HELP_TEXT						L"helpText"
-#define TITLE							L"title"
-#define UUID							L"uuid"
-
-#define TRUE_TEXT						L"true"

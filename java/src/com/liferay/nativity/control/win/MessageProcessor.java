@@ -50,24 +50,18 @@ public class MessageProcessor implements Runnable {
 		try {
 			StringBuilder sb = new StringBuilder();
 
-			boolean end = false;
+			while (true) {
+				int character = _inputStreamReader.read();
 
-			while (!end) {
-				int item = _inputStreamReader.read();
-
-				if (item == -1) {
-					end = true;
+				if (character == -1) {
+					break;
 				}
 				else {
-					char letter = (char)item;
-					sb.append(letter);
+					sb.append((char)character);
 				}
 			}
 
 			String message = sb.toString();
-
-			message = message.replace("\\", "/");
-			message = message.replace("/\"", "\\\"");
 
 			if (message.isEmpty()) {
 				_returnEmpty();
@@ -82,16 +76,6 @@ public class MessageProcessor implements Runnable {
 	}
 
 	private void _handle(String receivedMessage) throws IOException {
-		if (receivedMessage.charAt(0) != '{')
-		{
-			_logger.error("Invalid message {}", receivedMessage);
-			return;
-		}
-
-		if (receivedMessage.endsWith(":\\\"]}")) {
-			receivedMessage = receivedMessage.replace(":\\\"]}", "\"]}");
-		}
-
 		try {
 			NativityMessage message = _objectMapper.readValue(
 				receivedMessage, NativityMessage.class);

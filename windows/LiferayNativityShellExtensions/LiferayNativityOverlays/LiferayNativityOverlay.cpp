@@ -13,10 +13,10 @@
  */
 
 #include "LiferayNativityOverlay.h"
+#include "ParserUtil.h"
 #include "RegistryUtil.h"
 #include "UtilConstants.h"
-#include "ParserUtil.h"
-
+#include "json/json.h"
 
 #include <iostream>
 #include <fstream>
@@ -85,7 +85,6 @@ IFACEMETHODIMP LiferayNativityOverlay::GetPriority(int *pPriority)
 
  IFACEMETHODIMP LiferayNativityOverlay::IsMemberOf(PCWSTR pwszPath, DWORD dwAttrib)
 {
-	
 	if(!_IsOverlaysEnabled())
 	{
 		return MAKE_HRESULT(S_FALSE, 0, 0);
@@ -164,19 +163,16 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 		_communicationSocket = new CommunicationSocket(PORT);
 	}
 
+	Json::Value jsonRoot;
+
+	jsonRoot[NATIVITY_COMMAND] = NATIVITY_GET_FILE_ICON_ID;
+	jsonRoot[NATIVITY_VALUE] = ParserUtil::toString(filePath);
+
+	Json::FastWriter jsonWriter;
+
 	wstring* message = new wstring();
 
-	NativityMessage* nativityMessage = new NativityMessage();
-	nativityMessage->SetCommand(new wstring(GET_FILE_OVERLAY_ID));
-	nativityMessage->SetValue(new wstring(filePath));
-
-	if(!ParserUtil::SerializeMessage(nativityMessage, message))
-	{
-		delete message;
-		delete nativityMessage;
-
-		return false;
-	}
+	message->append(ParserUtil::toWstring(jsonWriter.write(jsonRoot)));
 
 	wstring* response = new wstring();
 
@@ -188,27 +184,19 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 		return false;
 	}
 
-	wstring* valueString = new wstring();
+	Json::Value jsonValue = ParserUtil::GetJsonValue(NATIVITY_VALUE, response);
 
-	if(!ParserUtil::GetItem(VALUE, response, valueString))
+	wstring valueString = ParserUtil::toWstring(jsonValue.asString());
+
+	if(valueString.size() == 0)
 	{
 		delete message;
 		delete response;
-		delete valueString;
 
 		return false;
 	}
 
-	if(valueString->size() == 0)
-	{
-		delete message;
-		delete response;
-		delete valueString;
-
-		return false;
-	}
-
-	int state = _wtoi(valueString->c_str());
+	int state = _wtoi(valueString.c_str());
 
 	if(state == OVERLAY_ID)
 	{
@@ -217,7 +205,6 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 
 	delete message;
 	delete response;
-	delete valueString;
 
 	return needed;
 }

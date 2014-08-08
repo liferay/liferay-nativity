@@ -21,40 +21,22 @@
 #include <vector>
 #include <map>
 
-#include "NativityMessage.h"
+#include "UtilConstants.h"
+#include "json/json.h"
+
+#include <codecvt>
 
 class __declspec(dllexport) ParserUtil
 {
 public:
 	ParserUtil();
 	~ParserUtil();
-	
-	static bool GetItem(const wchar_t*, const std::wstring*, std::wstring*);
+		
+	static std::string toString(const std::wstring&);
 
-	static bool GetList(size_t, const std::wstring*, std::wstring*);
-	
-	static size_t GetNextNativityItemInList(const std::wstring*, size_t, std::wstring*);
-	
-	static size_t GetNextStringItemInList(const std::wstring*, size_t, std::wstring*);
+	static std::wstring toWstring(const std::string&);
 
-	static bool GetString(size_t, size_t, const std::wstring*, std::wstring*);
-
-	static bool GetValue(size_t, const std::wstring*, std::wstring*);
-
-	static bool IsList(std::wstring*);
-
-	static bool ParseNativityList(std::wstring*, std::vector<std::wstring*>*);
-
-	static bool ParseJsonList(std::wstring*, std::vector<std::wstring*>*);
-
-	static bool SerializeList(std::vector<std::wstring>*, std::wstring*, bool);
-
-	static bool SerializeMessage(std::map<std::wstring*, std::wstring*>*, std::wstring*, bool);
-
-	static bool SerializeMessage(NativityMessage*, std::wstring*);
-
-	static bool ParseNativityMessageList(std::wstring*, std::vector<NativityMessage*>*);
-
+	static Json::Value GetJsonValue(const std::string, const std::wstring*);
 };
 
 #endif

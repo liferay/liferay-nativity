@@ -61,7 +61,7 @@ bool CommunicationSocket::ReceiveResponseOnly(wstring* message)
 	struct sockaddr_in clientService;
 
 	clientService.sin_family = AF_INET;
-	clientService.sin_addr.s_addr = inet_addr(PLUG_IN_SOCKET_ADDRESS);
+	clientService.sin_addr.s_addr = inet_addr("127.0.0.1");
 	clientService.sin_port = htons(_port);
 
 	HRESULT iResult = connect( clientSocket, (SOCKADDR*) &clientService, sizeof(clientService) );
@@ -153,7 +153,7 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 	struct sockaddr_in clientService;
 
 	clientService.sin_family = AF_INET;
-	clientService.sin_addr.s_addr = inet_addr(PLUG_IN_SOCKET_ADDRESS);
+	clientService.sin_addr.s_addr = inet_addr("127.0.0.1");
 	clientService.sin_port = htons(_port);
 
 	HRESULT iResult = connect( clientSocket, (SOCKADDR*) &clientService, sizeof(clientService) );

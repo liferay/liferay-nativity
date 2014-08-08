@@ -17,9 +17,10 @@
 
 #pragma once
 
-#include "ContextMenuItem.h"
 #include "ContextMenuAction.h"
+#include "ContextMenuItem.h"
 #include "NativityMessage.h"
+#include "json/json.h"
 
 #include "stdafx.h"
 
@@ -49,9 +50,9 @@ public:
 private:
 	bool _GetContextMenuItem(int, std::vector<ContextMenuItem*>*, ContextMenuItem**);
 
-	bool _ParseContextMenu(std::wstring*, ContextMenuItem*);
-
 	bool _ParseContextMenuList(std::wstring*, std::vector<ContextMenuItem*>*);
+
+	bool _ParseContextMenuItem(const Json::Value &, ContextMenuItem*);
 
 	bool _ProcessContextMenus(NativityMessage*);
 
@@ -60,7 +61,6 @@ private:
 	std::vector<ContextMenuItem*>* _menuList;
 
 	std::vector<std::wstring>* _selectedFiles;
-
 };
 
 #endif

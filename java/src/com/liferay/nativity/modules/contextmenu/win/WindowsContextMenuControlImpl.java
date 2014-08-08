@@ -26,6 +26,7 @@ import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,21 +65,19 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 			new MessageListener(Constants.FIRE_CONTEXT_MENU_ACTION) {
 
 			public NativityMessage onMessage(NativityMessage message) {
-				String value = message.getValue().toString();
+				@SuppressWarnings("unchecked")
+				Map<String, Object> map =
+						(Map<String, Object>)message.getValue();
 
-				_logger.trace("Nativity Message Value {}", value);
+				String uuid = (String)map.get(Constants.UUID);
 
-				try {
-					ContextMenuAction contextMenuAction =
-						_objectMapper.readValue(value, ContextMenuAction.class);
+				@SuppressWarnings("unchecked")
+				List<String> files = (List<String>)map.get(Constants.FILES);
 
-					fireContextMenuAction(
-						contextMenuAction.getUuid(),
-						contextMenuAction.getFiles());
-				}
-				catch (Exception e) {
-					_logger.error(e.getMessage(), e);
-				}
+				String[] filesArray = (String[])files.toArray(
+						new String[files.size()]);
+
+				fireContextMenuAction(uuid, filesArray);
 
 				return null;
 			}
