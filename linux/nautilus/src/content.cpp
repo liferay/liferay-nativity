@@ -103,8 +103,9 @@ void ContentManager::setFileIcon(const std::string& fileName, int iconId)
 	{
 		iconsForFiles_.erase(fileName);
 	}
-	else {
-		iconsForFiles_[fileName] = iconId;		
+	else
+	{
+		iconsForFiles_[fileName] = iconId;
 	}
 }
 

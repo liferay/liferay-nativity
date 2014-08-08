@@ -87,7 +87,7 @@ void SocketServer::doAcceptLoop()
 
 	int client_sock(0);
 
-	while ((client_sock = accept(serverSocket_, (struct sockaddr*)&client, &size)) )
+	while ((client_sock = accept(serverSocket_, (struct sockaddr*)&client, &size)))
 	{
 		if (clientSocket_)
 		{

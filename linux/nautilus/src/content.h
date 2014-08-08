@@ -20,30 +20,30 @@
 
 class ContentManager
 {
-public:
-	static ContentManager& instance();
+	public:
+		static ContentManager& instance();
 
-	std::string getFileIconName(const std::string& fileName) const;
-	void setFileIcon(const std::string& fileName, int icon);
-	void removeFileIcon(const std::string& fileName);
-	void removeAllFileIcons();
-	int registerIcon(const std::string& fileName);
-	void unregisterIcon(int iconId);
-	void enableFileIcons(bool enable);
-	bool isOverlaysEnabled();
-	void setRootFolder(std::string const& rootFolder);
-	const std::string& getRootFolder() const;
+		std::string getFileIconName(const std::string& fileName) const;
+		void setFileIcon(const std::string& fileName, int icon);
+		void removeFileIcon(const std::string& fileName);
+		void removeAllFileIcons();
+		int registerIcon(const std::string& fileName);
+		void unregisterIcon(int iconId);
+		void enableFileIcons(bool enable);
+		bool isOverlaysEnabled();
+		void setRootFolder(std::string const& rootFolder);
+		const std::string& getRootFolder() const;
 
-private:
-	std::map<std::string, int> iconsForFiles_;
-	int lastIconId_;
-	std::map<int, std::string> icons_;
-	bool overlaysEnabled_;
-	std::string rootFolder_;
-	mutable std::set<std::string> registeredFolders_;
+	private:
+		std::map<std::string, int> iconsForFiles_;
+		int lastIconId_;
+		std::map<int, std::string> icons_;
+		bool overlaysEnabled_;
+		std::string rootFolder_;
+		mutable std::set<std::string> registeredFolders_;
 
-	ContentManager();
-	~ContentManager();
+		ContentManager();
+		~ContentManager();
 };
 
 #endif

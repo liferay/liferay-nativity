@@ -9,30 +9,30 @@
 
 class Mutex
 {
-public:
-	Mutex();
-	~Mutex();
+	public:
+		Mutex();
+		~Mutex();
 
-	void lock();
-	void unlock();
-private:
-	pthread_mutex_t mutex_;
+		void lock();
+		void unlock();
+	private:
+		pthread_mutex_t mutex_;
 };
 
 class Guard
 {
-public:
-	Guard(Mutex& mutex) :
-		mutex_(mutex)
-	{
-		mutex_.lock();
-	}
-	~Guard()
-	{
-		mutex_.unlock();
-	}
-private:
-	Mutex& mutex_;
+	public:
+		Guard(Mutex& mutex) :
+			mutex_(mutex)
+		{
+			mutex_.lock();
+		}
+		~Guard()
+		{
+			mutex_.unlock();
+		}
+	private:
+		Mutex& mutex_;
 };
 
 #endif

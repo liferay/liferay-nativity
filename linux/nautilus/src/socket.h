@@ -27,39 +27,39 @@ struct ISocketCallback
 
 class SocketServer
 {
-public:
-	SocketServer(int id, unsigned short port, ISocketCallback* callback);
-	SocketServer(int id, unsigned short port, ISocketCallback* callback, int timeoutSeconds, int timeoutMicroseconds);
-	virtual ~SocketServer();
+	public:
+		SocketServer(int id, unsigned short port, ISocketCallback* callback);
+		SocketServer(int id, unsigned short port, ISocketCallback* callback, int timeoutSeconds, int timeoutMicroseconds);
+		virtual ~SocketServer();
 
-	void writeString(const std::string& data);
-	bool readString(std::string& data);
+		void writeString(const std::string& data);
+		bool readString(std::string& data);
 
-	bool isConnected();
-	void setTimeout(int seconds, int microseconds);
+		bool isConnected();
+		void setTimeout(int seconds, int microseconds);
 
-private:
-	int id_;
+	private:
+		int id_;
 
-	pthread_t acceptThread_;
-	pthread_t readThread_;
+		pthread_t acceptThread_;
+		pthread_t readThread_;
 
-	int serverSocket_;
-	int clientSocket_;
+		int serverSocket_;
+		int clientSocket_;
 
-	ISocketCallback* callback_;
-	unsigned short port_;
+		ISocketCallback* callback_;
+		unsigned short port_;
 
-	int timeoutSeconds_;
-	int timeoutMicroseconds_;
+		int timeoutSeconds_;
+		int timeoutMicroseconds_;
 
-	void startListening();
+		void startListening();
 
-	static void* acceptHandler(void* param);
-	void doAcceptLoop();
+		static void* acceptHandler(void* param);
+		void doAcceptLoop();
 
-	static void* readHandler(void* param);
-	void doReadLoop();
+		static void* readHandler(void* param);
+		void doReadLoop();
 };
 
 #endif

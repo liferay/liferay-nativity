@@ -23,29 +23,29 @@
 class RequestManager :
 	public ISocketCallback
 {
-public:
-	static RequestManager& instance();
+	public:
+		static RequestManager& instance();
 
-	std::string queryMenuItems(const std::string& request);
-	void menuExecuted(const std::string& reply);
+		std::string queryMenuItems(const std::string& request);
+		void menuExecuted(const std::string& reply);
 
-protected:
-	virtual void onStringReceived(int serverId, const std::string& text);
+	protected:
+		virtual void onStringReceived(int serverId, const std::string& text);
 
-private:
-	SocketServer callbackSocket_;
-	SocketServer commandSocket_;
+	private:
+		SocketServer callbackSocket_;
+		SocketServer commandSocket_;
 
-	RequestManager();
-	~RequestManager();
+		RequestManager();
+		~RequestManager();
 
-	void execSetFileIconsCmd(const Json::Value& jsonValue);
-	void execRemoveFileIconsCmd(const Json::Value& jsonValue);
-	void execRemoveAllFileIconsCmd(const Json::Value& jsonValue);
-	void execEnableFileIconsCmd(const Json::Value& jsonValue);
-	void execRegisterIconCmd(const Json::Value& jsonValue);
-	void execUnregisterIconCmd(const Json::Value& jsonValue);
-	void execSetRootFolderCmd(const Json::Value& jsonValue);
+		void execSetFileIconsCmd(const Json::Value& jsonValue);
+		void execRemoveFileIconsCmd(const Json::Value& jsonValue);
+		void execRemoveAllFileIconsCmd(const Json::Value& jsonValue);
+		void execEnableFileIconsCmd(const Json::Value& jsonValue);
+		void execRegisterIconCmd(const Json::Value& jsonValue);
+		void execUnregisterIconCmd(const Json::Value& jsonValue);
+		void execSetRootFolderCmd(const Json::Value& jsonValue);
 };
 
 #endif

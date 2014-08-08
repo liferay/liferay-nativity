@@ -141,7 +141,7 @@ extern "C" void addMenuItems(NautilusMenuItem* parentMenuItem, Json::Value jsonM
 	}
 }
 
-extern "C" GList * nautilus_liferay_get_file_items(NautilusMenuProvider* provider, GtkWidget* window, GList* files)
+extern "C" GList* nautilus_liferay_get_file_items(NautilusMenuProvider* provider, GtkWidget* window, GList* files)
 {
 	GList* menuItems = NULL;
 	GList* scan;
@@ -300,7 +300,8 @@ extern "C" void registerHandlers(GTypeModule* module)
 {
 	writeLog("registerHandlers entered\n");
 
-	static const GTypeInfo info = {
+	static const GTypeInfo info =
+	{
 		sizeof(NautilusLiferayClass),
 		(GBaseInitFunc)NULL,
 		(GBaseFinalizeFunc)NULL,
@@ -312,13 +313,15 @@ extern "C" void registerHandlers(GTypeModule* module)
 		(GInstanceInitFunc)nautilus_liferay_instance_init,
 	};
 
-	static const GInterfaceInfo menu_provider_iface_info = {
+	static const GInterfaceInfo menu_provider_iface_info =
+	{
 		(GInterfaceInitFunc)nautilus_liferay_menu_provider_iface_init,
 		NULL,
 		NULL
 	};
 
-	static const GInterfaceInfo info_provider_iface_info = {
+	static const GInterfaceInfo info_provider_iface_info =
+	{
 		(GInterfaceInitFunc)nautilus_liferay_info_provider_iface_init,
 		NULL,
 		NULL
