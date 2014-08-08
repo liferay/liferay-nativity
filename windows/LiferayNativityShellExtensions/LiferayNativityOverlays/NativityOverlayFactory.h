@@ -22,28 +22,26 @@
 
 class NativityOverlayFactory : public IClassFactory
 {
-public:
-    NativityOverlayFactory(wchar_t* path);
+	public:
+		NativityOverlayFactory(wchar_t* path);
 
-    IFACEMETHODIMP_(ULONG) AddRef();
+		IFACEMETHODIMP_(ULONG) AddRef();
 
-    IFACEMETHODIMP CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppv);
+		IFACEMETHODIMP CreateInstance(IUnknown* pUnkOuter, REFIID riid, void** ppv);
 
-	IFACEMETHODIMP LockServer(BOOL fLock);
+		IFACEMETHODIMP LockServer(BOOL fLock);
 
-    IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
+		IFACEMETHODIMP QueryInterface(REFIID riid, void** ppv);
 
-    IFACEMETHODIMP_(ULONG) Release();
+		IFACEMETHODIMP_(ULONG) Release();
 
-protected:
-    ~NativityOverlayFactory();
+	protected:
+		~NativityOverlayFactory();
 
-private:
+	private:
+		wchar_t* _path;
 
-    long _referenceCount;
-
-	wchar_t* _path;
-
+		long _referenceCount;
 };
 
 #endif

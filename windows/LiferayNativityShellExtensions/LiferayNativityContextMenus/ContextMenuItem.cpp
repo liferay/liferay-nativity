@@ -59,12 +59,12 @@ bool ContextMenuItem::GetEnabled()
 {
 	return _enabled;
 }
-	
+
 wstring* ContextMenuItem::GetHelpText()
 {
 	return _helpText;
 }
-	
+
 long ContextMenuItem::GetId()
 {
 	return _id;
@@ -74,7 +74,7 @@ int ContextMenuItem::GetIndex()
 {
 	return _index;
 }
-	
+
 wstring* ContextMenuItem::GetTitle()
 {
 	return _title;
@@ -87,12 +87,12 @@ wstring* ContextMenuItem::GetUuid()
 
 bool ContextMenuItem::HasSubMenus()
 {
-	if(_contextMenuItems == 0)
+	if (_contextMenuItems == 0)
 	{
 		return false;
 	}
 
-	if(_contextMenuItems->size() == 0)
+	if (_contextMenuItems->size() == 0)
 	{
 		return false;
 	}
@@ -109,7 +109,7 @@ void ContextMenuItem::SetEnabled(bool enabled)
 {
 	_enabled = enabled;
 }
-	
+
 void ContextMenuItem::SetHelpText(wstring* helpText)
 {
 	_helpText = helpText;
@@ -124,7 +124,7 @@ void ContextMenuItem::SetIndex(int index)
 {
 	_index = index;
 }
-	
+
 void ContextMenuItem::SetTitle(wstring* title)
 {
 	_title = title;

@@ -15,7 +15,7 @@
 #ifndef NATIVITYMESSAGE_H
 #define NATIVITYMESSAGE_H
 
-#include "ParserUtil.h"
+#include "StringUtil.h"
 #include "UtilConstants.h"
 
 #include <fstream>
@@ -26,19 +26,21 @@
 
 class __declspec(dllexport) NativityMessage
 {
-public:
-    NativityMessage(void);
-	~NativityMessage(void);
+	public:
+		NativityMessage(void);
+		~NativityMessage(void);
 
-	std::wstring* GetCommand();
-	std::wstring* GetValue();
+		std::wstring* GetCommand();
 
-	void SetCommand(std::wstring*);
-	void SetValue(std::wstring*);
+		std::wstring* GetValue();
 
-private:
-    std::wstring* _command;
-	std::wstring* _value;
+		void SetCommand(std::wstring*);
+
+		void SetValue(std::wstring*);
+
+	private:
+		std::wstring* _command;
+		std::wstring* _value;
 };
 
 #endif

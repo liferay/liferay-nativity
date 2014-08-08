@@ -27,17 +27,17 @@
 
 class __declspec(dllexport) FileUtil
 {
-public:
-	FileUtil();
+	public:
+		FileUtil();
 
-	~FileUtil();
+		~FileUtil();
 
-	static bool IsChildFile(const wchar_t*, std::vector<std::wstring>*);
-	static bool IsChildFile(const wchar_t*, const wchar_t*);
-	static bool IsChildFileOfRoot(std::vector<std::wstring>*);
-	static bool IsChildFileOfRoot(const wchar_t*);
+		static bool IsChildFile(const wchar_t*, std::vector<std::wstring>*);
+		static bool IsChildFile(const wchar_t*, const wchar_t*);
+		static bool IsChildFileOfRoot(std::vector<std::wstring>*);
+		static bool IsChildFileOfRoot(const wchar_t*);
 
-private:	
+	private:
 };
 
 #endif

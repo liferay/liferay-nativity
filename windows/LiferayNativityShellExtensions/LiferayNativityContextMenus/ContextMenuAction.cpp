@@ -16,23 +16,22 @@
 
 using namespace std;
 
-wstring* ContextMenuAction::GetUuid()
-{
-	return _uuid;
-}
-	
 vector<wstring>* ContextMenuAction::GetFiles()
 {
 	return _files;
 }
-	
-void ContextMenuAction::SetUuid(wstring* uuid)
-{
-	_uuid = uuid;
-}
 
+wstring* ContextMenuAction::GetUuid()
+{
+	return _uuid;
+}
 
 void ContextMenuAction::SetFiles(vector<wstring>* files)
 {
 	_files = files;
+}
+
+void ContextMenuAction::SetUuid(wstring* uuid)
+{
+	_uuid = uuid;
 }

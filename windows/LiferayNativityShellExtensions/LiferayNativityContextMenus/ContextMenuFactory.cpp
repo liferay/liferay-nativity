@@ -16,9 +16,9 @@
 
 extern long dllReferenceCount;
 
-ContextMenuFactory::ContextMenuFactory(wchar_t *modulePath) : _modulePath(modulePath), _referenceCount(1)
+ContextMenuFactory::ContextMenuFactory(wchar_t* modulePath) : _modulePath(modulePath), _referenceCount(1)
 {
-    InterlockedIncrement(&dllReferenceCount);
+	InterlockedIncrement(&dllReferenceCount);
 }
 
 ContextMenuFactory::~ContextMenuFactory()
@@ -26,29 +26,29 @@ ContextMenuFactory::~ContextMenuFactory()
 	InterlockedDecrement(&dllReferenceCount);
 }
 
-IFACEMETHODIMP ContextMenuFactory::QueryInterface(REFIID riid, void **ppv)
+IFACEMETHODIMP ContextMenuFactory::QueryInterface(REFIID riid, void** ppv)
 {
-    HRESULT hResult = S_OK;
+	HRESULT hResult = S_OK;
 
-    if (IsEqualIID(IID_IUnknown, riid) || 
-        IsEqualIID(IID_IClassFactory, riid))
-    {
-        *ppv = static_cast<IUnknown *>(this);
+	if (IsEqualIID(IID_IUnknown, riid) ||
+	        IsEqualIID(IID_IClassFactory, riid))
+	{
+		*ppv = static_cast<IUnknown*>(this);
 
-        AddRef();
-    }
-    else
-    {
-        hResult = E_NOINTERFACE;
-	
+		AddRef();
+	}
+	else
+	{
+		hResult = E_NOINTERFACE;
+
 		*ppv = NULL;
-    }
+	}
 
-    return hResult;
+	return hResult;
 }
 
 IFACEMETHODIMP_(ULONG) ContextMenuFactory::AddRef()
-{  
+{
 	long result = InterlockedIncrement(&_referenceCount);
 
 	return result;
@@ -56,52 +56,51 @@ IFACEMETHODIMP_(ULONG) ContextMenuFactory::AddRef()
 
 IFACEMETHODIMP_(ULONG) ContextMenuFactory::Release()
 {
-    long cRef = InterlockedDecrement(&_referenceCount);
+	long cRef = InterlockedDecrement(&_referenceCount);
 
-    if (0 == cRef)
-    {
-        delete this;
+	if (0 == cRef)
+	{
+		delete this;
 	}
 
 	return cRef;
 }
 
 IFACEMETHODIMP ContextMenuFactory::CreateInstance(
-	IUnknown *pUnkOuter, REFIID riid, void **ppv)
+    IUnknown* pUnkOuter, REFIID riid, void** ppv)
 {
-    HRESULT hResult = CLASS_E_NOAGGREGATION;
+	HRESULT hResult = CLASS_E_NOAGGREGATION;
 
-    if (pUnkOuter != NULL)
-    {
+	if (pUnkOuter != NULL)
+	{
 		return hResult;
 	}
 
-    hResult = E_OUTOFMEMORY;
+	hResult = E_OUTOFMEMORY;
 
-    LiferayNativityContextMenus *lrContextMenus = 
-		new (std::nothrow) LiferayNativityContextMenus();
-	
+	LiferayNativityContextMenus* lrContextMenus = new(std::nothrow) LiferayNativityContextMenus();
+
 	if (!lrContextMenus)
-    {
+	{
 		return hResult;
 	}
-    
+
 	hResult = lrContextMenus->QueryInterface(riid, ppv);
 
 	lrContextMenus->Release();
-    
+
 	return hResult;
 }
 
 IFACEMETHODIMP ContextMenuFactory::LockServer(BOOL fLock)
 {
-    if (fLock)
-    {
-        InterlockedIncrement(&dllReferenceCount);
-    }
-    else
-    {
-        InterlockedDecrement(&dllReferenceCount);
-    }
-    return S_OK;
+	if (fLock)
+	{
+		InterlockedIncrement(&dllReferenceCount);
+	}
+	else
+	{
+		InterlockedDecrement(&dllReferenceCount);
+	}
+	return S_OK;
 }

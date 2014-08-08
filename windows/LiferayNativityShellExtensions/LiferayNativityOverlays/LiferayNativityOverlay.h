@@ -15,8 +15,8 @@
 #ifndef LIFERAYNATIVITYOVERLAY_H
 #define LIFERAYNATIVITYOVERLAY_H
 
-#include "ParserUtil.h"
 #include "RegistryUtil.h"
+#include "StringUtil.h"
 #include "UtilConstants.h"
 #include "json/json.h"
 #include "stdafx.h"
@@ -24,39 +24,39 @@
 #include <iostream>
 #include <fstream>
 
-#pragma once    
+#pragma once
 
 class LiferayNativityOverlay : public IShellIconOverlayIdentifier
 
 {
-public:
-	LiferayNativityOverlay();
+	public:
+		LiferayNativityOverlay();
 
-	IFACEMETHODIMP_(ULONG) AddRef();
+		IFACEMETHODIMP_(ULONG) AddRef();
 
-	IFACEMETHODIMP GetOverlayInfo(PWSTR pwszIconFile, int cchMax, int *pIndex, DWORD *pdwFlags);
+		IFACEMETHODIMP GetOverlayInfo(PWSTR pwszIconFile, int cchMax, int* pIndex, DWORD* pdwFlags);
 
-	IFACEMETHODIMP GetPriority(int *pPriority);
+		IFACEMETHODIMP GetPriority(int* pPriority);
 
-	IFACEMETHODIMP IsMemberOf(PCWSTR pwszPath, DWORD dwAttrib);
+		IFACEMETHODIMP IsMemberOf(PCWSTR pwszPath, DWORD dwAttrib);
 
-	IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
+		IFACEMETHODIMP QueryInterface(REFIID riid, void** ppv);
 
-    IFACEMETHODIMP_(ULONG) Release();
+		IFACEMETHODIMP_(ULONG) Release();
 
-protected:
-    ~LiferayNativityOverlay(void);
+	protected:
+		~LiferayNativityOverlay(void);
 
-private:
-	bool _IsOverlaysEnabled();
+	private:
+		bool _IsOverlaysEnabled();
 
-	bool _IsMonitoredFile(const wchar_t* filePath);
+		bool _IsMonitoredFile(const wchar_t* filePath);
 
-	bool _IsMonitoredFileState(const wchar_t* filePath);
+		bool _IsMonitoredFileState(const wchar_t* filePath);
 
-    long _referenceCount;
+		long _referenceCount;
 
-	CommunicationSocket* _communicationSocket;
+		CommunicationSocket* _communicationSocket;
 };
 
 #endif

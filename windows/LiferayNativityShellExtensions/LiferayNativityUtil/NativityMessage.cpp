@@ -25,7 +25,7 @@ NativityMessage::NativityMessage(void)
 NativityMessage::~NativityMessage(void)
 {
 }
-	
+
 std::wstring* NativityMessage::GetCommand()
 {
 	return _command;

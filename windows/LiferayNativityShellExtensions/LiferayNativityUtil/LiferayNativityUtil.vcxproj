@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="json\json.h" />
-    <ClInclude Include="ParserUtil.h" />
+    <ClInclude Include="StringUtil.h" />
     <ClInclude Include="NativityMessage.h" />
     <ClInclude Include="UtilConstants.h" />
     <ClInclude Include="CommunicationSocket.h" />
@@ -152,7 +152,7 @@
     <ClCompile Include="FileUtil.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="NativityMessage.cpp" />
-    <ClCompile Include="ParserUtil.cpp" />
+    <ClCompile Include="StringUtil.cpp" />
     <ClCompile Include="RegistryUtil.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

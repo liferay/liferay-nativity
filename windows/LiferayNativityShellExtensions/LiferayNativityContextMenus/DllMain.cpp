@@ -39,15 +39,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	return TRUE;
 }
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void **ppv)
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void** ppv)
 {
 	HRESULT hResult = CLASS_E_CLASSNOTAVAILABLE;
 
-	GUID guid;  
- 
+	GUID guid;
+
 	hResult = CLSIDFromString(CONTEXT_MENU_GUID, (LPCLSID)&guid);
 
-	if(!SUCCEEDED(hResult))
+	if (!SUCCEEDED(hResult))
 	{
 		return hResult;
 	}
@@ -62,22 +62,22 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void **ppv)
 	wchar_t szModule[MAX_PATH];
 
 	if (GetModuleFileName(instanceHandle, szModule, ARRAYSIZE(szModule)) == 0)
-	{	
+	{
 		hResult = HRESULT_FROM_WIN32(GetLastError());
 
 		return hResult;
 	}
 
 	ContextMenuFactory* contextMenuFactory = new ContextMenuFactory(szModule);
-		
+
 	if (contextMenuFactory)
 	{
 		hResult = contextMenuFactory->QueryInterface(riid, ppv);
-		
+
 		contextMenuFactory->Release();
 	}
 
-    return hResult;
+	return hResult;
 }
 
 STDAPI DllCanUnloadNow(void)
@@ -86,79 +86,79 @@ STDAPI DllCanUnloadNow(void)
 }
 
 HRESULT _stdcall DllRegisterServer(void)
-{	
+{
 	HRESULT hResult = S_OK;
 
 	wchar_t szModule[MAX_PATH];
 
 	if (GetModuleFileName(instanceHandle, szModule, ARRAYSIZE(szModule)) == 0)
-	{	
+	{
 		hResult = HRESULT_FROM_WIN32(GetLastError());
 
 		return hResult;
 	}
 
-	GUID guid;  
- 
+	GUID guid;
+
 	hResult = CLSIDFromString(CONTEXT_MENU_GUID, (LPCLSID)&guid);
 
-	if(!SUCCEEDED(hResult))
+	if (!SUCCEEDED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = NativityContextMenuRegistrationHandler::RegisterCOMObject(szModule, guid);
 
-	if(!SUCCEEDED(hResult))
+	if (!SUCCEEDED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = NativityContextMenuRegistrationHandler::MakeRegistryEntries(guid);
 
-	if(!SUCCEEDED(hResult))
+	if (!SUCCEEDED(hResult))
 	{
 		return hResult;
 	}
 
-    return S_OK;
+	return S_OK;
 }
 
 STDAPI DllUnregisterServer(void)
 {
 	HRESULT hr = S_OK;
 
-    wchar_t szModule[MAX_PATH];
+	wchar_t szModule[MAX_PATH];
 
 	if (GetModuleFileName(instanceHandle, szModule, ARRAYSIZE(szModule)) == 0)
-    {
-        hr = HRESULT_FROM_WIN32(GetLastError());
+	{
+		hr = HRESULT_FROM_WIN32(GetLastError());
 
 		return hr;
-    }
+	}
 
-	GUID guid;  
- 
+	GUID guid;
+
 	hr = CLSIDFromString(CONTEXT_MENU_GUID, (LPCLSID)&guid);
 
-	if(!SUCCEEDED(hr))
+	if (!SUCCEEDED(hr))
 	{
 		return hr;
 	}
 
-    hr = NativityContextMenuRegistrationHandler::UnregisterCOMObject(guid);
+	hr = NativityContextMenuRegistrationHandler::UnregisterCOMObject(guid);
 
 	if (!SUCCEEDED(hr))
-    {
+	{
 		return hr;
 	}
 
 	hr = NativityContextMenuRegistrationHandler::RemoveRegistryEntries();
-	
+
 	if (!SUCCEEDED(hr))
-    {
+	{
 		return hr;
 	}
 
-    return S_OK;
+	return S_OK;
 }

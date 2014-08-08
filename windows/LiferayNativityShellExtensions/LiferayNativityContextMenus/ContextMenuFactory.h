@@ -22,27 +22,25 @@
 
 class ContextMenuFactory : public IClassFactory
 {
-public:
-    ContextMenuFactory(wchar_t *);
+	public:
+		ContextMenuFactory(wchar_t*);
 
-    IFACEMETHODIMP_(ULONG) AddRef();
+		IFACEMETHODIMP_(ULONG) AddRef();
 
-    IFACEMETHODIMP CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppv);
+		IFACEMETHODIMP CreateInstance(IUnknown* pUnkOuter, REFIID riid, void** ppv);
 
-	IFACEMETHODIMP LockServer(BOOL fLock);
+		IFACEMETHODIMP LockServer(BOOL fLock);
 
-    IFACEMETHODIMP QueryInterface(REFIID riid, void **ppv);
+		IFACEMETHODIMP QueryInterface(REFIID riid, void** ppv);
 
-    IFACEMETHODIMP_(ULONG) Release();
+		IFACEMETHODIMP_(ULONG) Release();
 
-protected:
-    ~ContextMenuFactory();
+	protected:
+		~ContextMenuFactory();
 
-private:
-
-    long _referenceCount;
-	wchar_t *_modulePath;
-
+	private:
+		long _referenceCount;
+		wchar_t* _modulePath;
 };
 
 #endif

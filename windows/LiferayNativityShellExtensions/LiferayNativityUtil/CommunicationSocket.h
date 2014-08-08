@@ -21,26 +21,26 @@
 
 #include "UtilConstants.h"
 
-#include <fstream> 
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
 class __declspec(dllexport) CommunicationSocket
 {
-public:
-	CommunicationSocket(int port);
+	public:
+		CommunicationSocket(int port);
 
-	~CommunicationSocket();
+		~CommunicationSocket();
 
-	bool ReceiveResponseOnly(std::wstring*);
+		bool ReceiveResponseOnly(std::wstring*);
 
-	bool SendMessageReceiveResponse(const wchar_t*, std::wstring*);
+		bool SendMessageReceiveResponse(const wchar_t*, std::wstring*);
 
-private:	
-	bool ConvertData(wchar_t* buf, int bytesRead, char* rec_buf);
+	private:
+		bool _ConvertData(wchar_t* buf, int bytesRead, char* rec_buf);
 
-	int _port;
+		int _port;
 };
 
 #endif

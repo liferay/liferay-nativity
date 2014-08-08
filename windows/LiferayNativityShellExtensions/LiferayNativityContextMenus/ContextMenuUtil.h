@@ -22,8 +22,8 @@
 #include "ContextMenuConstants.h"
 #include "FileUtil.h"
 #include "NativityMessage.h"
-#include "ParserUtil.h"
 #include "RegistryUtil.h"
+#include "StringUtil.h"
 #include "UtilConstants.h"
 #include "json/json.h"
 #include "stdafx.h"
@@ -32,41 +32,41 @@
 
 class __declspec(dllexport) ContextMenuUtil
 {
-public:
-	ContextMenuUtil();
+	public:
+		ContextMenuUtil();
 
-	~ContextMenuUtil(void);
+		~ContextMenuUtil(void);
 
-	bool AddFile(std::wstring);
+		bool AddFile(std::wstring);
 
-	bool GetMenus(std::vector<ContextMenuItem*>*);
+		bool GetMenus(std::vector<ContextMenuItem*>*);
 
-	bool GetContextMenuItem(int, ContextMenuItem**);
+		bool GetContextMenuItem(int, ContextMenuItem**);
 
-	bool GetContextMenuAction(std::wstring*, ContextMenuAction**);
+		bool GetContextMenuAction(std::wstring*, ContextMenuAction**);
 
-	bool GetContextMenuAction(int action, ContextMenuAction**);
+		bool GetContextMenuAction(int action, ContextMenuAction**);
 
-	bool IsMenuNeeded(void);
+		bool IsMenuNeeded(void);
 
-	bool InitMenus(void); 
-	
-	bool PerformAction(int);
+		bool InitMenus(void);
 
-private:
-	bool _GetContextMenuItem(int, std::vector<ContextMenuItem*>*, ContextMenuItem**);
+		bool PerformAction(int);
 
-	bool _ParseContextMenuList(std::wstring*, std::vector<ContextMenuItem*>*);
+	private:
+		bool _GetContextMenuItem(int, std::vector<ContextMenuItem*>*, ContextMenuItem**);
 
-	bool _ParseContextMenuItem(const Json::Value &, ContextMenuItem*);
+		bool _ParseContextMenuList(std::wstring*, std::vector<ContextMenuItem*>*);
 
-	bool _ProcessContextMenus(NativityMessage*);
+		bool _ParseContextMenuItem(const Json::Value&, ContextMenuItem*);
 
-	CommunicationSocket* _communicationSocket;
-	
-	std::vector<ContextMenuItem*>* _menuList;
+		bool _ProcessContextMenus(NativityMessage*);
 
-	std::vector<std::wstring>* _selectedFiles;
+		CommunicationSocket* _communicationSocket;
+
+		std::vector<ContextMenuItem*>* _menuList;
+
+		std::vector<std::wstring>* _selectedFiles;
 };
 
 #endif

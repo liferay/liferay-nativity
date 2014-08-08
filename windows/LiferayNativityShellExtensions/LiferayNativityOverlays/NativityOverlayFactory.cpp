@@ -18,71 +18,71 @@ extern long dllReferenceCount;
 
 NativityOverlayFactory::NativityOverlayFactory(wchar_t* path) : _referenceCount(1)
 {
-    InterlockedIncrement(&dllReferenceCount);
+	InterlockedIncrement(&dllReferenceCount);
 }
 
 NativityOverlayFactory::~NativityOverlayFactory()
 {
-    InterlockedDecrement(&dllReferenceCount);
+	InterlockedDecrement(&dllReferenceCount);
 }
 
-IFACEMETHODIMP NativityOverlayFactory::QueryInterface(REFIID riid, void **ppv)
+IFACEMETHODIMP NativityOverlayFactory::QueryInterface(REFIID riid, void** ppv)
 {
 	HRESULT hResult = S_OK;
 
-    if (IsEqualIID(IID_IUnknown, riid) || 
-        IsEqualIID(IID_IClassFactory, riid))
-    {
-        *ppv = static_cast<IUnknown *>(this);
-        AddRef();
-    }
-    else
-    {
-        hResult = E_NOINTERFACE;
-        *ppv = NULL;
-    }
+	if (IsEqualIID(IID_IUnknown, riid) ||
+	        IsEqualIID(IID_IClassFactory, riid))
+	{
+		*ppv = static_cast<IUnknown*>(this);
+		AddRef();
+	}
+	else
+	{
+		hResult = E_NOINTERFACE;
+		*ppv = NULL;
+	}
 
-    return hResult;
+	return hResult;
 }
 
 IFACEMETHODIMP_(ULONG) NativityOverlayFactory::AddRef()
 {
-    return InterlockedIncrement(&_referenceCount);
+	return InterlockedIncrement(&_referenceCount);
 }
 
 IFACEMETHODIMP_(ULONG) NativityOverlayFactory::Release()
 {
-    ULONG cRef = InterlockedDecrement(&_referenceCount);
+	ULONG cRef = InterlockedDecrement(&_referenceCount);
 
-    if (0 == cRef)
-    {
-        delete this;
-    }
-    return cRef;
+	if (0 == cRef)
+	{
+		delete this;
+	}
+	return cRef;
 }
 
 IFACEMETHODIMP NativityOverlayFactory::CreateInstance(
-	IUnknown *pUnkOuter, REFIID riid, void **ppv)
+    IUnknown* pUnkOuter, REFIID riid, void** ppv)
 {
 	HRESULT hResult = CLASS_E_NOAGGREGATION;
 
-    if (pUnkOuter != NULL)
-    {
+	if (pUnkOuter != NULL)
+	{
 		return hResult;
 	}
 
 	hResult = E_OUTOFMEMORY;
 
-    LiferayNativityOverlay *lrOverlay = 
-		new (std::nothrow) LiferayNativityOverlay();
+	LiferayNativityOverlay* lrOverlay =
+	    new(std::nothrow) LiferayNativityOverlay();
 
 	if (!lrOverlay)
-    {
+	{
 		return hResult;
 	}
 
-    hResult = lrOverlay->QueryInterface(riid, ppv);
-	
+	hResult = lrOverlay->QueryInterface(riid, ppv);
+
 	lrOverlay->Release();
 
 	return hResult;
@@ -90,13 +90,13 @@ IFACEMETHODIMP NativityOverlayFactory::CreateInstance(
 
 IFACEMETHODIMP NativityOverlayFactory::LockServer(BOOL fLock)
 {
-    if (fLock)
-    {
-        InterlockedIncrement(&dllReferenceCount);
-    }
-    else
-    {
-        InterlockedDecrement(&dllReferenceCount);
-    }
-    return S_OK;
+	if (fLock)
+	{
+		InterlockedIncrement(&dllReferenceCount);
+	}
+	else
+	{
+		InterlockedDecrement(&dllReferenceCount);
+	}
+	return S_OK;
 }

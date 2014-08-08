@@ -17,64 +17,62 @@
 
 #include "stdafx.h"
 
-class __declspec(dllexport) ContextMenuItem 
+class __declspec(dllexport) ContextMenuItem
 {
+	public:
+		ContextMenuItem(void);
+		~ContextMenuItem(void);
 
-public: 
-	ContextMenuItem(void);
-	~ContextMenuItem(void);
+		ContextMenuItem(const ContextMenuItem&);
 
-	ContextMenuItem(const ContextMenuItem&);
-	
-	ContextMenuItem& operator=(const ContextMenuItem&);
+		ContextMenuItem& operator=(const ContextMenuItem&);
 
-	void AddContextMenuItem(ContextMenuItem*);
+		void AddContextMenuItem(ContextMenuItem*);
 
-	std::vector<ContextMenuItem*>* GetContextMenuItems();
+		std::vector<ContextMenuItem*>* GetContextMenuItems();
 
-	bool GetEnabled();
-	
-	std::wstring* GetHelpText();
-	
-	long GetId();
+		bool GetEnabled();
 
-	int GetIndex();
-	
-	std::wstring* GetTitle();
+		std::wstring* GetHelpText();
 
-	std::wstring* GetUuid();
+		long GetId();
 
-	bool HasSubMenus();
+		int GetIndex();
 
-	void SetContextMenuItems(std::vector<ContextMenuItem*>*);
+		std::wstring* GetTitle();
 
-	void SetEnabled(bool);
-	
-	void SetHelpText(std::wstring*);
+		std::wstring* GetUuid();
 
-	void SetId(long);
+		bool HasSubMenus();
 
-	void SetIndex(int);
-	
-	void SetTitle(std::wstring*);
+		void SetContextMenuItems(std::vector<ContextMenuItem*>*);
 
-	void SetUuid(std::wstring*);
-	
-private:
+		void SetEnabled(bool);
 
-	std::vector<ContextMenuItem*>* _contextMenuItems;
-	
-	bool _enabled;
-	
-	std::wstring* _helpText;
-	
-	long _id;
+		void SetHelpText(std::wstring*);
 
-	int _index;
-	
-	std::wstring* _title;
+		void SetId(long);
 
-	std::wstring* _uuid;
+		void SetIndex(int);
+
+		void SetTitle(std::wstring*);
+
+		void SetUuid(std::wstring*);
+
+	private:
+		std::vector<ContextMenuItem*>* _contextMenuItems;
+
+		bool _enabled;
+
+		std::wstring* _helpText;
+
+		long _id;
+
+		int _index;
+
+		std::wstring* _title;
+
+		std::wstring* _uuid;
 };
 
 #endif

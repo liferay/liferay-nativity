@@ -20,7 +20,7 @@
 #include "ContextMenuConstants.h"
 #include "stdafx.h"
 
-class NativityContextMenuRegistrationHandler 
+class NativityContextMenuRegistrationHandler
 {
 	public:
 		static HRESULT MakeRegistryEntries(const CLSID& clsid);
