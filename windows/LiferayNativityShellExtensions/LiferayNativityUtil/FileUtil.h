@@ -19,6 +19,9 @@
 
 #pragma warning (disable : 4251)
 
+#include "RegistryUtil.h"
+#include "UtilConstants.h"
+
 #include <string>
 #include <vector>
 

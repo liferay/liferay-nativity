@@ -13,7 +13,6 @@
  */
 
 #include "NativityOverlayFactory.h"
-#include "LiferayNativityOverlay.h"
 
 extern long dllReferenceCount;
 

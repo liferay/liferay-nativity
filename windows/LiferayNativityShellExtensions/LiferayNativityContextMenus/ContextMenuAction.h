@@ -20,7 +20,6 @@
 class __declspec(dllexport) ContextMenuAction 
 {
 public:
-
 	std::wstring* GetUuid();
 	
 	std::vector<std::wstring>* GetFiles();
@@ -30,7 +29,6 @@ public:
 	void SetFiles(std::vector<std::wstring>*);
 
 private:
-	
 	std::wstring* _uuid;
 	std::vector<std::wstring>* _files;
 };

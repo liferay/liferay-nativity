@@ -15,7 +15,14 @@
 #ifndef LIFERAYNATIVITYOVERLAY_H
 #define LIFERAYNATIVITYOVERLAY_H
 
+#include "ParserUtil.h"
+#include "RegistryUtil.h"
+#include "UtilConstants.h"
+#include "json/json.h"
 #include "stdafx.h"
+
+#include <iostream>
+#include <fstream>
 
 #pragma once    
 
@@ -41,8 +48,6 @@ protected:
     ~LiferayNativityOverlay(void);
 
 private:
-	//bool _GenerateMessage(const wchar_t*, std::wstring*);
-
 	bool _IsOverlaysEnabled();
 
 	bool _IsMonitoredFile(const wchar_t* filePath);

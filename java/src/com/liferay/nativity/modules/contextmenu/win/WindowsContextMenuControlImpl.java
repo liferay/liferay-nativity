@@ -67,7 +67,7 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 			public NativityMessage onMessage(NativityMessage message) {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> map =
-						(Map<String, Object>)message.getValue();
+					(Map<String, Object>)message.getValue();
 
 				String uuid = (String)map.get(Constants.UUID);
 
@@ -75,7 +75,7 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 				List<String> files = (List<String>)map.get(Constants.FILES);
 
 				String[] filesArray = (String[])files.toArray(
-						new String[files.size()]);
+					new String[files.size()]);
 
 				fireContextMenuAction(uuid, filesArray);
 

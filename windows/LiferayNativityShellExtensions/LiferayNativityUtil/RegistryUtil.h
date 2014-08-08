@@ -20,6 +20,7 @@
 #pragma warning (disable : 4251)
 
 #include <string>
+#include <windows.h>
 
 class __declspec(dllexport) RegistryUtil
 {

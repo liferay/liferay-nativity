@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "LiferayNativityOverlay.h"
 #include "stdafx.h"
 
 class NativityOverlayFactory : public IClassFactory

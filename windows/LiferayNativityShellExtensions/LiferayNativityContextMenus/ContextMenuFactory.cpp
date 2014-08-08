@@ -13,8 +13,6 @@
  */
 
 #include "ContextMenuFactory.h"
-#include "LiferayNativityContextMenus.h"
-#include <new>
 
 extern long dllReferenceCount;
 

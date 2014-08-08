@@ -19,7 +19,12 @@
 
 #pragma warning (disable : 4251)
 
+#include "UtilConstants.h"
+
+#include <fstream> 
+#include <iostream>
 #include <string>
+#include <vector>
 
 class __declspec(dllexport) CommunicationSocket
 {

@@ -12,16 +12,7 @@
  * details.
  */
 
-#include "ContextMenuConstants.h"
 #include "ContextMenuUtil.h"
-#include "ContextMenuItem.h"
-#include "FileUtil.h"
-#include "ParserUtil.h"
-#include "RegistryUtil.h"
-#include "UtilConstants.h"
-#include "json/json.h"
-
-#include <vector>
 
 using namespace std;
 

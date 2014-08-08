@@ -19,10 +19,16 @@
 
 #include "ContextMenuAction.h"
 #include "ContextMenuItem.h"
+#include "ContextMenuConstants.h"
+#include "FileUtil.h"
 #include "NativityMessage.h"
+#include "ParserUtil.h"
+#include "RegistryUtil.h"
+#include "UtilConstants.h"
 #include "json/json.h"
-
 #include "stdafx.h"
+
+#include <vector>
 
 class __declspec(dllexport) ContextMenuUtil
 {

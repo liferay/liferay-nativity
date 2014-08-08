@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "LiferayNativityContextMenus.h"
 #include "stdafx.h"
 
 class ContextMenuFactory : public IClassFactory

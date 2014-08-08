@@ -14,8 +14,6 @@
 
 #include "RegistryUtil.h"
 
-#include <windows.h>
-
 using namespace std;
 
 #define SIZE 4096

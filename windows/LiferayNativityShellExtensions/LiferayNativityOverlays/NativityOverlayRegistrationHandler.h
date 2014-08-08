@@ -19,6 +19,9 @@
 
 #include "stdafx.h"
 
+#include <iostream>
+#include <fstream>
+
 class __declspec(dllexport) NativityOverlayRegistrationHandler 
 {
 	public:

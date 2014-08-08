@@ -13,13 +13,6 @@
  */
 
 #include "LiferayNativityOverlay.h"
-#include "ParserUtil.h"
-#include "RegistryUtil.h"
-#include "UtilConstants.h"
-#include "json/json.h"
-
-#include <iostream>
-#include <fstream>
 
 using namespace std;
 

@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "ContextMenuConstants.h"
 #include "stdafx.h"
 
 class NativityContextMenuRegistrationHandler 

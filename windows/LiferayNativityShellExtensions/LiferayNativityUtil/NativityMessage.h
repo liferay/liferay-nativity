@@ -15,6 +15,11 @@
 #ifndef NATIVITYMESSAGE_H
 #define NATIVITYMESSAGE_H
 
+#include "ParserUtil.h"
+#include "UtilConstants.h"
+
+#include <fstream>
+#include <iostream>
 #include <string>
 
 #pragma once

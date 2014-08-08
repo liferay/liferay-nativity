@@ -19,10 +19,16 @@
 
 #pragma warning (disable : 4251)
 
+#include "ContextMenuAction.h"
+#include "ContextMenuConstants.h"
 #include "ContextMenuUtil.h"
 
-#include <windows.h>
+#include <Shellapi.h>
+#include <Shlwapi.h>
+#include <Strsafe.h>
 #include <shlobj.h>     
+#include <stdlib.h>
+#include <windows.h>
 
 
 class LiferayNativityContextMenus : public IShellExtInit, public IContextMenu

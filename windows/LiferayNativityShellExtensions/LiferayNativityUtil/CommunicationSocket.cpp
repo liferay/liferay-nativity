@@ -13,16 +13,10 @@
  */
 
 #include "CommunicationSocket.h"
-#include "UtilConstants.h"
+
 #include <WinSock2.h>
 #include <Ws2def.h>
 #include <windows.h>
-#include <iostream>
-#include <vector>
-
-#include <fstream> 
-
-//TODO 
 
 using namespace std;
 

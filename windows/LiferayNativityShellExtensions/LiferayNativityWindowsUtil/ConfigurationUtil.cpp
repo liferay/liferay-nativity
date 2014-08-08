@@ -13,14 +13,6 @@
 */
 
 #include "ConfigurationUtil.h"
-#include "ConfigConstants.h"
-#include "com_liferay_nativity_control_win_WindowsNativityUtil.h"
-
-#include <Shlobj.h>
-#include <Windows.h>
-#include <string>
-
-#include <iostream>
 
 using namespace std;
 
