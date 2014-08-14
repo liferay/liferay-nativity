@@ -91,7 +91,7 @@ public class MessageProcessor implements Runnable {
 				_outputStreamWriter.write("\0");
 			}
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
 		}
 		finally {
