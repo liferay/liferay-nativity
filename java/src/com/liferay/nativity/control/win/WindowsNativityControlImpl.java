@@ -16,6 +16,7 @@ package com.liferay.nativity.control.win;
 
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.listeners.SocketCloseListener;
 import com.liferay.nativity.util.win.RegistryUtil;
 
 import java.io.IOException;
@@ -157,12 +158,16 @@ public class WindowsNativityControlImpl extends NativityControl {
 			_executor.execute(new MessageProcessor(clientSocket, this));
 		}
 		catch (SocketException se) {
-
-			// Expected when socket is closed
-
+			for (SocketCloseListener listener : socketCloseListeners) {
+				listener.onSocketClose();
+			}
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
+
+			for (SocketCloseListener listener : socketCloseListeners) {
+				listener.onSocketClose();
+			}
 		}
 	}
 
@@ -174,4 +179,5 @@ public class WindowsNativityControlImpl extends NativityControl {
 	private boolean _connected = false;
 	private Executor _executor = Executors.newCachedThreadPool();
 	private ServerSocket _serverSocket;
+
 }

@@ -35,8 +35,6 @@ public abstract class NativityControl {
 	}
 
 	/**
-	 * Mac only
-	 *
 	 * Adds a SocketCloserListener that will be triggered when the socket
 	 * connection to the native service is closed
 	 *
@@ -127,8 +125,6 @@ public abstract class NativityControl {
 	}
 
 	/**
-	 * Mac only
-	 *
 	 * Removes a previously added SocketCloserListener instance
 	 *
 	 * @param SocketCloseListener instance to remove
