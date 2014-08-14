@@ -113,8 +113,6 @@ bool ContextMenuUtil::InitMenus(void)
 
 	getMenuMessage->append(StringUtil::toWstring(jsonWriter.write(jsonRoot)));
 
-	bool success = true;
-
 	wstring* getMenuReceived = new wstring();
 
 	if (_communicationSocket->SendMessageReceiveResponse(getMenuMessage->c_str(), getMenuReceived))
@@ -122,7 +120,13 @@ bool ContextMenuUtil::InitMenus(void)
 		Json::Reader jsonReader;
 		Json::Value jsonResponse;
 
-		jsonReader.parse(StringUtil::toString(*getMenuReceived), jsonResponse);
+		if (!jsonReader.parse(StringUtil::toString(*getMenuReceived), jsonResponse))
+		{
+			delete getMenuReceived;
+			delete getMenuMessage;
+
+			return false;
+		}
 
 		Json::Value jsonContextMenuItemsList = jsonResponse.get(NATIVITY_VALUE, "");
 
@@ -134,9 +138,10 @@ bool ContextMenuUtil::InitMenus(void)
 
 			if (!_ParseContextMenuItem(jsonContextMenuItem, contextMenuItem))
 			{
-				success = false;
+				delete getMenuReceived;
+				delete getMenuMessage;
 
-				break;
+				return false;
 			}
 
 			_menuList->push_back(contextMenuItem);
@@ -146,7 +151,7 @@ bool ContextMenuUtil::InitMenus(void)
 	delete getMenuReceived;
 	delete getMenuMessage;
 
-	return success;
+	return true;;
 }
 
 bool ContextMenuUtil::_ParseContextMenuItem(const Json::Value& jsonContextMenuItem, ContextMenuItem* contextMenuItem)

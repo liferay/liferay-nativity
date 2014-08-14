@@ -180,7 +180,13 @@ bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)
 	Json::Reader jsonReader;
 	Json::Value jsonResponse;
 
-	jsonReader.parse(StringUtil::toString(*response), jsonResponse);
+	if (!jsonReader.parse(StringUtil::toString(*response), jsonResponse))
+	{
+		delete message;
+		delete response;
+
+		return false;
+	}
 
 	Json::Value jsonValue = jsonResponse.get(NATIVITY_VALUE, "");
 

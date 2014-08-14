@@ -65,6 +65,7 @@ bool CommunicationSocket::ReceiveResponseOnly(wstring* message)
 		int error = WSAGetLastError();
 
 		closesocket(clientSocket);
+
 		return false;
 	}
 
@@ -107,6 +108,7 @@ bool CommunicationSocket::ReceiveResponseOnly(wstring* message)
 		int error = WSAGetLastError();
 
 		closesocket(clientSocket);
+
 		return false;
 	}
 
@@ -159,6 +161,7 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 		int error = WSAGetLastError();
 
 		closesocket(clientSocket);
+
 		return false;
 	}
 
@@ -169,6 +172,7 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 		int error = WSAGetLastError();
 
 		closesocket(clientSocket);
+
 		return false;
 	}
 
@@ -181,6 +185,7 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 		int error = WSAGetLastError();
 
 		closesocket(clientSocket);
+
 		return false;
 	}
 
@@ -213,9 +218,11 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 		int error = WSAGetLastError();
 
 		closesocket(clientSocket);
+
 		return false;
 	}
 
 	closesocket(clientSocket);
+
 	return true;
 }
