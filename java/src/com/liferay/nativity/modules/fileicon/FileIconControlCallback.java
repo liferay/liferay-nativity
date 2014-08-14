@@ -20,7 +20,7 @@ package com.liferay.nativity.modules.fileicon;
 public interface FileIconControlCallback {
 
 	/**
-	 * Windows only
+	 * Windows and Mac only
 	 *
 	 * Called by the native service to request the icon overlay id for the
 	 * specified file

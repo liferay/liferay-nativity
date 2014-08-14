@@ -42,7 +42,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void refreshIcons();
 
 	/**
-	 * Mac only
+	 * Mac and Linux only
 	 *
 	 * Register an overlay icon
 	 *
@@ -53,14 +53,16 @@ public interface FileIconControl extends FileIconControlCallback {
 	public int registerIcon(String path);
 
 	/**
-	 * Mac only
+	 * Linux only
+	 * Deprecated for Mac as of 1.2
 	 *
 	 * Removes all file icon overlays
 	 */
 	public void removeAllFileIcons();
 
 	/**
-	 * Mac only
+	 * Linux only
+	 * Deprecated for Mac as of 1.2
 	 *
 	 * Removes file icon overlay
 	 *
@@ -69,7 +71,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void removeFileIcon(String path);
 
 	/**
-	 * Mac only
+	 * Linux only
+	 * Deprecated for Mac as of 1.2
 	 *
 	 * Removes file icon overlays
 	 *
@@ -78,7 +81,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void removeFileIcons(String[] paths);
 
 	/**
-	 * Mac only
+	 * Linux only
+	 * Deprecated for Mac as of 1.2
 	 *
 	 * Set file icon overlay
 	 *
@@ -90,7 +94,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void setFileIcon(String path, int iconId);
 
 	/**
-	 * Mac only
+	 * Linux only
+	 * Deprecated for Mac as of 1.2
 	 *
 	 * Set file icon overlays
 	 *
