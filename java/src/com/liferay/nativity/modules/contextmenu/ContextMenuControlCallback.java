@@ -27,7 +27,7 @@ public interface ContextMenuControlCallback {
 	 * Called by the native service to request the menu items for a context
 	 * menu popup
 	 *
-	 * @param the files selected for this context menu popup
+	 * @param paths The files selected for this context menu popup
 	 *
 	 * @return each ContextMenuItem instance in the list will appear at the
 	 * context menu's top level

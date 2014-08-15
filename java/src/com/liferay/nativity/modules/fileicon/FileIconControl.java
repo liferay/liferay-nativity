@@ -46,7 +46,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * Register an overlay icon
 	 *
-	 * @param path to the overlay icon
+	 * @param path The path of the overlay icon to register
 	 *
 	 * @return overlay icon id. -1 if the icon failed ot register.
 	 */
@@ -66,7 +66,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * Removes file icon overlay
 	 *
-	 * @param file path to remove the file icon overlay
+	 * @param path The file path to remove the overlay
 	 */
 	public void removeFileIcon(String path);
 
@@ -76,7 +76,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * Removes file icon overlays
 	 *
-	 * @param file paths to remove file icon overlays
+	 * @param paths The file paths to remove file icon overlays
 	 */
 	public void removeFileIcons(String[] paths);
 
@@ -86,10 +86,10 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * Set file icon overlay
 	 *
-	 * @param file path to set file icon overlays
+	 * @param path The file path to set file icon overlays
 	 *
-	 * @param id of file icon overlay. Value of -1 will remove the overlay
-	 * (same as calling removeFileIcon).
+	 * @param iconId The id of file icon overlay. Value of -1 will remove the
+	 * overlay (same as calling removeFileIcon).
 	 */
 	public void setFileIcon(String path, int iconId);
 
@@ -99,7 +99,8 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * Set file icon overlays
 	 *
-	 * @param map containing paths and file icon overlay ids
+	 * @param fileIconsMap The map containing the paths and associated file
+	 * icon overlay ids
 	 */
 	public void setFileIcons(Map<String, Integer> fileIconsMap);
 
@@ -108,7 +109,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * Unregister an overlay icon
 	 *
-	 * @param overlay icon id
+	 * @param id The id of the icon to unregister
 	 */
 	public void unregisterIcon(int id);
 

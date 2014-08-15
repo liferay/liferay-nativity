@@ -38,7 +38,7 @@ public abstract class NativityControl {
 	 * Adds a SocketCloserListener that will be triggered when the socket
 	 * connection to the native service is closed
 	 *
-	 * @param SocketCloseListener instance
+	 * @param listener The SocketCloseListener instance to add
 	 */
 	public void addSocketCloseListener(SocketCloseListener listener) {
 		socketCloseListeners.add(listener);
@@ -62,7 +62,8 @@ public abstract class NativityControl {
 	 * Triggers the appropriate registered MessageListener when messages are
 	 * received from the native service.
 	 *
-	 * @param NativityMessage received from the native service
+	 * @param message The NativityMessage instance received from the native
+	 * service
 	 *
 	 * @return NativityMessage to send back to the native service. Returns null
 	 * if no registered MessageListener is found or if no response
@@ -85,8 +86,6 @@ public abstract class NativityControl {
 	 *
 	 * Loads Liferay Nativity into Finder.
 	 *
-	 * @param
-	 *
 	 * @return true if successfully loaded
 	 */
 	public abstract boolean load() throws Exception;
@@ -95,8 +94,6 @@ public abstract class NativityControl {
 	 * Mac only
 	 *
 	 * Check if Liferay Nativity is loaded in Finder.
-	 *
-	 * @param
 	 *
 	 * @return true if loaded
 	 */
@@ -107,7 +104,7 @@ public abstract class NativityControl {
 	 *
 	 * Causes Explorer to refresh the display of the file in explorer
 	 *
-	 * @param files to refresh
+	 * @param paths The array of file paths to refresh
 	 */
 	public abstract void refreshFiles(String[] paths);
 
@@ -118,7 +115,7 @@ public abstract class NativityControl {
 	 * Registering an instance with the same "command" parameter will replace
 	 * previously registered instances.
 	 *
-	 * @param MessageListener to register
+	 * @param messageListener The MessageListener instance to register
 	 */
 	public void registerMessageListener(MessageListener messageListener) {
 		_commandMap.put(messageListener.getCommand(), messageListener);
@@ -127,7 +124,7 @@ public abstract class NativityControl {
 	/**
 	 * Removes a previously added SocketCloserListener instance
 	 *
-	 * @param SocketCloseListener instance to remove
+	 * @param listener The SocketCloseListener instance to remove
 	 */
 	public void removeSocketCloseListener(SocketCloseListener listener) {
 		socketCloseListeners.remove(listener);
@@ -138,7 +135,7 @@ public abstract class NativityControl {
 	 *
 	 * Used by modules to send messages to the native service.
 	 *
-	 * @param NativityMessage to send to the native service
+	 * @param message The NativityMessage instance to send to the native service
 	 *
 	 * @return response from the native service
 	 */
@@ -149,7 +146,7 @@ public abstract class NativityControl {
 	/**
 	 * Convenience method for calling setFilterFolders with one folder.
 	 *
-	 * @param folder folder path to filter by (inclusive)
+	 * @param folder The folder path to filter by (inclusive)
 	 */
 	public abstract void setFilterFolder(String folder);
 
@@ -159,7 +156,7 @@ public abstract class NativityControl {
 	 * indicates that any requests for files that are not a child of
 	 * "/test/folder" will be ignored. This can improve native performance.
 	 *
-	 * @param root folder path to filter by (inclusive)
+	 * @param folders The folder paths to filter by (inclusive)
 	 */
 	public abstract void setFilterFolders(String[] folders);
 
@@ -169,7 +166,7 @@ public abstract class NativityControl {
 	 * Marks the specified folder as a system folder so that Desktop.ini values
 	 * will take effect.
 	 *
-	 * @param folder to set as a system folder
+	 * @param folder The path of the folder to set as a system folder
 	 */
 	public abstract void setSystemFolder(String folder);
 
@@ -177,8 +174,6 @@ public abstract class NativityControl {
 	 * Mac only
 	 *
 	 * Unloads Liferay Nativity from Finder.
-	 *
-	 * @param
 	 *
 	 * @return true if successfully unloaded
 	 */
