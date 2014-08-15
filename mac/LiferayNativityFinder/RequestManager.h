@@ -77,14 +77,14 @@
 	NSHashTable* _automaticCleanupPrograms;
 
 	NSNumberFormatter* _numberFormatter;
-	NSString* _filterFolder; // TODO: This should probably be a dictionary at some point
+	NSArray* _filterFolders; // TODO: This should probably be a dictionary at some point
 
 	BOOL _isRunning;
 
 	id _allIconsConnection; // Key for identifying icon management requests that are global. This is purely for backwards compatibility
 }
 
-@property (nonatomic, retain) NSString* filterFolder;
+@property (nonatomic, retain) NSArray* filterFolders;
 
 + (RequestManager*)sharedInstance;
 

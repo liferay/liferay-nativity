@@ -14,6 +14,10 @@
 
 package com.liferay.nativity.control.win;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.listeners.SocketCloseListener;
@@ -32,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * @author Gail Hernandez
  * @author Dennis Ju
  */
 public class WindowsNativityControlImpl extends NativityControl {
@@ -127,9 +132,21 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public void setFilterFolder(String folder) {
-		RegistryUtil.writeRegistry(
-			Constants.NATIVITY_REGISTRY_KEY,
-			Constants.FILTER_FOLDER_REGISTRY_NAME, folder);
+		setFilterFolders(new String[] { folder });
+	}
+
+	@Override
+	public void setFilterFolders(String[] folders) {
+		try {
+			String foldersJson = _objectMapper.writeValueAsString(folders);
+
+			RegistryUtil.writeRegistry(
+				Constants.NATIVITY_REGISTRY_KEY,
+				Constants.FILTER_FOLDERS_REGISTRY_NAME, foldersJson);
+		}
+		catch (JsonProcessingException jpe) {
+			_logger.error(jpe.getMessage(), jpe);
+		}
 	}
 
 	@Override
@@ -174,6 +191,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsNativityControlImpl.class.getName());
 
+	private static ObjectMapper _objectMapper =
+		new ObjectMapper().configure(
+			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 	private static int _port = 33001;
 
 	private boolean _connected = false;

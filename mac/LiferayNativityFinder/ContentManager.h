@@ -54,9 +54,10 @@
 
 - (void)enableFileIconsFor:(id)connection enabled:(BOOL)enable;
 - (NSNumber*)iconByPath:(NSString*)path;
+- (BOOL)isFileFiltered:(NSString*)path filterByFolders:(NSArray*)filterFolders;
 - (void)removeAllIconsFor:(id)connection;
 - (void)removeIconsFor:(id)connection paths:(NSArray*)paths;
-- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder;
+- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolders:(NSArray*)filterFolders;
 - (void)repaintAllWindows;
 
 @end

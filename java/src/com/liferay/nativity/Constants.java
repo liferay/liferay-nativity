@@ -30,7 +30,7 @@ public class Constants {
 
 	public static final String FILES = "files";
 
-	public static final String FILTER_FOLDER_REGISTRY_NAME = "FilterFolder";
+	public static final String FILTER_FOLDERS_REGISTRY_NAME = "FilterFolders";
 
 	public static final String FIRE_CONTEXT_MENU_ACTION = "contextMenuAction";
 
@@ -60,6 +60,8 @@ public class Constants {
 	public static final String SET_FILE_ICONS = "setFileIcons";
 
 	public static final String SET_FILTER_PATH = "setFilterPath";
+
+	public static final String SET_FILTER_PATHS = "setFilterPaths";
 
 	public static final String SET_SYSTEM_FOLDER = "setSystemFolder";
 

@@ -50,8 +50,6 @@ class LiferayNativityOverlay : public IShellIconOverlayIdentifier
 	private:
 		bool _IsOverlaysEnabled();
 
-		bool _IsMonitoredFile(const wchar_t* filePath);
-
 		bool _IsMonitoredFileState(const wchar_t* filePath);
 
 		long _referenceCount;

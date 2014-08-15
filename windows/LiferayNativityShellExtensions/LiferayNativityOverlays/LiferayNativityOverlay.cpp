@@ -83,7 +83,7 @@ IFACEMETHODIMP LiferayNativityOverlay::IsMemberOf(PCWSTR pwszPath, DWORD dwAttri
 		return MAKE_HRESULT(S_FALSE, 0, 0);
 	}
 
-	if (!_IsMonitoredFile(pwszPath))
+	if (!FileUtil::IsFileFiltered(pwszPath))
 	{
 		return MAKE_HRESULT(S_FALSE, 0, 0);
 	}
@@ -112,7 +112,6 @@ IFACEMETHODIMP LiferayNativityOverlay::GetOverlayInfo(PWSTR pwszIconFile, int cc
 	return S_OK;
 }
 
-
 bool LiferayNativityOverlay::_IsOverlaysEnabled()
 {
 	int* enable = new int();
@@ -127,24 +126,8 @@ bool LiferayNativityOverlay::_IsOverlaysEnabled()
 	}
 
 	delete enable;
+
 	return success;
-}
-
-bool LiferayNativityOverlay::_IsMonitoredFile(const wchar_t* filePath)
-{
-	wstring* rootFolder = new wstring();
-	bool needed = false;
-
-	if (RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDER, rootFolder))
-	{
-		if (FileUtil::IsChildFile(rootFolder->c_str(), filePath))
-		{
-			needed = true;
-		}
-	}
-
-	delete rootFolder;
-	return needed;
 }
 
 bool LiferayNativityOverlay::_IsMonitoredFileState(const wchar_t* filePath)

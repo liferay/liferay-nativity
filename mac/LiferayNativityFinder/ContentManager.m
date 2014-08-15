@@ -122,6 +122,23 @@ static ContentManager* sharedInstance = nil;
 	return nil;
 }
 
+- (BOOL)isFileFiltered:(NSString*)path filterByFolders:(NSArray*)filterFolders
+{
+	BOOL filtered = NO;
+
+	for (NSValue* filterFolder in filterFolders)
+	{
+		if ([path hasPrefix:filterFolder])
+		{
+			filtered = YES;
+
+			break;
+		}
+	}
+
+	return filtered;
+}
+
 - (void)removeAllIconsFor:(id)connection
 {
 	[_fileNamesCacheByConnection removeObjectForKey:connection];
@@ -175,9 +192,9 @@ static ContentManager* sharedInstance = nil;
 
 		BOOL repaintWindow = YES;
 
-		NSString* filterFolder = [requestManager filterFolder];
+		NSArray* filterFolders = [requestManager filterFolders];
 
-		if (filterFolder)
+		if (filterFolders)
 		{
 			repaintWindow = NO;
 
@@ -204,11 +221,28 @@ static ContentManager* sharedInstance = nil;
 
 			for (NSString* folderPath in folderPaths)
 			{
-				if ([folderPath hasPrefix:filterFolder] || [filterFolder hasPrefix:folderPath])
+				if ([self isFileFiltered:folderPath filterByFolders:filterFolders])
 				{
 					repaintWindow = YES;
 
 					break;
+				}
+				else
+				{
+					for (NSString* filterFolder in filterFolders)
+					{
+						if ([filterFolder hasPrefix:folderPath])
+						{
+							repaintWindow = YES;
+
+							break;
+						}
+					}
+
+					if (repaintWindow)
+					{
+						break;
+					}
 				}
 			}
 
@@ -252,7 +286,7 @@ static ContentManager* sharedInstance = nil;
 	}
 }
 
-- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolder:(NSString*)filterFolder
+- (void)setIconsFor:(id)connection iconIdsByPath:(NSDictionary*)iconDictionary filterByFolders:(NSArray*)filterFolders
 {
 	NSMutableDictionary* fileNamesCache = [_fileNamesCacheByConnection objectForKey:connection];
 
@@ -264,7 +298,7 @@ static ContentManager* sharedInstance = nil;
 
 	for (NSString* path in iconDictionary)
 	{
-		if (filterFolder && ![path hasPrefix:filterFolder])
+		if (filterFolders && ![self isFileFiltered:path filterByFolders:filterFolders])
 		{
 			continue;
 		}

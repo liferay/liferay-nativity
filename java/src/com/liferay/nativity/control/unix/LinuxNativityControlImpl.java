@@ -14,6 +14,9 @@
 
 package com.liferay.nativity.control.unix;
 
+import com.liferay.nativity.Constants;
+import com.liferay.nativity.control.NativityMessage;
+
 import java.io.File;
 
 /**
@@ -44,6 +47,23 @@ public class LinuxNativityControlImpl extends UnixNativityControlBaseImpl {
 
 	@Override
 	public void refreshFiles(String[] paths) {
+	}
+
+	@Override
+	public void setFilterFolder(String folder) {
+		NativityMessage message = new NativityMessage(
+			Constants.SET_FILTER_PATH, folder);
+
+		sendMessage(message);
+	}
+
+	@Override
+	public void setFilterFolders(String[] folders) {
+		if (folders.length == 0) {
+			return;
+		}
+
+		setFilterFolder(folders[0]);
 	}
 
 	@Override

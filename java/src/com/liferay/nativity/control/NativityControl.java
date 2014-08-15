@@ -147,6 +147,13 @@ public abstract class NativityControl {
 	}
 
 	/**
+	 * Convenience method for calling setFilterFolders with one folder.
+	 *
+	 * @param folder folder path to filter by (inclusive)
+	 */
+	public abstract void setFilterFolder(String folder);
+
+	/**
 	 * Optionally set the root folder filter path for requests made
 	 * to the native service. For example, setting a value of "/test/folder"
 	 * indicates that any requests for files that are not a child of
@@ -154,7 +161,7 @@ public abstract class NativityControl {
 	 *
 	 * @param root folder path to filter by (inclusive)
 	 */
-	public abstract void setFilterFolder(String folder);
+	public abstract void setFilterFolders(String[] folders);
 
 	/**
 	 * Windows only

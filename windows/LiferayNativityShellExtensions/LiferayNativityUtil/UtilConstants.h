@@ -15,7 +15,7 @@
 #define REGISTRY_ROOT_KEY						L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
 
 #define REGISTRY_ENABLE_OVERLAY					L"EnableOverlay"
-#define REGISTRY_FILTER_FOLDER					L"FilterFolder"
+#define REGISTRY_FILTER_FOLDERS					L"FilterFolders"
 
 #define PORT									33001
 

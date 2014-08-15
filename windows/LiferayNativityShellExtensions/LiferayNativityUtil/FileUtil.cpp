@@ -16,23 +16,6 @@
 
 using namespace std;
 
-bool FileUtil::IsChildFile(const wchar_t* rootFolder, vector<wstring>* files)
-{
-	for (vector<wstring>::iterator it = files->begin(); it != files->end(); it++)
-	{
-		wstring file = *it;
-
-		size_t found = file.find(rootFolder);
-
-		if (found != string::npos)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 bool FileUtil::IsChildFile(const wchar_t* rootFolder, const wchar_t* file)
 {
 	wstring* f = new wstring(file);
@@ -47,36 +30,45 @@ bool FileUtil::IsChildFile(const wchar_t* rootFolder, const wchar_t* file)
 	return false;
 }
 
-bool FileUtil::IsChildFileOfRoot(std::vector<std::wstring>* files)
+bool FileUtil::IsFileFiltered(const wchar_t* file)
 {
 	wstring* rootFolder = new wstring();
-	bool needed = false;
 
-	if (RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDER, rootFolder))
+	if (!RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDERS, rootFolder))
 	{
-		if (IsChildFile(rootFolder->c_str(), files))
+		delete rootFolder;
+
+		return false;
+	}
+
+	Json::Reader jsonReader;
+	Json::Value jsonFilterFolders;
+
+	if (!jsonReader.parse(StringUtil::toString(*rootFolder), jsonFilterFolders))
+	{
+		delete rootFolder;
+
+		return false;
+	}
+
+	for (unsigned int i = 0; i < jsonFilterFolders.size(); i++)
+	{
+		wstring* filterFolder = new wstring();
+
+		filterFolder->append(StringUtil::toWstring(jsonFilterFolders[i].asString()));
+
+		if (IsChildFile(filterFolder->c_str(), file))
 		{
-			needed = true;
+			delete filterFolder;
+			delete rootFolder;
+
+			return true;
 		}
+
+		delete filterFolder;
 	}
 
 	delete rootFolder;
-	return needed;
-}
 
-bool FileUtil::IsChildFileOfRoot(const wchar_t* filePath)
-{
-	wstring* rootFolder = new wstring();
-	bool needed = false;
-
-	if (RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDER, rootFolder))
-	{
-		if (FileUtil::IsChildFile(rootFolder->c_str(), filePath))
-		{
-			needed = true;
-		}
-	}
-
-	delete rootFolder;
-	return needed;
+	return false;
 }

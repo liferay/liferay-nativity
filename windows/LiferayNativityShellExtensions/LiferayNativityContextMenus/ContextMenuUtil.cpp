@@ -86,9 +86,14 @@ bool ContextMenuUtil::GetMenus(vector<ContextMenuItem*>* menuList)
 
 bool ContextMenuUtil::IsMenuNeeded(void)
 {
-	if (FileUtil::IsChildFileOfRoot(_selectedFiles))
+	for (vector<wstring>::iterator it = _selectedFiles->begin(); it != _selectedFiles->end(); it++)
 	{
-		return true;
+		wstring selectedFile = *it;
+
+		if (FileUtil::IsFileFiltered(selectedFile.c_str()))
+		{
+			return true;
+		}
 	}
 
 	return false;
