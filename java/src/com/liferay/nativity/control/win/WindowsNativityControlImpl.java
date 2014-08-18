@@ -175,15 +175,19 @@ public class WindowsNativityControlImpl extends NativityControl {
 			_executor.execute(new MessageProcessor(clientSocket, this));
 		}
 		catch (SocketException se) {
-			for (SocketCloseListener listener : socketCloseListeners) {
-				listener.onSocketClose();
+			for (SocketCloseListener socketCloseListener :
+					socketCloseListeners) {
+
+				socketCloseListener.onSocketClose();
 			}
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 
-			for (SocketCloseListener listener : socketCloseListeners) {
-				listener.onSocketClose();
+			for (SocketCloseListener socketCloseListener :
+					socketCloseListeners) {
+
+				socketCloseListener.onSocketClose();
 			}
 		}
 	}

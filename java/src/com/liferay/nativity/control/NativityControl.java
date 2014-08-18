@@ -38,10 +38,12 @@ public abstract class NativityControl {
 	 * Adds a SocketCloserListener that will be triggered when the socket
 	 * connection to the native service is closed
 	 *
-	 * @param listener The SocketCloseListener instance to add
+	 * @param socketCloseListener The SocketCloseListener instance to add
 	 */
-	public void addSocketCloseListener(SocketCloseListener listener) {
-		socketCloseListeners.add(listener);
+	public void addSocketCloseListener(
+		SocketCloseListener socketCloseListener) {
+
+		socketCloseListeners.add(socketCloseListener);
 	}
 
 	/**
@@ -124,10 +126,12 @@ public abstract class NativityControl {
 	/**
 	 * Removes a previously added SocketCloserListener instance
 	 *
-	 * @param listener The SocketCloseListener instance to remove
+	 * @param socketCloseListener The SocketCloseListener instance to remove
 	 */
-	public void removeSocketCloseListener(SocketCloseListener listener) {
-		socketCloseListeners.remove(listener);
+	public void removeSocketCloseListener(
+		SocketCloseListener socketCloseListener) {
+
+		socketCloseListeners.remove(socketCloseListener);
 	}
 
 	/**
@@ -135,11 +139,12 @@ public abstract class NativityControl {
 	 *
 	 * Used by modules to send messages to the native service.
 	 *
-	 * @param message The NativityMessage instance to send to the native service
+	 * @param nativityMessage The NativityMessage instance to send to the native
+	 * service
 	 *
 	 * @return response from the native service
 	 */
-	public String sendMessage(NativityMessage message) {
+	public String sendMessage(NativityMessage nativityMessage) {
 		return "";
 	}
 
