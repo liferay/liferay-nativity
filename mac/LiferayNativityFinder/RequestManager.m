@@ -226,6 +226,12 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	{
 		[self execUnregisterIconCmd:value replyTo:sock];
 	}
+	else if ([command isEqualToString:@"setFilterPath"])
+	{
+		// Deprecated as of 1.2. Check for backward compatibility with 1.1.
+
+		[self execSetFilterPathCmd:value replyTo:sock];
+	}
 	else if ([command isEqualToString:@"setFilterPaths"])
 	{
 		[self execSetFilterPathsCmd:value replyTo:sock];
@@ -358,6 +364,16 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolders:_filterFolders];
 	});
+
+	[self replyString:@"1" toSocket:sock];
+}
+
+- (void)execSetFilterPathCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	NSString* path = (NSString*)cmdData;
+	NSArray* paths = [NSArray arrayWithObject:path];
+
+	[self setFilterFolders:paths];
 
 	[self replyString:@"1" toSocket:sock];
 }

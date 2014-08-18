@@ -36,6 +36,15 @@ bool FileUtil::IsFileFiltered(const wchar_t* file)
 
 	if (!RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDERS, rootFolder))
 	{
+		// Deprecated as of 1.2. Check REGISTRY_FILTER_FOLDER value for backward compatibility with 1.1
+
+		if (RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_FILTER_FOLDER, rootFolder) && IsChildFile(rootFolder->c_str(), file))
+		{
+			delete rootFolder;
+
+			return true;
+		}
+
 		delete rootFolder;
 
 		return false;
