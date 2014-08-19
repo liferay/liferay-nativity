@@ -228,7 +228,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	}
 	else if ([command isEqualToString:@"setFilterPath"])
 	{
-		// Deprecated as of 1.2. Check for backward compatibility with 1.1.
+		// Deprecated as of 1.0.2. Check for backward compatibility with 1.0.1.
 
 		[self execSetFilterPathCmd:value replyTo:sock];
 	}
