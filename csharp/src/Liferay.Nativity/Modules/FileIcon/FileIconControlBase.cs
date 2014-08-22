@@ -41,6 +41,8 @@
 using System;
 using System.Linq;
 
+using log4net;
+
 using Liferay.Nativity.Control;
 using Newtonsoft.Json.Linq;
 
@@ -51,6 +53,8 @@ namespace Liferay.Nativity.Modules.FileIcon
 	*/
 	public abstract class FileIconControlBase : IFileIconControl
 	{
+		private static ILog log = LogManager.GetLogger(typeof(FileIconControlBase));
+
 		protected FileIconControlCallback fileIconControlCallback;
 		protected NativityControl nativityControl;
 
@@ -66,20 +70,43 @@ namespace Liferay.Nativity.Modules.FileIcon
 
 		private NativityMessage GetFileIconId (NativityMessage message)
 		{
-			string filePath = null;
-			
-			if (message.Value is JArray)
+			var icon = -1;
+
+			try
 			{
-				var filePaths = ((JArray)message.Value).Cast<string>();
-				filePath = filePaths.FirstOrDefault();
+				if (null != message)
+				{
+					if (null != message.Value)
+					{
+						string filePath = null;
+						
+						if (message.Value is JArray)
+						{
+							var filePaths = ((JArray)message.Value).Cast<string>();
+							filePath = filePaths.FirstOrDefault();
+						}
+						else
+						{
+							filePath = message.Value.ToString();
+						}
+
+						icon = this.GetIconForFile(filePath);
+					}
+					else
+					{
+						log.WarnFormat("message value is null, message: {0}\n{1}", message.Command, Environment.StackTrace);
+					}
+				}
+				else
+				{
+					log.WarnFormat("message is null\n{0}", Environment.StackTrace);
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				filePath = message.Value.ToString();
+				log.Warn("Can not get an icon overlay", e);
 			}
-			
-			var icon = this.GetIconForFile(filePath);
-			
+
 			return new NativityMessage(Constants.GET_FILE_ICON_ID, icon);
 		}
 		
