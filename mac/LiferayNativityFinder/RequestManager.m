@@ -460,6 +460,10 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		return nil;
 	}
 
+	if (nil == files) {
+		return nil;
+	}
+	
 	if (_filterFolders)
 	{
 		NSString* file = [files objectAtIndex:0];
@@ -553,6 +557,11 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 - (NSArray*)iconIdForFile:(NSString*)file
 {
 	NSMutableArray* iconIds = [[NSMutableArray alloc] init];
+
+	// sometimes the file is null
+	if (nil == file) {
+		return iconIds;
+	}
 
 	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:file];
 
