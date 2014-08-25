@@ -14,6 +14,7 @@
 			- [LiferayNativityInjector](#liferaynativityinjector)
 			- [LiferayNativityFinder](#liferaynativityfinder)
 	- [Windows](#windows)
+	    - [Prerequisites](#prerequisites)
 		- [JNI Interface](#jni-interface)
 		- [Shell Extensions](#shell-extensions)
 			- [Build Properties](#build-properties)
