@@ -14,6 +14,7 @@
 			- [LiferayNativityInjector](#liferaynativityinjector)
 			- [LiferayNativityFinder](#liferaynativityfinder)
 	- [Windows](#windows)
+	    - [Prerequisites](#prerequisites)
 		- [JNI Interface](#jni-interface)
 		- [Shell Extensions](#shell-extensions)
 			- [Build Properties](#build-properties)
@@ -137,6 +138,14 @@ For Windows Nativity makes use of both a JNI interface as well as Windows Shell 
 * 1 for each overlay you want to use
 * 1 for JNI Interface dll
 * 1 Utility DLL shared by the context menu shell extension and the icon overlay extension.
+
+### Prerequisites
+
+* .NET 4 Framework
+* Visual Studio 2010
+* Visual Studio 2010 SP 1
+* Visual C++ 2010 SP 1 Compiler Update
+* Windows SDK 7.1 (x86 and x64)
 
 ### JNI Interface
 The JNI interface allows the Java side of nativity to interact with the native side of nativity.  It only provides the ability to set a folder to a system folder.  In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however nativity also provides it do older versions of java can be supported.
