@@ -21,6 +21,7 @@ import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControl;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
 import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
+import com.liferay.nativity.util.StringUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -45,11 +46,12 @@ public abstract class UnixContextMenuControlBaseImpl
 				@SuppressWarnings("unchecked")
 				List<String> files = (List<String>)message.getValue();
 
-				String[] currentFilesArray = (String[])files.toArray(
-					new String[files.size()]);
+				String[] filesArray = files.toArray(new String[files.size()]);
+
+				filesArray = StringUtil.normalize(filesArray);
 
 				List<ContextMenuItem> contextMenuItems = getContextMenuItems(
-					currentFilesArray);
+					filesArray);
 
 				return new NativityMessage(
 					Constants.MENU_ITEMS, contextMenuItems);
@@ -73,8 +75,9 @@ public abstract class UnixContextMenuControlBaseImpl
 				@SuppressWarnings("unchecked")
 				List<String> files = (List<String>)map.get(Constants.FILES);
 
-				String[] filesArray = (String[])files.toArray(
-					new String[files.size()]);
+				String[] filesArray = files.toArray(new String[files.size()]);
+
+				filesArray = StringUtil.normalize(filesArray);
 
 				fireContextMenuAction(uuid, filesArray);
 
