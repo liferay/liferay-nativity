@@ -380,11 +380,27 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (void)execSetFilterPathsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	NSArray* paths = (NSArray*)cmdData;
+	@try {
+		NSArray* paths = (NSArray*) cmdData;
 
-	[self setFilterFolders:paths];
+		if (paths && [paths count] == 1) {
+			NSString* path = [paths objectAtIndex:0];
 
-	[self replyString:@"1" toSocket:sock];
+			if (path && [path length] == 0) {
+				paths = nil;
+			}
+		}
+
+		[self setFilterFolders:paths];
+
+		[self replyString:@"1" toSocket:sock];
+	}
+	@catch (NSException* exception)
+	{
+		NSLog(@"LiferayNativityFinder: invalid filter path");
+
+		[self replyString:@"-1" toSocket:sock];
+	}
 }
 
 - (void)execUnregisterIconCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock

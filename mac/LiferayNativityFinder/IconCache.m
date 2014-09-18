@@ -90,7 +90,7 @@ static IconCache* sharedInstance = nil;
 
 - (NSNumber*)registerIcon:(NSString*)path
 {
-	if (!path)
+	if (!path || ![path isKindOfClass:[NSString class]])
 	{
 		return [NSNumber numberWithInt:-1];
 	}
