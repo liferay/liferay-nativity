@@ -31,6 +31,7 @@
 	<target name="build-jar" depends="compile,build-jni-headers">
 		<jar destfile="${project.dir}/dist/liferay-nativity-${package.version}.jar" filesetmanifest="mergewithoutmain" update="true">
 			<fileset dir="${java.dir}/classes" />
+			<service type="javax.script.ScriptEngineFactory" provider="apple.applescript.AppleScriptEngineFactory" />
 			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
 		</jar>
 	</target>

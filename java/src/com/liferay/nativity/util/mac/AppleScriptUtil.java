@@ -37,10 +37,16 @@ public class AppleScriptUtil {
 			_scriptEngineManager = new ScriptEngineManager();
 
 			_appleScriptEngine = _scriptEngineManager.getEngineByName(
-				"AppleScript");
+				"AppleScriptEngine");
 
 			if (_appleScriptEngine == null) {
-				throw new ScriptException("AppleScriptEngine not available");
+				_appleScriptEngine = _scriptEngineManager.getEngineByName(
+					"AppleScript");
+
+				if (_appleScriptEngine == null) {
+					throw new ScriptException(
+						"AppleScriptEngine not available");
+				}
 			}
 		}
 
