@@ -95,7 +95,7 @@ static IconCache* sharedInstance = nil;
 		return [NSNumber numberWithInt:-1];
 	}
 
-	NSImage* image = [[NSImage alloc]initWithContentsOfFile:path];
+	NSImage* image = [[NSImage alloc] initWithContentsOfFile:path];
 
 	if (!image)
 	{

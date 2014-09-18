@@ -16,7 +16,6 @@
 #define COMMUNICATIONSOCKET_H
 
 #pragma once
-
 #pragma warning (disable : 4251)
 
 #include "UtilConstants.h"
@@ -30,7 +29,6 @@ class __declspec(dllexport) CommunicationSocket
 {
 	public:
 		CommunicationSocket(int port);
-
 		~CommunicationSocket();
 
 		bool ReceiveResponseOnly(std::wstring*);

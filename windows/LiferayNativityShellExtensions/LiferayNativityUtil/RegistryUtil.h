@@ -26,7 +26,6 @@ class __declspec(dllexport) RegistryUtil
 {
 	public:
 		RegistryUtil();
-
 		~RegistryUtil();
 
 		static bool ReadRegistry(const wchar_t*,  const wchar_t*, int*);

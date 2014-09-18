@@ -691,7 +691,6 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 		[_callbackLock lock];
 		@try {
-
 			OSMemoryBarrier();
 
 			[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
