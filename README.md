@@ -179,20 +179,20 @@ In your ant properties file you need to add the following properties.
     ms.sdk.7.1.dir=C:/Program Files/Microsoft SDKs/Windows/v7.1
     framework.dir=C:/Windows/Microsoft.NET/Framework64/v4.0.30319
 
-    context.menu.guid={0DD5B4B0-25AF-4e09-A46B-9F274F3D7000}
+    context.menu.guid={0131E070-C6A7-4878-A856-02C048A778DB}
 
     overlay.name.ok=LiferayNativityOKOverlay
-    overlay.guid.ok={0DD5B4B0-25AF-4e09-A46B-9F274F3D7001}
+    overlay.guid.ok={8138AEF6-77F2-4DA2-9BBE-BB55FEC64601}
     overlay.id.ok=1
     overlay.path.ok=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/ok_overlay.ico
 
     overlay.name.syncing=LiferayNativitySyncingOverlay
-    overlay.guid.syncing={0DD5B4B0-25AF-4e09-A46B-9F274F3D7002}
+    overlay.guid.syncing={6C800597-BD1E-4ECC-B099-B95D17C9801E}
     overlay.id.syncing=2
     overlay.path.syncing=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/syncing_overlay.ico
 
     overlay.name.error=LiferayNativityErrorOverlay
-    overlay.guid.error={0DD5B4B0-25AF-4e09-A46B-9F274F3D7003}
+    overlay.guid.error={B04AF108-48F3-4180-92BC-E210FFBCF176}
     overlay.id.error=3
     overlay.path.error=D:/newrepository/liferay-sync-ee/windows/scripts/include/images/error_overlay.ico
 
