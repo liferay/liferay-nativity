@@ -39,6 +39,7 @@
  */
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 //import java.io.File;
@@ -71,41 +72,24 @@ namespace Liferay.Nativity.Util
 		public const double MAC_SNOW_LEOPARD_10_6 = 10.6;
 		
 		public const double MAC_TIGER_10_4 = 10.4;
+
+		public const double WIN_7 = 6.1;
 		
-		/*public static final double WIN_7 = 6.1;
+		public const double WIN_8 = 6.2;
 		
-		public static final double WIN_8 = 6.2;
+		public const double WIN_2000 = 5.0;
 		
-		public static final double WIN_2000 = 5.0;
+		public const double WIN_SERVER_2003 = 5.2;
 		
-		public static final double WIN_SERVER_2003 = 5.2;
+		public const double WIN_SERVER_2008 = 6.0;
 		
-		public static final double WIN_SERVER_2008 = 6.0;
+		public const double WIN_SERVER_2012 = 6.2;
 		
-		public static final double WIN_SERVER_2012 = 6.2;
+		public const double WIN_VISTA = 6.0;
 		
-		public static final double WIN_VISTA = 6.0;
-		
-		public static final double WIN_XP_X64 = 5.2;
-		
-		public static final double WIN_XP_X86 = 5.1;
-		
-		public static boolean isAIX() {
-			if (_aix != null) {
-				return _aix.booleanValue();
-			}
-			
-			String osName = System.getProperty("os.name").toLowerCase();
-			
-			if (osName.equals("aix")) {
-				_aix = Boolean.TRUE;
-			}
-			else {
-				_aix = Boolean.FALSE;
-			}
-			
-			return _aix.booleanValue();
-		}*/
+		public const double WIN_XP_X64 = 5.2;
+
+		public const double WIN_XP_X86 = 5.1;
 		
 		public static bool IsApple
 		{
@@ -141,26 +125,9 @@ namespace Liferay.Nativity.Util
 		private static bool? apple = null;
 
 		[DllImport("libc")] 
-		static extern int uname(IntPtr buf); 
-
-		/*public static boolean isLinux() {
-			if (_linux != null) {
-				return _linux.booleanValue();
-			}
-			
-			String osName = System.getProperty("os.name").toLowerCase();
-			
-			if (osName.contains("linux")) {
-				_linux = Boolean.TRUE;
-			}
-			else {
-				_linux = Boolean.FALSE;
-			}
-			
-			return _linux.booleanValue();
-		}
+		static extern int uname(IntPtr buf);
 		
-		public static boolean isMinimumAppleVersion(double minimumVersion) {
+		/*public static boolean isMinimumAppleVersion(double minimumVersion) {
 			if (!isApple()) {
 				return false;
 			}
@@ -189,66 +156,31 @@ namespace Liferay.Nativity.Util
 			}
 			
 			return false;
+		}*/
+
+		public static bool IsWindows
+		{
+			get
+			{
+				return Environment.OSVersion.Platform == PlatformID.Win32Windows ||
+				       Environment.OSVersion.Platform == PlatformID.Win32NT;
+			}
 		}
-		
-		public static boolean isMinimumWindowsVersion(double minimumVersion) {
-			if (!isWindows()) {
+
+		public static bool IsMinimumWindowsVersion(double minimumVersion)
+		{
+			if(!IsWindows)
 				return false;
-			}
-			
-			if (_version == null) {
-				_version = System.getProperty("os.version");
-			}
-			
-			try {
-				double version = Double.parseDouble(_version);
-				
-				if (version >= minimumVersion) {
-					return true;
-				}
-			}
-			catch (Exception e) {
-				_logger.error("Could not determine OS Version", e.getMessage());
-			}
-			
-			return false;
+
+			var minimumMajor = (int)minimumVersion;
+			var minimumMinor = (int)(minimumVersion - minimumMajor) * 10;
+
+			return Environment.OSVersion.Version.Major >= minimumMajor && Environment.OSVersion.Version.Minor >= minimumMinor;
 		}
-		
-		public static boolean isUnix() {
-			if (_unix != null) {
-				return _unix.booleanValue();
-			}
-			
-			if (File.pathSeparator.equals(":")) {
-				_unix = Boolean.TRUE;
-			}
-			else {
-				_unix = Boolean.FALSE;
-			}
-			
-			return _unix.booleanValue();
+
+		public static bool IsLinux
+		{
+			get { return Environment.OSVersion.Platform == PlatformID.Unix; }
 		}
-		
-		public static boolean isWindows() {
-			if (_windows != null) {
-				return _windows.booleanValue();
-			}
-			
-			if (File.pathSeparator.equals(";")) {
-				_windows = Boolean.TRUE;
-			}
-			else {
-				_windows = Boolean.FALSE;
-			}
-			
-			return _windows.booleanValue();
-		}
-		
-		private static Boolean _aix;
-		private static Boolean _linux;
-		private static Boolean _unix;
-		private static String _version;
-		private static Boolean _windows;*/
-	
 	}
 }

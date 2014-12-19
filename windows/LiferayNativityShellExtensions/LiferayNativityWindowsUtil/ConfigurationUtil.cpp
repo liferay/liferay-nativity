@@ -46,7 +46,7 @@ JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativity
 
 	wideString[len] = 0;
 
-	ConfigurationUtil::UpdateExplorer(wideString);
+	UpdateExplorer(wideString);
 
 	env->ReleaseStringChars(filePath, rawString);
 
@@ -81,21 +81,21 @@ JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativity
 
 	wideString[len] = 0;
 
-	ConfigurationUtil::SetSystemFolder(wideString);
+	SetSystemFolder(wideString);
 
 	env->ReleaseStringChars(filePath, rawString);
 
 	return JNI_TRUE;
 }
 
-bool ConfigurationUtil::UpdateExplorer(const wchar_t* syncRoot)
+bool UpdateExplorer(const wchar_t* syncRoot)
 {
 	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, syncRoot, 0);
 
 	return true;
 }
 
-bool ConfigurationUtil::SetSystemFolder(const wchar_t* syncRoot)
+bool SetSystemFolder(const wchar_t* syncRoot)
 {
 	SetFileAttributes(syncRoot, FILE_ATTRIBUTE_SYSTEM);
 

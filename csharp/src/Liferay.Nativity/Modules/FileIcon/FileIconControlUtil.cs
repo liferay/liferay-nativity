@@ -41,6 +41,8 @@
 using System;
 
 using Liferay.Nativity.Control;
+using Liferay.Nativity.Modules.FileIcon.Unix;
+using Liferay.Nativity.Modules.FileIcon.Win;
 using Liferay.Nativity.Util;
 
 namespace Liferay.Nativity.Modules.FileIcon
@@ -56,24 +58,18 @@ namespace Liferay.Nativity.Modules.FileIcon
 
 			if (OSDetector.IsApple)
 			{
-				return new Unix.AppleFileIconControlImpl(nativityControl, fileIconControlCallback);
+				return new AppleFileIconControlImpl(nativityControl, fileIconControlCallback);
 			}
-			/*else if (OSDetector.isWindows()) {
+			else if (OSDetector.IsWindows)
+			{
 				return new WindowsFileIconControlImpl(nativityControl, fileIconControlCallback);
 			}
-			else if (OSDetector.isLinux()) {
+			else if (OSDetector.IsLinux)
+			{
 				return new LinuxFileIconControlImpl(nativityControl, fileIconControlCallback);
-			}*/
+			}
 			
 			return null;
 		}
-
-		/*protected FileIconControl createLinuxFileIconControl() {
-		}
-		
-		protected FileIconControl createWindowsFileIconControl() {
-			return new WindowsFileIconControlImpl(
-				_nativityControl, _fileIconControlCallback);
-		}*/
 	}
 }

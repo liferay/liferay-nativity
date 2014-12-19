@@ -25,11 +25,7 @@
 #include <iostream>
 #include <string>
 
-class __declspec(dllexport) ConfigurationUtil
-{
-	public:
-		static bool SetSystemFolder(const wchar_t* syncRoot);
-		static bool UpdateExplorer(const wchar_t* syncRoot);
-};
+extern "C" __declspec(dllexport) bool SetSystemFolder(const wchar_t* syncRoot);
+extern "C" __declspec(dllexport) bool UpdateExplorer(const wchar_t* syncRoot);
 
 #endif

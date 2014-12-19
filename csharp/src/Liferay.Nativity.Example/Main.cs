@@ -27,11 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Liferay.Nativity.Control;
 using Liferay.Nativity.Modules.ContextMenu;
 using Liferay.Nativity.Modules.ContextMenu.Model;
 using Liferay.Nativity.Modules.FileIcon;
+using Liferay.Nativity.Util;
 
 namespace Liferay.Nativity.Example
 {
@@ -41,16 +41,21 @@ namespace Liferay.Nativity.Example
 
 		public static void Main (string[] args)
 		{
-			MainClass.Connect ();
+			MainClass.ContextMenuExample();
+			MainClass.FileIconsExample();
 		}
 
-		private static void Connect()
+		private static void FileIconsExample()
 		{
 			NativityControlUtil.NativityControl.Connect();
 
+			// Disable filtering
+			NativityControlUtil.NativityControl.SetFilterFolders("");
+
 			// File Icons
-			var testIconId = -1;
-			var testFilePath = "/Users/rondea/bar.txt";
+			var testIconId = 3;
+//			var testFilePath = "/Users/rondea/bar.txt";
+			var testFilePath = "C:\\test.txt";
 
 			// FileIconControlCallback not used on Linux
 			Modules.FileIcon.FileIconControlCallback fileIconControlCallback = path =>
@@ -61,13 +66,23 @@ namespace Liferay.Nativity.Example
 			var fileIconControl = FileIconControlUtil.GetFileIconControl(NativityControlUtil.NativityControl, fileIconControlCallback);
 
 			fileIconControl.EnableFileIcons();
-			
-			testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/resources/cocoa/overlay_Check.icns");
+
+			if(!OSDetector.IsWindows)
+			{
+				testIconId = fileIconControl.RegisterIcon("/Users/rondea/git/client/x-platform/resources/cocoa/overlay_Check.icns");
+			}
 
 			// FileIconControl.setFileIcon() method only used by Mac and Linux
 			fileIconControl.SetFileIcon(testFilePath, testIconId);
+		}
 
-			// Context Menus
+		private static void ContextMenuExample()
+		{
+			NativityControlUtil.NativityControl.Connect();
+
+			// Disable filtering
+			NativityControlUtil.NativityControl.SetFilterFolders("");
+
 			ContextMenuControlUtil.GetContextMenuControl(NativityControlUtil.NativityControl, MainClass.ContextMenuControlCallback);
 
 			// This won't work unless the sample program starts the nativity plugin on Mac
@@ -78,22 +93,30 @@ namespace Liferay.Nativity.Example
 		{
 			Console.WriteLine ("Investigating {0}", string.Join (" ,", paths.ToArray ()));
 
-			List<ContextMenuItem> contextMenuItems = new List<ContextMenuItem> ();
+			var contextMenuItems = new List<ContextMenuItem> ();
 
 			//if (paths.All (p => p == "/Users/sync/foo.txt"))
 			//{
+
 				var contextMenuItem = new ContextMenuItem("Nativity Test: " + started);
 				contextMenuItem.Selected += MainClass.ContextMenuItem_HandleSelected;
 
 				contextMenuItems.Add(contextMenuItem);
 
-				contextMenuItem.AddSeparator();
+				contextMenuItem = new ContextMenuItem("Nativity SubMenu Test: " + started);
+				contextMenuItem.Selected += MainClass.ContextMenuItem_HandleSelected;
 
-				for (var ctr = 0; ctr < 3; ctr++)
+				contextMenuItems.Add(contextMenuItem);
+
+				for (var ctr = 1; ctr <= 3; ctr++)
 				{
-					var sub = new ContextMenuItem(string.Empty);
-					sub.Selected += (s,p) => Console.WriteLine(sub.Uuid);
-					sub.Title = sub.Uuid.ToString();
+					if(ctr == 2)
+						contextMenuItem.AddSeparator();
+
+					var sub = new ContextMenuItem(String.Empty);
+					sub.Selected += (s,p) => Console.WriteLine(sub.Title);
+					sub.Title = ctr.ToString() + ": " + sub.Uuid.ToString();
+
 					contextMenuItem.ContextMenuItems.Add(sub);
 				}
 			//}

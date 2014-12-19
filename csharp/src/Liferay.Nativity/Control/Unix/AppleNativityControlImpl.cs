@@ -73,6 +73,13 @@ namespace Liferay.Nativity.Control.Unix
 		{
 		}
 
+		public override void SetFilterFolders(params string[] folders)
+		{
+			var message = new NativityMessage(Constants.SET_FILTER_PATHS, folders);
+
+			SendMessage(message);
+		}
+
 		public override bool Unload ()
 		{
 			logger.Info("Unloading Liferay Nativity");
