@@ -270,11 +270,12 @@ int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, in
 		{
 			cmdCount++;
 
+			int subLocation = 0;
+
 			vector<ContextMenuItem*>* menus = menu->GetContextMenuItems();
 			for (vector<ContextMenuItem*>::iterator it = menus->begin(); it != menus->end(); it++)
 			{
 				ContextMenuItem* menuA = *it;
-				int subLocation = 0;
 
 				cmdCount = _AddMenu(subMenuHandle, menuA, subLocation, cmdCount, offset);
 
