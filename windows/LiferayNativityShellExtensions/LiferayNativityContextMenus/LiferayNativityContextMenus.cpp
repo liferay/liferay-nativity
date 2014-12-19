@@ -285,7 +285,10 @@ int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, in
 	}
 	else if (text->compare(SEPARATOR) == 0)
 	{
-		_InsertSeparator(hMenu, location);
+		if(_InsertSeparator(hMenu, location))
+		{
+			cmdCount++;
+		}
 	}
 	else
 	{
