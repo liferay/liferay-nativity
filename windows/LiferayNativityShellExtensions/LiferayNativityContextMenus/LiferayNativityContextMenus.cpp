@@ -231,27 +231,29 @@ IFACEMETHODIMP LiferayNativityContextMenus::QueryContextMenu(HMENU hMenu, UINT i
 
 	bool success = true;
 
+	int location = indexMenu;
+
 	int cmdCount = idCmdFirst;
 
-	_InsertSeparator(hMenu, idCmdFirst);
+	_InsertSeparator(hMenu, location);
+		
+	location++;
 
 	cmdCount++;
-
-	int location = 0;
 
 	for (vector<ContextMenuItem*>::iterator it = menus->begin(); it != menus->end(); it++)
 	{
 		ContextMenuItem* menu = *it;
-		cmdCount = _AddMenu(hMenu, menu, idCmdFirst + 1, cmdCount, idCmdFirst);
+		cmdCount = _AddMenu(hMenu, menu, location, cmdCount, idCmdFirst);
 
-		location ++;
+		location++;
 	}
 
-	_InsertSeparator(hMenu, idCmdFirst + location);
+	_InsertSeparator(hMenu, location);
 
 	cmdCount++;
 
-	return MAKE_HRESULT(SEVERITY_SUCCESS, 0, cmdCount);
+	return MAKE_HRESULT(SEVERITY_SUCCESS, 0, cmdCount - idCmdFirst + 1);
 }
 
 int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, int location, int cmdCount, UINT offset)
