@@ -78,16 +78,16 @@ IFACEMETHODIMP ContextMenuFactory::CreateInstance(
 
 	hResult = E_OUTOFMEMORY;
 
-	LiferayNativityContextMenus* lrContextMenus = new(std::nothrow) LiferayNativityContextMenus();
+	LiferayNativityContextMenus* liferayNativityContextMenus = new(std::nothrow) LiferayNativityContextMenus();
 
-	if (!lrContextMenus)
+	if (!liferayNativityContextMenus)
 	{
 		return hResult;
 	}
 
-	hResult = lrContextMenus->QueryInterface(riid, ppv);
+	hResult = liferayNativityContextMenus->QueryInterface(riid, ppv);
 
-	lrContextMenus->Release();
+	liferayNativityContextMenus->Release();
 
 	return hResult;
 }
