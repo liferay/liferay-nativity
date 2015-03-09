@@ -141,7 +141,7 @@ static BOOL installed = NO;
 
 	[self hookMethod:@selector(IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:) inClass:@"IKFinderReflectiveIconCell" toCallToTheNewMethod:@selector(drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by everything else)
 
-	[self hookMethod:@selector(IconOverlayHandlers_drawIconWithFrame:) inClass:@"TListViewIconAndTextCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 Column View
+	[self hookMethod:@selector(IconOverlayHandlers_drawIconWithFrame:) inClass:@"TColumnCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 & 10.10 Column View
 
 	[self hookMethod:@selector(IconOverlayHandlers_drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(drawRect:)];     // 10.9 (List and Coverflow Views)
 
