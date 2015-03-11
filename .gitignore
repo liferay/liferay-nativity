@@ -5,6 +5,7 @@ build.*.properties
 xcuserdata/
 dist
 tmp
+.settings/
 
 java/bin
 java/classes
@@ -28,3 +29,5 @@ windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil/Release
 windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil/com_liferay_nativity*
 windows/LiferayNativityShellExtensions/NativityTest/Debug
 windows/LiferayNativityShellExtensions/NativityTest/Release
+
+mac/LiferayNativityFinder/MethodNames.h

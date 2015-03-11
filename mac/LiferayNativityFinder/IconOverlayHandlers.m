@@ -54,12 +54,90 @@
 // someone "borrows" this plugin, randomizing names prevents runtime conflicts
 #include "MethodNames.h"
 
+
+@implementation IKImageBrowserCell (IconOverlayHandlers)
+
+// 10.9 & 10.10 (List View)
+- (CALayer*) IconOverlayHandlers_IKImageBrowserCell_layerForType:(NSString *)type
+{
+	NSLog(@"LiferayNativityFinder v2: Starting layerForType with type %@", type);
+
+	CALayer *layer = [self IconOverlayHandlers_IKImageBrowserCell_layerForType:type];
+
+	if (![type isEqualToString:IKImageBrowserCellForegroundLayer])
+	{
+		NSLog(@"LiferayNativityFinder: Type not equal to IKImageBrowserCellForegroundLayer");
+		return layer;
+	}
+
+	id representedItem = [self representedItem];
+	NSURL *representedItemURL;
+
+	if ([representedItem respondsToSelector:@selector(previewItemURL)])
+	{
+		representedItemURL = [representedItem previewItemURL];
+	}
+	else
+	{
+		return layer;
+	}
+
+	NSLog(@"LiferayNativityFinder: Got URL out of TIconViewCell's FINode: %@", representedItemURL);
+
+	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[representedItemURL path]])
+	{
+		if ([imageIndex intValue] > 0)
+		{
+			NSImage *overlayIcon = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
+
+			NSLog(@"LiferayNativityFinder: Retrieved overlayIcon for iconId %@", imageIndex);
+
+			if (overlayIcon != nil)
+			{
+				NSLog(@"LiferayNativityFinder: OverlayIcon is not nil");
+
+				NSRect frame = [self frame];
+				NSRect imageFrame = [self imageFrame];
+
+				[overlayIcon setSize:imageFrame.size];
+				[overlayIcon setFlipped:NO];
+
+				CALayer *overlayIconLayer = [CALayer layer];
+				[overlayIconLayer setContents:(id)[overlayIcon CGImageForProposedRect:nil
+																			  context:nil
+																				hints:nil]];
+				[overlayIconLayer setAnchorPoint:NSZeroPoint];
+				[overlayIconLayer setBounds:NSMakeRect(0, 0, imageFrame.size.width, imageFrame.size.height)];
+				[overlayIconLayer setPosition:NSMakePoint(imageFrame.origin.x - frame.origin.x, imageFrame.origin.y - frame.origin.y)];
+
+				NSLog(@"LiferayNativityFinder: Layer created %@", overlayIconLayer);
+
+				if (layer == nil)
+				{
+					layer = [CALayer layer];
+				}
+
+				[layer addSublayer:overlayIconLayer];
+
+				NSLog(@"LiferayNativityFinder: Sublayer added %@", layer);
+			}
+		}
+	}
+
+	NSLog(@"LiferayNativityFinder: Returning layer %@", layer);
+	
+	return layer;
+}
+
+@end
+
+
 @implementation NSObject (IconOverlayHandlers)
 
-// 10.7 & 10.8 & 10.9 Column View
-- (void)IconOverlayHandlers_drawIconWithFrame:(struct CGRect)arg1
+// 10.7 & 10.8 & 10.9 & 10.10 (Column View)
+- (void)IconOverlayHandlers_TColumnCell_drawIconWithFrame:(struct CGRect)arg1
 {
-	[self IconOverlayHandlers_drawIconWithFrame:arg1];
+	[self IconOverlayHandlers_TColumnCell_drawIconWithFrame:arg1];
 
 	NSURL* url = [[NSClassFromString(@"FINode") nodeFromNodeRef:[(TIconAndTextCell*)self node]->fNodeRef] previewItemURL];
 
@@ -81,64 +159,10 @@
 	}
 }
 
-- (void)IconOverlayHandlers_IKImageBrowserCell_drawImage:(id)arg1
+// 10.9 & 10.10 (List and Coverflow Views)
+- (void)IconOverlayHandlers_TDimmableIconImageView_drawRect:(struct CGRect)arg1
 {
-	IKImageWrapper* imageWrapper = [self IconOverlayHandlers_imageWrapper:arg1];
-
-	[self IconOverlayHandlers_IKImageBrowserCell_drawImage:imageWrapper];
-}
-
-- (void)IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:(id)arg1
-{
-	IKImageWrapper* imageWrapper = [self IconOverlayHandlers_imageWrapper:arg1];
-
-	[self IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:imageWrapper];
-}
-
-- (IKImageWrapper*)IconOverlayHandlers_imageWrapper:(id)arg1
-{
-	TIconViewCell* realSelf = (TIconViewCell*)self;
-	FINode* node = (FINode*)[realSelf representedItem];
-
-	NSURL* url = [node previewItemURL];
-
-	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[url path]])
-	{
-		if ([imageIndex intValue] > 0)
-		{
-			NSImage* icon = [arg1 _nsImage];
-
-			[icon lockFocus];
-
-			CGContextRef myContext = [[NSGraphicsContext currentContext] graphicsPort];
-
-			NSImage* iconImage = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
-
-			if (iconImage)
-			{
-				CGImageSourceRef source;
-				NSData* data = [iconImage TIFFRepresentation];
-
-				source = CGImageSourceCreateWithData((CFDataRef)data, NULL);
-				CGImageRef maskRef = CGImageSourceCreateImageAtIndex(source, 0, NULL);
-				CGContextDrawImage(myContext, CGRectMake(0, 0, [icon size].width, [icon size].height), maskRef);
-				CFRelease(source);
-				CFRelease(maskRef);
-			}
-
-			[icon unlockFocus];
-
-			return [[[IKImageWrapper alloc] initWithNSImage:icon] autorelease];
-		}
-	}
-
-	return arg1;
-}
-
-// 10.9 (List and Coverflow Views)
-- (void)IconOverlayHandlers_drawRect:(struct CGRect)arg1
-{
-	[self IconOverlayHandlers_drawRect:arg1];
+	[self IconOverlayHandlers_TDimmableIconImageView_drawRect:arg1];
 
 	NSView* supersuperview = [[(NSView*)self superview] superview];
 
