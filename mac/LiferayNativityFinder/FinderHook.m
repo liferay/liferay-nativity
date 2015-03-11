@@ -91,7 +91,7 @@ static BOOL installed = NO;
 	// Icons
 	[self hookMethod:@selector(layerForType:) inClass:@"IKImageBrowserCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_IKImageBrowserCell_layerForType:)];     // 10.7 & 10.8 & 10.9 & 10.10 (Icon View)
 
-	[self hookMethod:@selector(drawIconWithFrame:) inClass:@"TColumnCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_TColumnCell_drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 & 10.10 Column View
+	[self hookMethod:@selector(drawIconWithFrame:) inClass:@"TColumnCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_TColumnCell_drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 & 10.10 (Column View)
 
 	[self hookMethod:@selector(drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(IconOverlayHandlers_TDimmableIconImageView_drawRect:)];     // 10.9 & 10.10 (List and Coverflow Views)
 

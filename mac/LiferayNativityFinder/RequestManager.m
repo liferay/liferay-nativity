@@ -361,8 +361,6 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 {
 	NSDictionary* iconDictionary = (NSDictionary*)cmdData;
 
-	NSLog(@"LiferayNativityFinder: execSetFileIcons %@", iconDictionary);
-
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] setIconsFor:sock.userData iconIdsByPath:iconDictionary filterByFolders:_filterFolders];
 	});
@@ -558,13 +556,9 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 	NSNumber* imageIndex = [[ContentManager sharedInstance] iconByPath:file];
 
-//	NSLog(@"LiferayNativityFinder: Icon %@ set in cache for file %@", imageIndex, file);
-
 	if ([imageIndex intValue] > 0)
 	{
-//		NSLog(@"LiferayNativityFinder: Icon %@ found in cache for file %@", imageIndex, file);
 		[iconIds addObject:imageIndex];
-		return [iconIds autorelease];
 	}
 
 	// Why not just call [_connectedListenSocketsWithIconCallbacks count] directly?

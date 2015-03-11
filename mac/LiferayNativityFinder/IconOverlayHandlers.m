@@ -60,13 +60,10 @@
 // 10.9 & 10.10 (List View)
 - (CALayer*) IconOverlayHandlers_IKImageBrowserCell_layerForType:(NSString *)type
 {
-	NSLog(@"LiferayNativityFinder v2: Starting layerForType with type %@", type);
-
 	CALayer *layer = [self IconOverlayHandlers_IKImageBrowserCell_layerForType:type];
 
 	if (![type isEqualToString:IKImageBrowserCellForegroundLayer])
 	{
-		NSLog(@"LiferayNativityFinder: Type not equal to IKImageBrowserCellForegroundLayer");
 		return layer;
 	}
 
@@ -82,20 +79,14 @@
 		return layer;
 	}
 
-	NSLog(@"LiferayNativityFinder: Got URL out of TIconViewCell's FINode: %@", representedItemURL);
-
 	for (NSNumber* imageIndex in [[RequestManager sharedInstance] iconIdForFile:[representedItemURL path]])
 	{
 		if ([imageIndex intValue] > 0)
 		{
 			NSImage *overlayIcon = [[IconCache sharedInstance] getIcon:[NSNumber numberWithInt:[imageIndex intValue]]];
 
-			NSLog(@"LiferayNativityFinder: Retrieved overlayIcon for iconId %@", imageIndex);
-
 			if (overlayIcon != nil)
 			{
-				NSLog(@"LiferayNativityFinder: OverlayIcon is not nil");
-
 				NSRect frame = [self frame];
 				NSRect imageFrame = [self imageFrame];
 
@@ -110,22 +101,16 @@
 				[overlayIconLayer setBounds:NSMakeRect(0, 0, imageFrame.size.width, imageFrame.size.height)];
 				[overlayIconLayer setPosition:NSMakePoint(imageFrame.origin.x - frame.origin.x, imageFrame.origin.y - frame.origin.y)];
 
-				NSLog(@"LiferayNativityFinder: Layer created %@", overlayIconLayer);
-
 				if (layer == nil)
 				{
 					layer = [CALayer layer];
 				}
 
 				[layer addSublayer:overlayIconLayer];
-
-				NSLog(@"LiferayNativityFinder: Sublayer added %@", layer);
 			}
 		}
 	}
 
-	NSLog(@"LiferayNativityFinder: Returning layer %@", layer);
-	
 	return layer;
 }
 
