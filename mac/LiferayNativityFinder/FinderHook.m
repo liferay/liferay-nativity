@@ -89,13 +89,11 @@ static BOOL installed = NO;
 	[RequestManager sharedInstance];
 
 	// Icons
-	[self hookMethod:@selector(drawImage:) inClass:@"IKImageBrowserCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_IKImageBrowserCell_drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by name)
+	[self hookMethod:@selector(layerForType:) inClass:@"IKImageBrowserCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_IKImageBrowserCell_layerForType:)];     // 10.7 & 10.8 & 10.9 & 10.10 (Icon View)
 
-	[self hookMethod:@selector(drawImage:) inClass:@"IKFinderReflectiveIconCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by everything else)
+	[self hookMethod:@selector(drawIconWithFrame:) inClass:@"TColumnCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_TColumnCell_drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 & 10.10 (Column View)
 
-	[self hookMethod:@selector(drawIconWithFrame:) inClass:@"TColumnCell" toCallToTheNewMethod:@selector(IconOverlayHandlers_drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 & 10.10 Column View
-
-	[self hookMethod:@selector(drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(IconOverlayHandlers_drawRect:)];     // 10.9 (List and Coverflow Views)
+	[self hookMethod:@selector(drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(IconOverlayHandlers_TDimmableIconImageView_drawRect:)];     // 10.9 & 10.10 (List and Coverflow Views)
 
 	// Context Menus
 	[self hookClassMethod:@selector(addViewSpecificStuffToMenu:browserViewController:context:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(ContextMenuHandlers_addViewSpecificStuffToMenu:browserViewController:context:)];     // 10.7 & 10.8
@@ -137,13 +135,11 @@ static BOOL installed = NO;
 	[[RequestManager sharedInstance] dealloc];
 
 	// Icons
-	[self hookMethod:@selector(IconOverlayHandlers_IKImageBrowserCell_drawImage:) inClass:@"IKImageBrowserCell" toCallToTheNewMethod:@selector(drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by name)
+	[self hookMethod:@selector(IconOverlayHandlers_IKImageBrowserCell_layerForType:) inClass:@"IKImageBrowserCell" toCallToTheNewMethod:@selector(layerForType:)];     // 10.7 & 10.8 & 10.9 & 10.10 (Icon View)
 
-	[self hookMethod:@selector(IconOverlayHandlers_IKFinderReflectiveIconCell_drawImage:) inClass:@"IKFinderReflectiveIconCell" toCallToTheNewMethod:@selector(drawImage:)];     // 10.7 & 10.8 & 10.9 (Icon View arrange by everything else)
+	[self hookMethod:@selector(IconOverlayHandlers_TColumnCell_drawIconWithFrame:) inClass:@"TColumnCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 & 10.10 (Column View)
 
-	[self hookMethod:@selector(IconOverlayHandlers_drawIconWithFrame:) inClass:@"TListViewIconAndTextCell" toCallToTheNewMethod:@selector(drawIconWithFrame:)];     // 10.7 & 10.8 & 10.9 Column View
-
-	[self hookMethod:@selector(IconOverlayHandlers_drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(drawRect:)];     // 10.9 (List and Coverflow Views)
+	[self hookMethod:@selector(IconOverlayHandlers_TDimmableIconImageView_drawRect:) inClass:@"TDimmableIconImageView" toCallToTheNewMethod:@selector(drawRect:)];     // 10.9 & 10.10 (List and Coverflow Views)
 
 	// Context Menus
 	[self hookClassMethod:@selector(ContextMenuHandlers_addViewSpecificStuffToMenu:browserViewController:context:) inClass:@"TContextMenu" toCallToTheNewMethod:@selector(addViewSpecificStuffToMenu:browserViewController:context:)];     // 10.7 & 10.8
