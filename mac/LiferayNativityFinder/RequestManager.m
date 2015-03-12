@@ -724,6 +724,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 			}
 		}
 
+
 		[callbackString release];
 
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
