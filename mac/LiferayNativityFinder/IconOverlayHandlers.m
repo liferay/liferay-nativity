@@ -179,4 +179,6 @@
 	}
 }
 
+// Adding a new swizzled method? Make sure to update Methods.h, by updating the scheme's pre-build steps
+
 @end
