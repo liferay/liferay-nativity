@@ -804,11 +804,13 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 		if (![_listenSocket acceptOnInterface:@"localhost" port:33001 error:&error])
 		{
+			NSLog(@"Can not open listenSocket on port 33001");
 			return;
 		}
 
 		if (![_callbackSocket acceptOnInterface:@"localhost" port:33002 error:&error])
 		{
+			NSLog(@"Can not open callbackSocket on port 33002");
 			return;
 		}
 
