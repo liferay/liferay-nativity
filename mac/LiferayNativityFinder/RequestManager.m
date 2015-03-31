@@ -90,6 +90,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
 
 		_isRunning = NO;
+		_debugMode = NO;
 
 		_allIconsConnection = [[NSObject alloc] init];
 
@@ -239,6 +240,14 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	else if ([command isEqualToString:@"repaintAllIcons"])
 	{
 		[self execRepaintAllIcons:value replyTo:sock];
+	}
+	else if ([command isEqualToString:@"enableDebugMode"])
+	{
+		[self execEnableDebugMode:value replyTo:sock];
+	}
+	else if ([command isEqualToString:@"disableDebugMode"])
+	{
+		[self execDisableDebugMode:value replyTo:sock];
 	}
 	else
 	{
@@ -419,6 +428,20 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[[ContentManager sharedInstance] repaintAllWindows];
 	});
+
+	[self replyString:@"1" toSocket:sock];
+}
+
+- (void)execEnableDebugMode:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	_debugMode = YES;
+
+	[self replyString:@"1" toSocket:sock];
+}
+
+- (void)execDisableDebugMode:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	_debugMode = NO;
 
 	[self replyString:@"1" toSocket:sock];
 }
@@ -649,6 +672,10 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		{
 			NSString* callbackMsg = [_callbackMsgs objectForKey:key];
 
+			if (_debugMode) {
+				NSLog(@"Processing icon callback for %@: %@", file, callbackMsg);
+			}
+
 			@try {
 				NSDictionary* responseDictionary = [callbackMsg objectFromJSONString];
 				NSNumber* imageIndex = [responseDictionary objectForKey:@"value"];
@@ -683,7 +710,6 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		// when the socket is broken, without interfering with other programs that use liferay-
 		// nativity
 		[newSocket setUserData:_allIconsConnection];
-
 		[_connectedListenSockets addObject:newSocket];
 	}
 	if (socket == _callbackSocket)
@@ -702,6 +728,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (void)socket:(GCDAsyncSocket*)socket didReadData:(NSData*)data withTag:(long)tag
 {
+	// This is a race condition, when didReadData is called from a callback socket, this collection is accessed on the wrong queue
 	if ([_connectedListenSockets containsObject:socket])
 	{
 		[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:socket];
@@ -709,6 +736,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 	}
 
+	// This is a race condition, when didReadData is called from a callback socket, this collection is accessed on the wrong queue
 	if ([_connectedCallbackSockets containsObject:socket])
 	{
 		NSData* strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
@@ -717,6 +745,10 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 		[_callbackLock lock];
 		@try {
 			OSMemoryBarrier();
+
+			if (_debugMode) {
+				NSLog(@"Callback from %@: %@", (NSString*)[NSValue valueWithPointer:socket], callbackString);
+			}
 
 			[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
 

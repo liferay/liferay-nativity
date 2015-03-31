@@ -80,6 +80,7 @@
 	NSArray* _filterFolders; // TODO: This should probably be a dictionary at some point
 
 	BOOL _isRunning;
+	BOOL _debugMode;
 
 	id _allIconsConnection; // Key for identifying icon management requests that are global. This is purely for backwards compatibility
 }
