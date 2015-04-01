@@ -728,48 +728,57 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 - (void)socket:(GCDAsyncSocket*)socket didReadData:(NSData*)data withTag:(long)tag
 {
-	// This is a race condition, when didReadData is called from a callback socket, this collection is accessed on the wrong queue
-	if ([_connectedListenSockets containsObject:socket])
-	{
-		[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:socket];
-
-		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
+	if (_debugMode) {
+		NSLog(@"- (void)socket:(GCDAsyncSocket*)socket didReadData:(NSData*)data withTag:(long)tag");
 	}
 
-	// This is a race condition, when didReadData is called from a callback socket, this collection is accessed on the wrong queue
-	if ([_connectedCallbackSockets containsObject:socket])
-	{
-		NSData* strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
-		NSString* callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
+	dispatch_async(_listenQueue, ^{
+		if ([_connectedListenSockets containsObject:socket])
+		{
+			[self execCommand:[data subdataWithRange:NSMakeRange(0, [data length] - 2)] replyTo:socket];
 
-		[_callbackLock lock];
-		@try {
-			OSMemoryBarrier();
+			[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
+		}
+    });
 
+    dispatch_async(_callbackQueue, ^{
+		if ([_connectedCallbackSockets containsObject:socket])
+		{
 			if (_debugMode) {
-				NSLog(@"Callback from %@: %@", (NSString*)[NSValue valueWithPointer:socket], callbackString);
+				NSLog(@"... is on the callback queue");
 			}
 
-			[_callbackMsgs setValue:callbackString forKey:(NSString*)[NSValue valueWithPointer:socket]];
+			NSData *strData = [data subdataWithRange:NSMakeRange(0, [data length] - 2)];
+			NSString *callbackString = [[NSString alloc] initWithData:strData encoding:NSUTF8StringEncoding];
 
-			OSMemoryBarrier();
+			[_callbackLock lock];
+			@try {
+				OSMemoryBarrier();
+
+				if (_debugMode) {
+					NSLog(@"Callback from %@: %@", (NSString *) [NSValue valueWithPointer:socket], callbackString);
+				}
+
+				[_callbackMsgs setValue:callbackString forKey:(NSString *) [NSValue valueWithPointer:socket]];
+
+				OSMemoryBarrier();
+			}
+			@finally {
+				if ([_callbackMsgs count] >= _expectedCallbackResults){
+					[_callbackLock unlockWithCondition:GOT_CALLBACK_RESPONSE];
+				}
+				else {
+					[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
+				}
+			}
+
+
+			[callbackString release];
+
+			[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
 		}
-		@finally {
-			if ([_callbackMsgs count] >= _expectedCallbackResults)
-			{
-				[_callbackLock unlockWithCondition:GOT_CALLBACK_RESPONSE];
-			}
-			else
-			{
-				[_callbackLock unlockWithCondition:WAITING_FOR_CALLBACK_RESPONSE];
-			}
-		}
+	});
 
-
-		[callbackString release];
-
-		[socket readDataToData:[GCDAsyncSocket CRLFData] withTimeout:-1 tag:0];
-	}
 }
 
 - (NSTimeInterval)socket:(GCDAsyncSocket*)socket shouldTimeoutReadWithTag:(long)tag elapsed:(NSTimeInterval)elapsed bytesDone:(NSUInteger)length
