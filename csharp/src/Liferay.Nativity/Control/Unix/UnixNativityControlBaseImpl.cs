@@ -135,8 +135,8 @@ namespace Liferay.Nativity.Control.Unix
 			try
 			{
 
-				if((this.commandSocket.Available == 0 && commandSocket.Client.Poll(SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead)) ||
-					this.callbackSocket.Available == 0 && callbackSocket.Client.Poll(SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead))
+				if((this.commandSocket.Available == 0 && commandSocket.Client.Poll((int)SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead)) ||
+					this.callbackSocket.Available == 0 && callbackSocket.Client.Poll((int)SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead))
 				{
 					logger.Info("CheckConnection failed restarting connection : ");
 					this.Dispose();
