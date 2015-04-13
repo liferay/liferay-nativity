@@ -96,5 +96,7 @@ namespace Liferay.Nativity
 		public const string UNREGISTER_ICON = "unregisterIcon";
 		
 		public const string UPDATE_FILE_ICON = "updateFileIcon";
+
+		public const string CHECK_SOCKET_CONNECTION = "checkSocketConnection";
 	}
 }
