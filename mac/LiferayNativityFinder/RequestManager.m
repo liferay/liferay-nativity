@@ -597,7 +597,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	// Thread-safety! _connectedListenSocketsWithIconCallbacks is manipulated on the socket's thread,
 	// but this method is called on the main thread
 	OSMemoryBarrier();
-	if (_connectedListenSocketsWithIconCallbacksCount == 0)
+	if (_connectedCallbackSocketsCount == 0)
 	{
 		return [iconIds autorelease];
 	}
@@ -628,7 +628,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 	@try {
 		[_callbackMsgs removeAllObjects];
-		_expectedCallbackResults = _connectedListenSocketsWithIconCallbacksCount;
+		_expectedCallbackResults = _connectedCallbackSocketsCount;
 
 		NSData* data = [[jsonString stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
@@ -657,7 +657,7 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 
 	if (![_callbackLock lockWhenCondition:GOT_CALLBACK_RESPONSE beforeDate:[NSDate dateWithTimeIntervalSinceNow:MAX_CALLBACK_REQUEST_WAIT_TIMEINTERVAL]])
 	{
-		NSLog(@"LiferayNativityFinder: file icon request timed out: %@", file);
+		NSLog(@"LiferayNativityFinder: file icon request timed out: %@ : %d", file, _expectedCallbackResults);
 
 		[_disableIconOverlaysUntil release];
 		_disableIconOverlaysUntil = [[[NSDate date] dateByAddingTimeInterval:DISABLE_ICON_OVERLAYS_ON_TIMEOUT_TIMEINTERVAL] retain];
