@@ -46,6 +46,7 @@ using System.Threading;
 
 using Newtonsoft.Json;
 using log4net;
+using System.Collections.Generic;
 
 namespace Liferay.Nativity.Control.Unix
 {
@@ -55,6 +56,11 @@ namespace Liferay.Nativity.Control.Unix
 	public class UnixNativityControlBaseImpl : NativityControl
 	{
 		private readonly static ILog logger = LogManager.GetLogger(typeof(UnixNativityControlBaseImpl));
+
+		/// <summary>
+		/// Time spent on polling
+		/// </summary>
+		private static readonly TimeSpan SOCKETCONNECTED_POLL_TIME = TimeSpan.FromMilliseconds(100);
 
 		private const string RETURN_NEW_LINE = "\r\n";
 
@@ -68,62 +74,95 @@ namespace Liferay.Nativity.Control.Unix
 		private StreamReader commandBufferedReader;
 		private StreamWriter commandOutputStream;
 		private TcpClient commandSocket;
+		private object sync = new object();
 
 		private bool connected = false;
 
 		public override bool Connect ()
 		{
-			if (this.connected)
+			lock (sync)
 			{
-				return this.connected;
+				if (this.connected) 
+				{
+					logger.Debug ("connected!");
+					return this.connected;
+				}
+
+				try
+				{
+					this.commandSocket = new TcpClient("127.0.0.1", UnixNativityControlBaseImpl.COMMAND_SOCKET_PORT);
+
+					var commandStream = this.commandSocket.GetStream();
+					this.commandBufferedReader = new StreamReader(commandStream, Encoding.UTF8);
+					this.commandOutputStream = new StreamWriter(commandStream, new UTF8Encoding(false));
+					this.commandOutputStream.NewLine = UnixNativityControlBaseImpl.RETURN_NEW_LINE;
+					this.commandOutputStream.AutoFlush = true;
+
+					this.callbackSocket = new TcpClient("127.0.0.1", UnixNativityControlBaseImpl.CALLBACK_SOCKET_PORT);
+
+					var callbackStream = this.callbackSocket.GetStream();
+					this.callbackBufferedReader = new StreamReader(callbackStream, Encoding.UTF8);
+					this.callbackOutputStream = new StreamWriter(callbackStream, new UTF8Encoding(false));
+					this.callbackOutputStream.NewLine = UnixNativityControlBaseImpl.RETURN_NEW_LINE;
+					this.callbackOutputStream.AutoFlush = true;
+
+					this.connected = true;
+
+					this.callbackThread = new Thread(this.DoCallbackLoop);
+					this.callbackThread.Start();
+
+					logger.DebugFormat(
+						"Successfully connected to command socket: {0}",
+						UnixNativityControlBaseImpl.COMMAND_SOCKET_PORT);
+
+					logger.DebugFormat(
+						"Successfully connected to service socket: {0}",
+						UnixNativityControlBaseImpl.CALLBACK_SOCKET_PORT);
+
+					return true;
+				}
+				catch (Exception e)  // IOException???
+				{
+					logger.Error(e);
+					this.connected = false;
+				}
 			}
-
-			try 
-			{
-				this.commandSocket = new TcpClient("127.0.0.1", UnixNativityControlBaseImpl.COMMAND_SOCKET_PORT);
-
-				var commandStream = this.commandSocket.GetStream();
-				this.commandBufferedReader = new StreamReader(commandStream, Encoding.UTF8);
-				this.commandOutputStream = new StreamWriter(commandStream, new UTF8Encoding(false));
-				this.commandOutputStream.NewLine = UnixNativityControlBaseImpl.RETURN_NEW_LINE;
-				this.commandOutputStream.AutoFlush = true;
-
-				this.callbackSocket = new TcpClient("127.0.0.1", UnixNativityControlBaseImpl.CALLBACK_SOCKET_PORT);
-
-				var callbackStream = this.callbackSocket.GetStream();
-				this.callbackBufferedReader = new StreamReader(callbackStream, Encoding.UTF8);
-				this.callbackOutputStream = new StreamWriter(callbackStream, new UTF8Encoding(false));
-				this.callbackOutputStream.NewLine = UnixNativityControlBaseImpl.RETURN_NEW_LINE;
-				this.callbackOutputStream.AutoFlush = true;
-
-				this.connected = true;
-
-				this.callbackThread = new Thread(this.DoCallbackLoop);
-				this.callbackThread.Start();
-
-				logger.DebugFormat(
-					"Successfully connected to command socket: {0}",
-					UnixNativityControlBaseImpl.COMMAND_SOCKET_PORT);
-					
-				logger.DebugFormat(
-					"Successfully connected to service socket: {0}",
-					UnixNativityControlBaseImpl.CALLBACK_SOCKET_PORT);
-
-				return true;
-			}
-			catch (Exception e)  // IOException???
-			{
-				logger.Error(e);
-				this.connected = false;
-			}
-			
 			return this.connected;
+		}
+
+		public override void CheckSocketConnection()
+		{
+			try
+			{
+
+				if((this.commandSocket.Available == 0 && commandSocket.Client.Poll(SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead)) ||
+					this.callbackSocket.Available == 0 && callbackSocket.Client.Poll(SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead))
+				{
+					logger.Info("CheckConnection failed restarting connection : ");
+					this.Dispose();
+					this.OnSocketRestart ();
+					return;
+				}
+
+			}
+			catch(Exception ex)
+			{
+				logger.Info("CheckConnection failed restarting connection : ", ex);
+				this.Dispose();
+				this.OnSocketRestart ();
+			}
+			return;
 		}
 
 		public override bool Disconnect ()
 		{
 			try 
 			{
+				if(this.connected == false)
+				{
+					logger.Info("Disconnected already!");
+				}
+
 				this.commandSocket.Close();
 				this.callbackSocket.Close();
 				
@@ -135,6 +174,7 @@ namespace Liferay.Nativity.Control.Unix
 			}
 			catch (Exception e)
 			{
+				logger.Info("Disconnected exception");
 				logger.Error(e);
 				this.connected = true;
 				
