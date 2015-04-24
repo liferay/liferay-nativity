@@ -62,6 +62,9 @@ namespace Liferay.Nativity.Control.Unix
 		/// </summary>
 		private static readonly TimeSpan SOCKETCONNECTED_POLL_TIME = TimeSpan.FromMilliseconds(100);
 
+		private static readonly TimeSpan infiniteTimeSpan  = new TimeSpan(-1);
+		private static Timer timer = null;
+
 		private const string RETURN_NEW_LINE = "\r\n";
 
 		private const int CALLBACK_SOCKET_PORT = 33002;
@@ -119,13 +122,18 @@ namespace Liferay.Nativity.Control.Unix
 						"Successfully connected to service socket: {0}",
 						UnixNativityControlBaseImpl.CALLBACK_SOCKET_PORT);
 
+					if(UnixNativityControlBaseImpl.timer == null)
+					{
+						//Start in a suspended state
+						UnixNativityControlBaseImpl.timer = new Timer( CheckSocketConnection, null, UnixNativityControlBaseImpl.infiniteTimeSpan, UnixNativityControlBaseImpl.infiniteTimeSpan );
+					}
+					this.StartSocketConnectionCheck();
 					return true;
 				}
 				catch (Exception e)  // IOException???
 				{
-					logger.Info("Connect Exception");
-					logger.Error(e);
-					this.Dispose();
+					logger.ErrorFormat("Connect Exception : {0}", e);
+					this.Disconnect();
 					this.OnSocketRestart ();
 					this.connected = false;
 				}
@@ -133,16 +141,34 @@ namespace Liferay.Nativity.Control.Unix
 			return this.connected;
 		}
 
-		public override void CheckSocketConnection()
+		public override void StartSocketConnectionCheck()
+		{
+			logger.Info ("StartSocketConnectionCheck");
+			if (UnixNativityControlBaseImpl.timer != null)
+			{
+				UnixNativityControlBaseImpl.timer.Change (TimeSpan.Zero, UnixNativityControlBaseImpl.infiniteTimeSpan);
+			}
+		}
+
+		public override void StopSocketConnectionCheck()
+		{
+			logger.Info ("StopSocketConnectionCheck");
+			if (UnixNativityControlBaseImpl.timer != null)
+			{
+				UnixNativityControlBaseImpl.timer.Dispose ();
+				UnixNativityControlBaseImpl.timer = null;
+			}
+		}
+
+		public override void CheckSocketConnection(object state)
 		{
 			try
 			{
-
 				if((this.commandSocket.Available == 0 && commandSocket.Client.Poll((int)SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead)) ||
 					this.callbackSocket.Available == 0 && callbackSocket.Client.Poll((int)SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead))
 				{
-					logger.Info("CheckConnection failed restarting connection.");
-					this.Dispose();
+					logger.Error("CheckConnection failed restarting connection.");
+					this.Disconnect();
 					this.OnSocketRestart ();
 					return;
 				}
@@ -152,11 +178,12 @@ namespace Liferay.Nativity.Control.Unix
 					var checkMessageString =  JsonConvert.SerializeObject(message);
 					this.callbackOutputStream.WriteLine(checkMessageString);
 				}
+				timer.Change (this.checkSocketConnectionInterval, UnixNativityControlBaseImpl.infiniteTimeSpan);
 			}
 			catch(Exception ex)
 			{
-				logger.Info("CheckConnection failed restarting connection : ", ex);
-				this.Dispose();
+				logger.ErrorFormat("CheckConnection failed restarting connection : {0}", ex);
+				this.Disconnect();
 				this.OnSocketRestart ();
 			}
 			return;
@@ -175,17 +202,17 @@ namespace Liferay.Nativity.Control.Unix
 				this.callbackSocket.Close();
 				
 				this.connected = false;
-				
+				this.StopSocketConnectionCheck();
+
 				logger.Debug("Successfully disconnected");
 
 				return true;
 			}
 			catch (Exception e)
 			{
-				logger.Info("Disconnected exception");
-				logger.Error(e);
+				logger.ErrorFormat("Disconnected exception : {0}", e);
 				this.connected = true;
-				
+				this.StopSocketConnectionCheck();
 				return false;
 			}
 		}
@@ -195,7 +222,7 @@ namespace Liferay.Nativity.Control.Unix
 			if (false == this.connected)
 			{
 				logger.Warn("SendMessage : LiferayNativity is not connected");
-				this.Dispose();
+				this.Disconnect();
 				this.OnSocketRestart ();
 				return string.Empty;
 			}
@@ -231,8 +258,7 @@ namespace Liferay.Nativity.Control.Unix
 			}
 			catch (IOException e) 
 			{
-				logger.Info("SendMessage : LiferayNativity is not connected.");
-				logger.Error(e);
+				logger.ErrorFormat("SendMessage : LiferayNativity is not connected : {0}", e);
 				this.connected = false;
 				this.OnSocketClosed();
 
@@ -269,12 +295,26 @@ namespace Liferay.Nativity.Control.Unix
 			}
 		}
 
+		public override TimeSpan CheckSocketConnectionInterval
+		{
+			get
+			{
+				return this.checkSocketConnectionInterval;
+			}
+
+			set
+			{
+				this.checkSocketConnectionInterval = value;
+			}
+		}
+		private TimeSpan checkSocketConnectionInterval = UnixNativityControlBaseImpl.infiniteTimeSpan;
+
 		private void DoCallbackLoop() 
 		{
 			if (false == this.connected) 
 			{
 				logger.Info("DoCallbackLoop : LiferayNativity is not connected");
-				this.Dispose();
+				this.Disconnect();
 				this.OnSocketRestart ();
 				return;
 			}
@@ -294,7 +334,7 @@ namespace Liferay.Nativity.Control.Unix
 					
 					if (data == null) 
 					{
-						this.Dispose();
+						this.Disconnect();
 						this.OnSocketClosed();
 
 						break;
@@ -332,9 +372,8 @@ namespace Liferay.Nativity.Control.Unix
 					catch (Exception e)
 					{
 						this.connected = false;
-						logger.Info("DoCallbackLoop : LiferayNativity is not connected");
-						logger.Error(e);
-						this.Dispose();
+						logger.ErrorFormat("DoCallbackLoop : LiferayNativity is not connected : {0}", e);
+						this.Disconnect();
 						this.OnSocketClosed();
 					}
 				}
@@ -343,7 +382,7 @@ namespace Liferay.Nativity.Control.Unix
 					this.connected = false;
 					logger.Error(ioe);
 
-					this.Dispose();
+					this.Disconnect();
 					this.OnSocketClosed();
 				}
 			}
