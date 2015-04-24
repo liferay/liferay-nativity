@@ -123,7 +123,10 @@ namespace Liferay.Nativity.Control.Unix
 				}
 				catch (Exception e)  // IOException???
 				{
+					logger.Info("Connect Exception");
 					logger.Error(e);
+					this.Dispose();
+					this.OnSocketRestart ();
 					this.connected = false;
 				}
 			}
@@ -138,12 +141,17 @@ namespace Liferay.Nativity.Control.Unix
 				if((this.commandSocket.Available == 0 && commandSocket.Client.Poll((int)SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead)) ||
 					this.callbackSocket.Available == 0 && callbackSocket.Client.Poll((int)SOCKETCONNECTED_POLL_TIME.TotalMilliseconds, SelectMode.SelectRead))
 				{
-					logger.Info("CheckConnection failed restarting connection : ");
+					logger.Info("CheckConnection failed restarting connection.");
 					this.Dispose();
 					this.OnSocketRestart ();
 					return;
 				}
-
+				else
+				{
+					var message = new NativityMessage(Constants.CHECK_SOCKET_CONNECTION, string.Empty);
+					var checkMessageString =  JsonConvert.SerializeObject(message);
+					this.callbackOutputStream.WriteLine(checkMessageString);
+				}
 			}
 			catch(Exception ex)
 			{
@@ -186,7 +194,9 @@ namespace Liferay.Nativity.Control.Unix
 		{
 			if (false == this.connected)
 			{
-				logger.Warn("LiferayNativity is not connected");
+				logger.Warn("SendMessage : LiferayNativity is not connected");
+				this.Dispose();
+				this.OnSocketRestart ();
 				return string.Empty;
 			}
 			
@@ -221,7 +231,9 @@ namespace Liferay.Nativity.Control.Unix
 			}
 			catch (IOException e) 
 			{
+				logger.Info("SendMessage : LiferayNativity is not connected.");
 				logger.Error(e);
+				this.connected = false;
 				this.OnSocketClosed();
 
 				return string.Empty;
@@ -261,7 +273,9 @@ namespace Liferay.Nativity.Control.Unix
 		{
 			if (false == this.connected) 
 			{
-				logger.Debug("LiferayNativity is not connected");
+				logger.Info("DoCallbackLoop : LiferayNativity is not connected");
+				this.Dispose();
+				this.OnSocketRestart ();
 				return;
 			}
 			
@@ -317,11 +331,16 @@ namespace Liferay.Nativity.Control.Unix
 					}
 					catch (Exception e)
 					{
+						this.connected = false;
+						logger.Info("DoCallbackLoop : LiferayNativity is not connected");
 						logger.Error(e);
+						this.Dispose();
+						this.OnSocketClosed();
 					}
 				}
 				catch (IOException ioe) 
 				{
+					this.connected = false;
 					logger.Error(ioe);
 
 					this.Dispose();

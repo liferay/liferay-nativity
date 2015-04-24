@@ -98,5 +98,7 @@ namespace Liferay.Nativity
 		public const string UPDATE_FILE_ICON = "updateFileIcon";
 
 		public const string CHECK_SOCKET_CONNECTION = "checkSocketConnection";
+
+		public const string ENABLE_DEBUGMODE = "enableDebugMode";
 	}
 }
