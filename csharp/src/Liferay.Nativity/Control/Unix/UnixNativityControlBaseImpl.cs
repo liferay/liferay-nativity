@@ -132,7 +132,7 @@ namespace Liferay.Nativity.Control.Unix
 				}
 				catch (Exception e)  // IOException???
 				{
-					logger.ErrorFormat("Connect Exception : {0}", e);
+					logger.Error("Connect Exception", e);
 					this.Disconnect();
 					this.OnSocketRestart ();
 					this.connected = false;
@@ -182,7 +182,7 @@ namespace Liferay.Nativity.Control.Unix
 			}
 			catch(Exception ex)
 			{
-				logger.ErrorFormat("CheckConnection failed restarting connection : {0}", ex);
+				logger.Error("CheckConnection failed restarting connection", ex);
 				this.Disconnect();
 				this.OnSocketRestart ();
 			}
@@ -210,7 +210,7 @@ namespace Liferay.Nativity.Control.Unix
 			}
 			catch (Exception e)
 			{
-				logger.ErrorFormat("Disconnected exception : {0}", e);
+				logger.Error("Disconnected exception", e);
 				this.connected = true;
 				this.StopSocketConnectionCheck();
 				return false;
@@ -258,7 +258,7 @@ namespace Liferay.Nativity.Control.Unix
 			}
 			catch (IOException e) 
 			{
-				logger.ErrorFormat("SendMessage : LiferayNativity is not connected : {0}", e);
+				logger.Error("SendMessage : LiferayNativity is not connected", e);
 				this.connected = false;
 				this.OnSocketClosed();
 
@@ -376,7 +376,7 @@ namespace Liferay.Nativity.Control.Unix
 					catch (Exception e)
 					{
 						this.connected = false;
-						logger.ErrorFormat("DoCallbackLoop : LiferayNativity is not connected : {0}", e);
+						logger.Error("DoCallbackLoop : LiferayNativity is not connected", e);
 						this.Disconnect();
 						this.OnSocketClosed();
 					}
