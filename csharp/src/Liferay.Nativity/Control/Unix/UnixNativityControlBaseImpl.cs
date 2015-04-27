@@ -143,7 +143,7 @@ namespace Liferay.Nativity.Control.Unix
 
 		public override void StartSocketConnectionCheck()
 		{
-			logger.Info ("StartSocketConnectionCheck");
+			logger.Debug ("StartSocketConnectionCheck");
 			if (UnixNativityControlBaseImpl.timer != null)
 			{
 				UnixNativityControlBaseImpl.timer.Change (TimeSpan.Zero, UnixNativityControlBaseImpl.infiniteTimeSpan);
@@ -152,7 +152,7 @@ namespace Liferay.Nativity.Control.Unix
 
 		public override void StopSocketConnectionCheck()
 		{
-			logger.Info ("StopSocketConnectionCheck");
+			logger.Debug ("StopSocketConnectionCheck");
 			if (UnixNativityControlBaseImpl.timer != null)
 			{
 				UnixNativityControlBaseImpl.timer.Dispose ();
@@ -178,7 +178,7 @@ namespace Liferay.Nativity.Control.Unix
 					var checkMessageString =  JsonConvert.SerializeObject(message);
 					this.callbackOutputStream.WriteLine(checkMessageString);
 				}
-				timer.Change (this.checkSocketConnectionInterval, UnixNativityControlBaseImpl.infiniteTimeSpan);
+				UnixNativityControlBaseImpl.timer.Change (this.checkSocketConnectionInterval, UnixNativityControlBaseImpl.infiniteTimeSpan);
 			}
 			catch(Exception ex)
 			{
@@ -305,6 +305,10 @@ namespace Liferay.Nativity.Control.Unix
 			set
 			{
 				this.checkSocketConnectionInterval = value;
+				if (UnixNativityControlBaseImpl.timer != null)
+				{
+					UnixNativityControlBaseImpl.timer.Change (this.checkSocketConnectionInterval, UnixNativityControlBaseImpl.infiniteTimeSpan);
+				}
 			}
 		}
 		private TimeSpan checkSocketConnectionInterval = UnixNativityControlBaseImpl.infiniteTimeSpan;
