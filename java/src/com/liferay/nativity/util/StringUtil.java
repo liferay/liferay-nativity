@@ -31,6 +31,10 @@ public class StringUtil {
 		String[] normalizedTexts = new String[texts.length];
 
 		for (int i = 0; i < texts.length; i++) {
+			if (texts[i] == null) {
+				continue;
+			}
+
 			normalizedTexts[i] = Normalizer.normalize(
 				texts[i], Normalizer.Form.NFC);
 		}
