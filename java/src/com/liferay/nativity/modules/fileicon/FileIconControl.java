@@ -53,6 +53,17 @@ public interface FileIconControl extends FileIconControlCallback {
 	public int registerIcon(String path);
 
 	/**
+	 * Mac Finder Sync only
+	 *
+	 * Register an overlay icon with label and id
+	 *
+	 * @param path The path of the overlay icon to register
+	 * @param label The label to show when icons are unavailable
+	 * @param path The unique id identifying this icon
+	 */
+	public void registerIconWithId(String path, String label, int id);
+
+	/**
 	 * Linux only
 	 * Deprecated for Mac as of 1.2
 	 *

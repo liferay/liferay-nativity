@@ -28,6 +28,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +106,15 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 		_connected = true;
 
 		return false;
+	}
+
+	@Override
+	public Set<String> getAllObservedFolders() {
+		return null;
+	}
+
+	@Override
+	public void refreshFiles(String[] paths) {
 	}
 
 	@Override

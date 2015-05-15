@@ -39,10 +39,6 @@ public class AppleNativityControlImpl extends UnixNativityControlBaseImpl {
 	}
 
 	@Override
-	public void refreshFiles(String[] paths) {
-	}
-
-	@Override
 	public void setFilterFolder(String folder) {
 		setFilterFolders(new String[] { folder });
 	}

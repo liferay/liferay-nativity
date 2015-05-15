@@ -58,6 +58,10 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	}
 
 	@Override
+	public void registerIconWithId(String path, String label, int id) {
+	}
+
+	@Override
 	public void removeAllFileIcons() {
 	}
 

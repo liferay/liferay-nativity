@@ -47,6 +47,10 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 	}
 
 	@Override
+	public void registerIconWithId(String path, String label, int id) {
+	}
+
+	@Override
 	public void removeAllFileIcons() {
 		NativityMessage message = new NativityMessage(
 			Constants.REMOVE_ALL_FILE_ICONS, "");

@@ -28,6 +28,8 @@ public class Constants {
 
 	public static final String ENABLE_OVERLAY_REGISTRY_NAME = "EnableOverlay";
 
+	public static final String END_OBSERVING_FOLDER = "endObservingFolder";
+
 	public static final String FILES = "files";
 
 	public static final String FILTER_FOLDERS_REGISTRY_NAME = "FilterFolders";
@@ -51,6 +53,8 @@ public class Constants {
 
 	public static final String REGISTER_ICON = "registerIcon";
 
+	public static final String REGISTER_ICON_WITH_ID = "registerIconWithId";
+
 	public static final String REMOVE_ALL_FILE_ICONS = "removeAllFileIcons";
 
 	public static final String REMOVE_FILE_ICONS = "removeFileIcons";
@@ -64,6 +68,8 @@ public class Constants {
 	public static final String SET_FILTER_PATHS = "setFilterPaths";
 
 	public static final String SET_SYSTEM_FOLDER = "setSystemFolder";
+
+	public static final String START_OBSERVING_FOLDER = "startObservingFolder";
 
 	public static final String UNREGISTER_ICON = "unregisterIcon";
 

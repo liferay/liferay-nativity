@@ -15,6 +15,7 @@
 package com.liferay.nativity.modules.fileicon;
 
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.modules.fileicon.findersync.FSFileIconControlImpl;
 import com.liferay.nativity.modules.fileicon.unix.AppleFileIconControlImpl;
 import com.liferay.nativity.modules.fileicon.unix.LinuxFileIconControlImpl;
 import com.liferay.nativity.modules.fileicon.win.WindowsFileIconControlImpl;
@@ -33,7 +34,14 @@ public class FileIconControlUtil {
 			nativityControl, fileIconControlCallback);
 
 		if (OSDetector.isApple()) {
-			return fileIconControlUtil.createAppleFileIconControl();
+			if (OSDetector.isMinimumAppleVersion(
+					OSDetector.MAC_YOSEMITE_10_10)) {
+
+				return fileIconControlUtil.createFSFileIconControl();
+			}
+			else {
+				return fileIconControlUtil.createAppleFileIconControl();
+			}
 		}
 		else if (OSDetector.isWindows()) {
 			return fileIconControlUtil.createWindowsFileIconControl();
@@ -47,6 +55,11 @@ public class FileIconControlUtil {
 
 	protected FileIconControl createAppleFileIconControl() {
 		return new AppleFileIconControlImpl(
+			_nativityControl, _fileIconControlCallback);
+	}
+
+	protected FileIconControl createFSFileIconControl() {
+		return new FSFileIconControlImpl(
 			_nativityControl, _fileIconControlCallback);
 	}
 

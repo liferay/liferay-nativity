@@ -46,10 +46,6 @@ public class LinuxNativityControlImpl extends UnixNativityControlBaseImpl {
 	}
 
 	@Override
-	public void refreshFiles(String[] paths) {
-	}
-
-	@Override
 	public void setFilterFolder(String folder) {
 		NativityMessage message = new NativityMessage(
 			Constants.SET_FILTER_PATH, folder);

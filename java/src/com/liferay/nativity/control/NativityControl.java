@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +113,15 @@ public abstract class NativityControl {
 			listener.onSocketOpen();
 		}
 	}
+
+	/**
+	 * Mac Finder Sync only
+	 *
+	 * Gets all currently observed folders
+	 *
+	 * @return set of observed folder paths
+	 */
+	public abstract Set<String> getAllObservedFolders();
 
 	/**
 	 * Mac only
