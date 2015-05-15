@@ -48,7 +48,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * @param path The path of the overlay icon to register
 	 *
-	 * @return overlay icon id. -1 if the icon failed ot register.
+	 * @return overlay icon id. -1 if the icon failed to register.
 	 */
 	public int registerIcon(String path);
 

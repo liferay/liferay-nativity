@@ -15,6 +15,7 @@
 package com.liferay.nativity.control;
 
 import com.liferay.nativity.listeners.SocketCloseListener;
+import com.liferay.nativity.listeners.SocketOpenListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +33,11 @@ public abstract class NativityControl {
 	public NativityControl() {
 		_commandMap = new HashMap<String, MessageListener>();
 		socketCloseListeners = new ArrayList<SocketCloseListener>();
+		socketOpenListeners = new ArrayList<SocketOpenListener>();
 	}
 
 	/**
-	 * Adds a SocketCloserListener that will be triggered when the socket
+	 * Adds a SocketCloseListener that will be triggered when the socket
 	 * connection to the native service is closed
 	 *
 	 * @param socketCloseListener The SocketCloseListener instance to add
@@ -44,6 +46,16 @@ public abstract class NativityControl {
 		SocketCloseListener socketCloseListener) {
 
 		socketCloseListeners.add(socketCloseListener);
+	}
+
+	/**
+	 * Adds a SocketOpenListener that will be triggered when the socket
+	 * connection to the native service is closed
+	 *
+	 * @param socketOpenListener The SocketOpenListener instance to add
+	 */
+	public void addSocketOpenListener(SocketOpenListener socketOpenListener) {
+		socketOpenListeners.add(socketOpenListener);
 	}
 
 	/**
@@ -81,6 +93,24 @@ public abstract class NativityControl {
 		}
 
 		return messageListener.onMessage(message);
+	}
+
+	/**
+	 * Fires all SocketCloseListeners
+	 */
+	public void fireSocketCloseListeners() {
+		for (SocketCloseListener listener : socketCloseListeners) {
+			listener.onSocketClose();
+		}
+	}
+
+	/**
+	 * Fires all SocketOpenListeners
+	 */
+	public void fireSocketOpenListeners() {
+		for (SocketOpenListener listener : socketOpenListeners) {
+			listener.onSocketOpen();
+		}
 	}
 
 	/**
@@ -124,7 +154,7 @@ public abstract class NativityControl {
 	}
 
 	/**
-	 * Removes a previously added SocketCloserListener instance
+	 * Removes a previously added SocketCloseListener instance
 	 *
 	 * @param socketCloseListener The SocketCloseListener instance to remove
 	 */
@@ -132,6 +162,17 @@ public abstract class NativityControl {
 		SocketCloseListener socketCloseListener) {
 
 		socketCloseListeners.remove(socketCloseListener);
+	}
+
+	/**
+	 * Removes a previously added SocketOpenListener instance
+	 *
+	 * @param socketOpenListener The SocketOpenListener instance to remove
+	 */
+	public void removeSocketOpenListener(
+		SocketOpenListener socketOpenListener) {
+
+		socketOpenListeners.remove(socketOpenListener);
 	}
 
 	/**
@@ -144,9 +185,7 @@ public abstract class NativityControl {
 	 *
 	 * @return response from the native service
 	 */
-	public String sendMessage(NativityMessage nativityMessage) {
-		return "";
-	}
+	public abstract String sendMessage(NativityMessage nativityMessage);
 
 	/**
 	 * Convenience method for calling setFilterFolders with one folder.
@@ -185,6 +224,7 @@ public abstract class NativityControl {
 	public abstract boolean unload() throws Exception;
 
 	protected List<SocketCloseListener> socketCloseListeners;
+	protected List<SocketOpenListener> socketOpenListeners;
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		NativityControl.class.getName());

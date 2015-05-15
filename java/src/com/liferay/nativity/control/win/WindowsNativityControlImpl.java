@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
-import com.liferay.nativity.listeners.SocketCloseListener;
+import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.util.win.RegistryUtil;
 
 import java.io.IOException;
@@ -131,6 +131,11 @@ public class WindowsNativityControlImpl extends NativityControl {
 	}
 
 	@Override
+	public String sendMessage(NativityMessage nativityMessage) {
+		return "";
+	}
+
+	@Override
 	public void setFilterFolder(String folder) {
 		setFilterFolders(new String[] { folder });
 	}
@@ -175,29 +180,20 @@ public class WindowsNativityControlImpl extends NativityControl {
 			_executor.execute(new MessageProcessor(clientSocket, this));
 		}
 		catch (SocketException se) {
-			for (SocketCloseListener socketCloseListener :
-					socketCloseListeners) {
-
-				socketCloseListener.onSocketClose();
-			}
+			fireSocketCloseListeners();
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 
-			for (SocketCloseListener socketCloseListener :
-					socketCloseListeners) {
-
-				socketCloseListener.onSocketClose();
-			}
+			fireSocketCloseListeners();
 		}
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(
 		WindowsNativityControlImpl.class.getName());
 
-	private static ObjectMapper _objectMapper =
-		new ObjectMapper().configure(
-			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+	private static ObjectMapper _objectMapper = new ObjectMapper().configure(
+		JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 	private static int _port = 33001;
 
 	private boolean _connected = false;

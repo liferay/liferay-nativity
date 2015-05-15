@@ -28,8 +28,8 @@ import java.util.List;
 public abstract class FileIconControlBase implements FileIconControl {
 
 	public FileIconControlBase(
-			NativityControl nativityControl,
-			FileIconControlCallback fileIconControlCallback) {
+		NativityControl nativityControl,
+		FileIconControlCallback fileIconControlCallback) {
 
 		this.nativityControl = nativityControl;
 		this.fileIconControlCallback = fileIconControlCallback;
@@ -48,7 +48,7 @@ public abstract class FileIconControlBase implements FileIconControl {
 						filePath = args.get(0).toString();
 					}
 				}
-				else if (null != message.getValue()) {
+				else if (message.getValue() != null) {
 					filePath = message.getValue().toString();
 				}
 

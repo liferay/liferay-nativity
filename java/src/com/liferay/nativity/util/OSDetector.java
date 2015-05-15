@@ -24,41 +24,45 @@ import org.slf4j.LoggerFactory;
  */
 public class OSDetector {
 
-	public static final double MAC_CHEETAH_10_0 = 10.0;
+	public static final String MAC_CHEETAH_10_0 = "10.0";
 
-	public static final double MAC_JAGUAR_10_2 = 10.2;
+	public static final String MAC_JAGUAR_10_2 = "10.2";
 
-	public static final double MAC_LEOPARD_10_5 = 10.5;
+	public static final String MAC_LEOPARD_10_5 = "10.5";
 
-	public static final double MAC_LION_10_7 = 10.7;
+	public static final String MAC_LION_10_7 = "10.7";
 
-	public static final double MAC_MOUNTAIN_LION_10_8 = 10.8;
+	public static final String MAC_MAVERICKS_10_9 = "10.9";
 
-	public static final double MAC_PANTHER_10_3 = 10.3;
+	public static final String MAC_MOUNTAIN_LION_10_8 = "10.8";
 
-	public static final double MAC_PUMA_10_1 = 10.1;
+	public static final String MAC_PANTHER_10_3 = "10.3";
 
-	public static final double MAC_SNOW_LEOPARD_10_6 = 10.6;
+	public static final String MAC_PUMA_10_1 = "10.1";
 
-	public static final double MAC_TIGER_10_4 = 10.4;
+	public static final String MAC_SNOW_LEOPARD_10_6 = "10.6";
 
-	public static final double WIN_7 = 6.1;
+	public static final String MAC_TIGER_10_4 = "10.4";
 
-	public static final double WIN_8 = 6.2;
+	public static final String MAC_YOSEMITE_10_10 = "10.10";
 
-	public static final double WIN_2000 = 5.0;
+	public static final String WIN_7 = "6.1";
 
-	public static final double WIN_SERVER_2003 = 5.2;
+	public static final String WIN_8 = "6.2";
 
-	public static final double WIN_SERVER_2008 = 6.0;
+	public static final String WIN_2000 = "5.0";
 
-	public static final double WIN_SERVER_2012 = 6.2;
+	public static final String WIN_SERVER_2003 = "5.2";
 
-	public static final double WIN_VISTA = 6.0;
+	public static final String WIN_SERVER_2008 = "6.0";
 
-	public static final double WIN_XP_X64 = 5.2;
+	public static final String WIN_SERVER_2012 = "6.2";
 
-	public static final double WIN_XP_X86 = 5.1;
+	public static final String WIN_VISTA = "6.0";
+
+	public static final String WIN_XP_X64 = "5.2";
+
+	public static final String WIN_XP_X86 = "5.1";
 
 	public static boolean isAIX() {
 		if (_aix != null) {
@@ -111,7 +115,7 @@ public class OSDetector {
 		return _linux.booleanValue();
 	}
 
-	public static boolean isMinimumAppleVersion(double minimumVersion) {
+	public static boolean isMinimumAppleVersion(String minimumVersion) {
 		if (!isApple()) {
 			return false;
 		}
@@ -120,29 +124,17 @@ public class OSDetector {
 			_version = System.getProperty("os.version");
 		}
 
-		String[] parts = _version.split("\\.");
+		int compare = VersionUtil.compare(_version, minimumVersion);
 
-		StringBuilder sb = new StringBuilder(3);
-
-		sb.append(parts[0]);
-		sb.append(".");
-		sb.append(parts[1]);
-
-		try {
-			double version = Double.parseDouble(sb.toString());
-
-			if (version >= minimumVersion) {
-				return true;
-			}
+		if (compare >= 0) {
+			return true;
 		}
-		catch (Exception e) {
-			_logger.error("Could not determine OS Version", e.getMessage());
+		else {
+			return false;
 		}
-
-		return false;
 	}
 
-	public static boolean isMinimumWindowsVersion(double minimumVersion) {
+	public static boolean isMinimumWindowsVersion(String minimumVersion) {
 		if (!isWindows()) {
 			return false;
 		}
@@ -151,18 +143,14 @@ public class OSDetector {
 			_version = System.getProperty("os.version");
 		}
 
-		try {
-			double version = Double.parseDouble(_version);
+		int compare = VersionUtil.compare(_version, minimumVersion);
 
-			if (version >= minimumVersion) {
-				return true;
-			}
+		if (compare >= 0) {
+			return true;
 		}
-		catch (Exception e) {
-			_logger.error("Could not determine OS Version", e.getMessage());
+		else {
+			return false;
 		}
-
-		return false;
 	}
 
 	public static boolean isUnix() {

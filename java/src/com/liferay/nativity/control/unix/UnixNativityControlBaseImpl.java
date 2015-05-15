@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.control.NativityMessage;
-import com.liferay.nativity.listeners.SocketCloseListener;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -136,9 +135,7 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 			if (reply == null) {
 				_commandSocket.close();
 
-				for (SocketCloseListener listener : socketCloseListeners) {
-					listener.onSocketClose();
-				}
+				fireSocketCloseListeners();
 			}
 
 			return reply;
@@ -146,9 +143,7 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 
-			for (SocketCloseListener listener : socketCloseListeners) {
-				listener.onSocketClose();
-			}
+			fireSocketCloseListeners();
 
 			return "";
 		}
@@ -192,9 +187,7 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 				if (data == null) {
 					disconnect();
 
-					for (SocketCloseListener listener : socketCloseListeners) {
-						listener.onSocketClose();
-					}
+					fireSocketCloseListeners();
 
 					break;
 				}
@@ -231,9 +224,7 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 
 				disconnect();
 
-				for (SocketCloseListener listener : socketCloseListeners) {
-					listener.onSocketClose();
-				}
+				fireSocketCloseListeners();
 			}
 		}
 	}
@@ -245,9 +236,8 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 
 	private static int _callbackSocketPort = 33002;
 	private static int _commandSocketPort = 33001;
-	private static ObjectMapper _objectMapper =
-		new ObjectMapper().configure(
-			JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+	private static ObjectMapper _objectMapper = new ObjectMapper().configure(
+		JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 
 	private BufferedReader _callbackBufferedReader;
 	private DataOutputStream _callbackOutputStream;
