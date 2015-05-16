@@ -1,0 +1,497 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AD1424471AF455F900BC490E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1424461AF455F900BC490E /* AppDelegate.m */; };
+		AD1424491AF455F900BC490E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1424481AF455F900BC490E /* main.m */; };
+		AD14244C1AF455F900BC490E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD14244B1AF455F900BC490E /* ViewController.m */; };
+		AD14244E1AF455F900BC490E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD14244D1AF455F900BC490E /* Images.xcassets */; };
+		AD1424511AF455F900BC490E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD14244F1AF455F900BC490E /* Main.storyboard */; };
+		AD1424711AF4562800BC490E /* FinderSync.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1424701AF4562800BC490E /* FinderSync.m */; };
+		AD1424741AF4562800BC490E /* LiferayFinderSync.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AD14246A1AF4562800BC490E /* LiferayFinderSync.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AD1867051AF45BF0000342D9 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1867041AF45BF0000342D9 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		AD1867091AF45C09000342D9 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1867081AF45C09000342D9 /* GCDAsyncSocket.m */; };
+		AD18671E1AF4605C000342D9 /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD18671D1AF4605C000342D9 /* RequestManager.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AD1424721AF4562800BC490E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AD1424381AF455F900BC490E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD1424691AF4562800BC490E;
+			remoteInfo = LiferayFinderSync;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AD1424781AF4562800BC490E /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AD1424741AF4562800BC490E /* LiferayFinderSync.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		AD1424401AF455F900BC490E /* LiferayShellApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiferayShellApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD1424441AF455F900BC490E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD1424451AF455F900BC490E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		AD1424461AF455F900BC490E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		AD1424481AF455F900BC490E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AD14244A1AF455F900BC490E /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		AD14244B1AF455F900BC490E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		AD14244D1AF455F900BC490E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		AD1424501AF455F900BC490E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AD14246A1AF4562800BC490E /* LiferayFinderSync.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LiferayFinderSync.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD14246D1AF4562800BC490E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AD14246E1AF4562800BC490E /* LiferayFinderSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = LiferayFinderSync.entitlements; sourceTree = "<group>"; };
+		AD14246F1AF4562800BC490E /* FinderSync.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FinderSync.h; sourceTree = "<group>"; };
+		AD1424701AF4562800BC490E /* FinderSync.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FinderSync.m; sourceTree = "<group>"; };
+		AD1867031AF45BF0000342D9 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		AD1867041AF45BF0000342D9 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		AD1867071AF45C09000342D9 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		AD1867081AF45C09000342D9 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		AD18671C1AF4605C000342D9 /* RequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestManager.h; sourceTree = "<group>"; };
+		AD18671D1AF4605C000342D9 /* RequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestManager.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AD14243D1AF455F900BC490E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD1424671AF4562800BC490E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AD1424371AF455F900BC490E = {
+			isa = PBXGroup;
+			children = (
+				AD1424421AF455F900BC490E /* LiferayShellApp */,
+				AD14246B1AF4562800BC490E /* LiferayFinderSync */,
+				AD1424411AF455F900BC490E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AD1424411AF455F900BC490E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AD1424401AF455F900BC490E /* LiferayShellApp.app */,
+				AD14246A1AF4562800BC490E /* LiferayFinderSync.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AD1424421AF455F900BC490E /* LiferayShellApp */ = {
+			isa = PBXGroup;
+			children = (
+				AD1424451AF455F900BC490E /* AppDelegate.h */,
+				AD1424461AF455F900BC490E /* AppDelegate.m */,
+				AD14244A1AF455F900BC490E /* ViewController.h */,
+				AD14244B1AF455F900BC490E /* ViewController.m */,
+				AD14244D1AF455F900BC490E /* Images.xcassets */,
+				AD14244F1AF455F900BC490E /* Main.storyboard */,
+				AD1424431AF455F900BC490E /* Supporting Files */,
+			);
+			path = LiferayShellApp;
+			sourceTree = "<group>";
+		};
+		AD1424431AF455F900BC490E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AD1424441AF455F900BC490E /* Info.plist */,
+				AD1424481AF455F900BC490E /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AD14246B1AF4562800BC490E /* LiferayFinderSync */ = {
+			isa = PBXGroup;
+			children = (
+				AD338DC51AFAF37F00EE55CA /* Resources */,
+				AD1867061AF45C00000342D9 /* GCDAsyncSocket */,
+				AD14247B1AF457C800BC490E /* JSONKit */,
+				AD14246F1AF4562800BC490E /* FinderSync.h */,
+				AD1424701AF4562800BC490E /* FinderSync.m */,
+				AD14246C1AF4562800BC490E /* Supporting Files */,
+				AD18671C1AF4605C000342D9 /* RequestManager.h */,
+				AD18671D1AF4605C000342D9 /* RequestManager.m */,
+			);
+			path = LiferayFinderSync;
+			sourceTree = "<group>";
+		};
+		AD14246C1AF4562800BC490E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AD14246D1AF4562800BC490E /* Info.plist */,
+				AD14246E1AF4562800BC490E /* LiferayFinderSync.entitlements */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AD14247B1AF457C800BC490E /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				AD1867031AF45BF0000342D9 /* JSONKit.h */,
+				AD1867041AF45BF0000342D9 /* JSONKit.m */,
+			);
+			name = JSONKit;
+			sourceTree = "<group>";
+		};
+		AD1867061AF45C00000342D9 /* GCDAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				AD1867071AF45C09000342D9 /* GCDAsyncSocket.h */,
+				AD1867081AF45C09000342D9 /* GCDAsyncSocket.m */,
+			);
+			name = GCDAsyncSocket;
+			sourceTree = "<group>";
+		};
+		AD338DC51AFAF37F00EE55CA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AD14243F1AF455F900BC490E /* LiferayShellApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD1424601AF455F900BC490E /* Build configuration list for PBXNativeTarget "LiferayShellApp" */;
+			buildPhases = (
+				AD14243C1AF455F900BC490E /* Sources */,
+				AD14243D1AF455F900BC490E /* Frameworks */,
+				AD14243E1AF455F900BC490E /* Resources */,
+				AD1424781AF4562800BC490E /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AD1424731AF4562800BC490E /* PBXTargetDependency */,
+			);
+			name = LiferayShellApp;
+			productName = LiferayShellApp;
+			productReference = AD1424401AF455F900BC490E /* LiferayShellApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AD1424691AF4562800BC490E /* LiferayFinderSync */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD1424751AF4562800BC490E /* Build configuration list for PBXNativeTarget "LiferayFinderSync" */;
+			buildPhases = (
+				AD1424661AF4562800BC490E /* Sources */,
+				AD1424671AF4562800BC490E /* Frameworks */,
+				AD1424681AF4562800BC490E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiferayFinderSync;
+			productName = LiferayFinderSync;
+			productReference = AD14246A1AF4562800BC490E /* LiferayFinderSync.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AD1424381AF455F900BC490E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Liferay, Inc.";
+				TargetAttributes = {
+					AD14243F1AF455F900BC490E = {
+						CreatedOnToolsVersion = 6.3.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+					AD1424691AF4562800BC490E = {
+						CreatedOnToolsVersion = 6.3.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = AD14243B1AF455F900BC490E /* Build configuration list for PBXProject "LiferayShellApp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AD1424371AF455F900BC490E;
+			productRefGroup = AD1424411AF455F900BC490E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AD14243F1AF455F900BC490E /* LiferayShellApp */,
+				AD1424691AF4562800BC490E /* LiferayFinderSync */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AD14243E1AF455F900BC490E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD14244E1AF455F900BC490E /* Images.xcassets in Resources */,
+				AD1424511AF455F900BC490E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD1424681AF4562800BC490E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AD14243C1AF455F900BC490E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD14244C1AF455F900BC490E /* ViewController.m in Sources */,
+				AD1424491AF455F900BC490E /* main.m in Sources */,
+				AD1424471AF455F900BC490E /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD1424661AF4562800BC490E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD1867091AF45C09000342D9 /* GCDAsyncSocket.m in Sources */,
+				AD1867051AF45BF0000342D9 /* JSONKit.m in Sources */,
+				AD1424711AF4562800BC490E /* FinderSync.m in Sources */,
+				AD18671E1AF4605C000342D9 /* RequestManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AD1424731AF4562800BC490E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AD1424691AF4562800BC490E /* LiferayFinderSync */;
+			targetProxy = AD1424721AF4562800BC490E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		AD14244F1AF455F900BC490E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD1424501AF455F900BC490E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AD14245E1AF455F900BC490E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		AD14245F1AF455F900BC490E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AD1424611AF455F900BC490E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = LiferayShellApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = LiferayShellApp;
+			};
+			name = Debug;
+		};
+		AD1424621AF455F900BC490E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = LiferayShellApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = LiferayShellApp;
+			};
+			name = Release;
+		};
+		AD1424761AF4562800BC490E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				CODE_SIGN_ENTITLEMENTS = LiferayFinderSync/LiferayFinderSync.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = LiferayFinderSync/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		AD1424771AF4562800BC490E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
+				CODE_SIGN_ENTITLEMENTS = LiferayFinderSync/LiferayFinderSync.entitlements;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = LiferayFinderSync/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AD14243B1AF455F900BC490E /* Build configuration list for PBXProject "LiferayShellApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD14245E1AF455F900BC490E /* Debug */,
+				AD14245F1AF455F900BC490E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD1424601AF455F900BC490E /* Build configuration list for PBXNativeTarget "LiferayShellApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD1424611AF455F900BC490E /* Debug */,
+				AD1424621AF455F900BC490E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD1424751AF4562800BC490E /* Build configuration list for PBXNativeTarget "LiferayFinderSync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD1424761AF4562800BC490E /* Debug */,
+				AD1424771AF4562800BC490E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AD1424381AF455F900BC490E /* Project object */;
+}

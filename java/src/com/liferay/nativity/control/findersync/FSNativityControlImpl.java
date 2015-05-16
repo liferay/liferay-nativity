@@ -201,9 +201,7 @@ public class FSNativityControlImpl extends NativityControl {
 
 			_finderSyncChannelHandlers.add(this);
 
-			if (_channelGroup != null) {
-				_channelGroup.add(channelHandlerContext.channel());
-			}
+			_channelGroup.add(channelHandlerContext.channel());
 
 			fireSocketOpenListeners();
 		}
@@ -216,9 +214,7 @@ public class FSNativityControlImpl extends NativityControl {
 
 			_finderSyncChannelHandlers.remove(this);
 
-			if (_channelGroup != null) {
-				_channelGroup.remove(channelHandlerContext.channel());
-			}
+			_channelGroup.remove(channelHandlerContext.channel());
 
 			fireSocketCloseListeners();
 		}
