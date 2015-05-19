@@ -114,6 +114,18 @@ public class AppleUtil {
 		}
 	}
 
+	public static void uninstallScripts() {
+		try {
+			String script = AppleScriptUtil.getScript(
+				"uninstallscripts.applescript");
+
+			AppleScriptUtil.executeScript(script);
+		}
+		catch (Exception e) {
+			_logger.error(e.getMessage(), e);
+		}
+	}
+
 	public static boolean unload() {
 		try {
 			String script = AppleScriptUtil.getScript("unload.applescript");
