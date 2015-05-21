@@ -1,6 +1,17 @@
 <?xml version="1.0"?>
 
-<project name="liferay-nativity-java" basedir="." default="compile">
+<project name="liferay-nativity-java" basedir="." default="compile" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property name="ivy.install.version" value="${ivy.install.version}" />
+
+	<condition property="ivy.home" value="${env.IVY_HOME}">
+		<isset property="env.IVY_HOME" />
+	</condition>
+	
+	<property name="ivy.home" value="${user.home}/.ant" />
+	<property name="ivy.jar.dir" value="${ivy.home}/lib" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+	<property name="ivy.pom.version" value="${java.package.version}" />
+
 	<property name="java.dir" value="${basedir}/java" />
 	<property name="tmp.dir" value="${basedir}/tmp" />
 
@@ -27,10 +38,9 @@
 	</path>
 
 	<target name="build-jar" depends="compile,build-jni-headers">
-		<jar destfile="${basedir}/dist/liferay-nativity-${package.version}.jar" filesetmanifest="mergewithoutmain" update="true">
+		<jar destfile="${basedir}/dist/liferay-nativity-${java.package.version}.jar" filesetmanifest="mergewithoutmain" update="true">
 			<fileset dir="${java.dir}/classes" />
 			<service type="javax.script.ScriptEngineFactory" provider="apple.applescript.AppleScriptEngineFactory" />
-			<zipgroupfileset dir="${java.dir}/lib" excludes="META-INF/*.SF" includes="*.jar" />
 		</jar>
 	</target>
 
@@ -41,147 +51,148 @@
 	<target name="build-windows-util">
 		<mkdir dir="${basedir}/dist/" />
 
-        <exec
-            executable="${basedir}/build-windows.cmd"
-            failonerror="true"
-        >
-            <arg value="LiferayNativityUtil" />
-            <arg value="${basedir}/windows" />
-            <arg value="${ms.sdk.7.1.dir}" />
-            <arg value="${framework.dir}" />
-        </exec>
+		<exec
+			executable="${basedir}/build-windows.cmd"
+			failonerror="true"
+		>
+			<arg value="LiferayNativityUtil" />
+			<arg value="${basedir}/windows" />
+			<arg value="${ms.sdk.7.1.dir}" />
+			<arg value="${framework.dir}" />
+		</exec>
 
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityUtil_x64.dll"
-            toFile="${basedir}/dist/LiferayNativityUtil_x64.dll"
-        />
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityUtil_x64.dll"
+			toFile="${basedir}/dist/LiferayNativityUtil_x64.dll"
+		/>
 
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityUtil_x86.dll"
-            toFile="${basedir}/dist/LiferayNativityUtil_x86.dll"
-        />
-    </target>
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityUtil_x86.dll"
+			toFile="${basedir}/dist/LiferayNativityUtil_x86.dll"
+		/>
+	</target>
 
-    <target name="build-windows-native-util">
+	<target name="build-windows-native-util">
 		<mkdir dir="${basedir}/dist/" />
 
 		<antcall target="build-jni-headers" />
 
-        <exec
-            executable="${basedir}/build-windows.cmd"
-            failonerror="true"
-        >
-            <arg value="LiferayNativityWindowsUtil" />
-            <arg value="${basedir}/windows" />
-            <arg value="${ms.sdk.7.1.dir}" />
-            <arg value="${framework.dir}" />
-        </exec>
-
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityWindowsUtil_x64.dll"
-            toFile="${basedir}/dist/LiferayNativityWindowsUtil_x64.dll"
-        />
-
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityWindowsUtil_x86.dll"
-            toFile="${basedir}/dist/LiferayNativityWindowsUtil_x86.dll"
-        />
+		<exec
+			executable="${basedir}/build-windows.cmd"
+			failonerror="true"
+		>
+			<arg value="LiferayNativityWindowsUtil" />
+			<arg value="${basedir}/windows" />
+			<arg value="${ms.sdk.7.1.dir}" />
+			<arg value="${framework.dir}" />
+		</exec>
 
 		<copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityWindowsUtil_x64.dll"
-            toFile="${java.dir}/lib/native/LiferayNativityWindowsUtil_x64.dll"
-        />
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityWindowsUtil_x64.dll"
+			toFile="${basedir}/dist/LiferayNativityWindowsUtil_x64.dll"
+		/>
 
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityWindowsUtil_x86.dll"
-            toFile="${java.dir}/lib/native/LiferayNativityWindowsUtil_x86.dll"
-        />
-    </target>
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityWindowsUtil_x86.dll"
+			toFile="${basedir}/dist/LiferayNativityWindowsUtil_x86.dll"
+		/>
+
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityWindowsUtil_x64.dll"
+			toFile="${java.dir}/lib/native/LiferayNativityWindowsUtil_x64.dll"
+		/>
+
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityWindowsUtil_x86.dll"
+			toFile="${java.dir}/lib/native/LiferayNativityWindowsUtil_x86.dll"
+		/>
+	</target>
 
 	<target name="build-windows-menus">
 		<mkdir dir="${basedir}/dist/" />
 
-	    <copy
-	        file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuConstants.h.original"
-	        toFile="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuConstants.h"
-	        overwrite="true"
-	        force="true"
-	        failonerror="true"
-	    />
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuConstants.h.original"
+			toFile="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuConstants.h"
+			overwrite="true"
+			force="true"
+			failonerror="true"
+		/>
 
-	    <replace file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuConstants.h">
-	    	<replacefilter token="[$context.menu.guid$]" value="${context.menu.guid}" />
+		<replace file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityContextMenus/ContextMenuConstants.h">
+			<replacefilter token="[$context.menu.guid$]" value="${context.menu.guid}" />
 	   </replace>
 
-        <exec
-            executable="${basedir}/build-windows.cmd"
-            failonerror="true"
-        >
-            <arg value="LiferayNativityContextMenus" />
-            <arg value="${basedir}/windows" />
-            <arg value="${ms.sdk.7.1.dir}" />
-            <arg value="${framework.dir}" />
-        </exec>
+		<exec
+			executable="${basedir}/build-windows.cmd"
+			failonerror="true"
+		>
+			<arg value="LiferayNativityContextMenus" />
+			<arg value="${basedir}/windows" />
+			<arg value="${ms.sdk.7.1.dir}" />
+			<arg value="${framework.dir}" />
+		</exec>
 
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityContextMenus_x64.dll"
-            toFile="${basedir}/dist/LiferayNativityContextMenus_x64.dll"
-        />
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityContextMenus_x64.dll"
+			toFile="${basedir}/dist/LiferayNativityContextMenus_x64.dll"
+		/>
 
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityContextMenus_x86.dll"
-            toFile="${basedir}/dist/LiferayNativityContextMenus_x86.dll"
-        />
-    </target>
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityContextMenus_x86.dll"
+			toFile="${basedir}/dist/LiferayNativityContextMenus_x86.dll"
+		/>
+	</target>
 
 	<target name="build-windows-overlays">
 		<mkdir dir="${basedir}/dist/" />
 
-	    <copy
-		    file="${overlay.path}"
-	        toFile="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/overlay.ico"
-	        overwrite="true"
-	        force="true"
-	        failonerror="true"
-	    />
-
 		<copy
-		    file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h.original"
-		    toFile="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h"
-		    overwrite="true"
-		    force="true"
-		    failonerror="true"
+			file="${overlay.path}"
+			toFile="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/overlay.ico"
+			overwrite="true"
+			force="true"
+			failonerror="true"
 		/>
 
-	    <replace file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h">
-	        <replacefilter token="[$overlay.guid$]" value="${overlay.guid}" />
-	        <replacefilter token="[$overlay.id$]" value="${overlay.id}" />
-	    	<replacefilter token="[$overlay.name$]" value="${overlay.name}" />
-	    </replace>
-
-        <exec
-            executable="${basedir}/build-windows.cmd"
-            failonerror="true"
-        >
-            <arg value="LiferayNativityOverlays" />
-            <arg value="${basedir}/windows" />
-            <arg value="${ms.sdk.7.1.dir}" />
-            <arg value="${framework.dir}" />
-        </exec>
-
 		<copy
-		    file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityOverlays_x64.dll"
-		    toFile="${basedir}/dist/${overlay.name}_x64.dll"
+			file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h.original"
+			toFile="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h"
+			overwrite="true"
+			force="true"
+			failonerror="true"
 		/>
 
-        <copy
-            file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityOverlays_x86.dll"
-            toFile="${basedir}/dist/${overlay.name}_x86.dll"
-        />
-    </target>
+		<replace file="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityOverlays/OverlayConstants.h">
+			<replacefilter token="[$overlay.guid$]" value="${overlay.guid}" />
+			<replacefilter token="[$overlay.id$]" value="${overlay.id}" />
+			<replacefilter token="[$overlay.name$]" value="${overlay.name}" />
+		</replace>
+
+		<exec
+			executable="${basedir}/build-windows.cmd"
+			failonerror="true"
+		>
+			<arg value="LiferayNativityOverlays" />
+			<arg value="${basedir}/windows" />
+			<arg value="${ms.sdk.7.1.dir}" />
+			<arg value="${framework.dir}" />
+		</exec>
+
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/x64/LiferayNativityOverlays_x64.dll"
+			toFile="${basedir}/dist/${overlay.name}_x64.dll"
+		/>
+
+		<copy
+			file="${basedir}/windows/LiferayNativityShellExtensions/Release/Win32/LiferayNativityOverlays_x86.dll"
+			toFile="${basedir}/dist/${overlay.name}_x86.dll"
+		/>
+	</target>
 
 	<target name="clean">
 		<delete dir="${java.dir}/classes" />
+		<delete dir="${java.dir}/lib" />
 		<delete dir="dist" />
 		<delete dir="${tmp.dir}" />
 	</target>
@@ -194,7 +205,7 @@
 		</antcall>
 	</target>
 
-	<target name="compile-java">
+	<target name="compile-java" depends="ivy-resolve">
 		<mkdir dir="${java.dir}/classes" />
 
 		<copy todir="${javac.destdir}">
@@ -228,5 +239,37 @@
 		</java>
 
 		<delete file="ServiceBuilder.temp" />
+	</target>
+
+	<target name="ivy-download" unless="offline">
+		<mkdir dir="${ivy.jar.dir}"/>
+
+		<get
+			dest="${ivy.jar.file}"
+			src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+			usetimestamp="true"
+		/>
+	</target>
+	
+	<target name="ivy-init" depends="ivy-download">
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+		</path>
+
+		<taskdef classpathref="ivy.lib.path" resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" />
+	</target>
+
+	<target name="ivy-makepom">
+		<ivy:makepom
+			ivyfile="ivy.xml"
+			pomfile="pom.xml"
+		>
+			<mapping conf="default" scope="compile" />
+			<mapping conf="runtime" scope="runtime" />
+		</ivy:makepom>
+	</target>
+
+	<target name="ivy-resolve">  
+		 <ivy:retrieve pattern="${java.dir}/lib/[artifact](-[classifier])-[revision].[ext]"/>
 	</target>
 </project>

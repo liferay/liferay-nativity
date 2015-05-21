@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<ivy-module
+	version="2.0"
+	xmlns:m2="http://ant.apache.org/ivy/maven"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
+>
+	<info module="com.liferay.nativity" organisation="com.liferay" />
+
+	<publications>
+		<artifact type="jar" />
+		<artifact type="pom" />
+		<artifact m2:classifier="sources" />
+	</publications>
+
+	<dependencies defaultconf="default">
+		<dependency name="jackson-annotations" org="com.fasterxml.jackson.core" rev="2.5.3" />
+		<dependency name="jackson-core" org="com.fasterxml.jackson.core" rev="2.5.3" />
+		<dependency name="jackson-databind" org="com.fasterxml.jackson.core" rev="2.5.3" />
+		<dependency name="log4j" org="log4j" rev="1.2.17" />
+		<dependency name="netty-buffer" org="io.netty" rev="4.0.28.Final"/>
+		<dependency name="netty-codec" org="io.netty" rev="4.0.28.Final"/>
+		<dependency name="netty-common" org="io.netty" rev="4.0.28.Final"/>
+		<dependency name="netty-handler" org="io.netty" rev="4.0.28.Final"/>
+		<dependency name="netty-transport" org="io.netty" rev="4.0.28.Final"/>
+		<dependency name="slf4j-api" org="org.slf4j" rev="1.7.12" />
+	</dependencies>
+</ivy-module>
