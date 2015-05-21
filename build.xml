@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 
 <project name="liferay-nativity-java" basedir="." default="compile" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property file="${basedir}/build.${user.name}.properties" />
+	<property file="${basedir}/build.${env.COMPUTERNAME}.properties" />
+	<property file="${basedir}/build.${env.HOST}.properties" />
+	<property file="${basedir}/build.${env.HOSTNAME}.properties" />
+	<property file="${basedir}/build.properties" />
+
 	<property name="ivy.install.version" value="${ivy.install.version}" />
 
 	<condition property="ivy.home" value="${env.IVY_HOME}">
@@ -16,12 +22,6 @@
 	<property name="tmp.dir" value="${basedir}/tmp" />
 
 	<property environment="env" />
-
-	<property file="${basedir}/build.${user.name}.properties" />
-	<property file="${basedir}/build.${env.COMPUTERNAME}.properties" />
-	<property file="${basedir}/build.${env.HOST}.properties" />
-	<property file="${basedir}/build.${env.HOSTNAME}.properties" />
-	<property file="${basedir}/build.properties" />
 
 	<path id="portal.classpath">
 		<pathelement location="${portal.dir}/portal-impl/classes" />
