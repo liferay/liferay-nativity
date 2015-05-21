@@ -21,7 +21,7 @@
 	NSData* _callbackData;
 	NSConditionLock* _callbackLock;
 	BOOL _connected;
-	NSDictionary* _menuActionDictionary;
+	NSMutableDictionary* _menuUuidDictionary;
 	NSMutableSet* _observedFolders;
 	BOOL _removeBadgesOnClose;
 	GCDAsyncSocket* _socket;

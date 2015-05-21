@@ -68,10 +68,6 @@
 	[[RequestManager sharedInstance] requestFileBadgeId:url];
 }
 
-- (void) sampleMenuItemClicked:(id)sender {
-	[[RequestManager sharedInstance] sendMenuItemClicked:@"sampleMenuItem"];
-}
-
 - (NSString*) toolbarItemName {
 	return @"Liferay Nativity";
 }

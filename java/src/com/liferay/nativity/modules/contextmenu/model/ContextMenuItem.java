@@ -26,7 +26,10 @@ import java.util.UUID;
 public class ContextMenuItem {
 
 	public ContextMenuItem(String title) {
-		this(title, "");
+		_title = title;
+		_contextMenuItems = new ArrayList<ContextMenuItem>();
+		_enabled = true;
+		_uuid = UUID.randomUUID().toString();
 	}
 
 	public ContextMenuItem(
@@ -35,14 +38,6 @@ public class ContextMenuItem {
 		this(title);
 
 		parentContextMenuItem.addContextMenuItem(this);
-	}
-
-	public ContextMenuItem(String title, String action) {
-		_title = title;
-		_action = action;
-		_contextMenuItems = new ArrayList<ContextMenuItem>();
-		_enabled = true;
-		_uuid = UUID.randomUUID().toString();
 	}
 
 	public boolean addContextMenuItem(ContextMenuItem menuItem) {
@@ -65,10 +60,6 @@ public class ContextMenuItem {
 		if (_contextMenuAction != null) {
 			_contextMenuAction.onSelection(paths);
 		}
-	}
-
-	public String getAction() {
-		return _action;
 	}
 
 	@JsonIgnore
@@ -105,10 +96,6 @@ public class ContextMenuItem {
 
 	public boolean removeContextMenuItem(ContextMenuItem menuItem) {
 		return _contextMenuItems.remove(menuItem);
-	}
-
-	public void setAction(String action) {
-		_action = action;
 	}
 
 	public void setContextMenuAction(ContextMenuAction contextMenuAction) {
@@ -150,7 +137,6 @@ public class ContextMenuItem {
 
 	private static final String _SEPARATOR = "_SEPARATOR_";
 
-	private String _action;
 	private ContextMenuAction _contextMenuAction;
 	private List<ContextMenuItem> _contextMenuItems;
 	private boolean _enabled;

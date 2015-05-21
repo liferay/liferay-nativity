@@ -20,6 +20,4 @@
 {
 }
 
-- (void)sampleMenuItemClicked:(id)sender;
-
 @end

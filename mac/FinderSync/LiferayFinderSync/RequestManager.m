@@ -12,6 +12,7 @@
  * details.
  */
 
+#import <objc/runtime.h>
 #import "FinderSync.h"
 #import "JSONKit.h"
 #import "RequestManager.h"
@@ -38,7 +39,7 @@ static RequestManager* sharedInstance = nil;
 	if ((self = [super init])) {
 		_callbackLock = [[NSConditionLock alloc] init];
 		_connected = NO;
-		_menuActionDictionary = [[NSMutableDictionary alloc] init];
+		_menuUuidDictionary = [[NSMutableDictionary alloc] init];
 		_observedFolders = [[NSMutableSet alloc] init];
 		_removeBadgesOnClose = YES;
 		_socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
@@ -58,7 +59,6 @@ static RequestManager* sharedInstance = nil;
 		NSString* subMenuTitle = menuItemDictionary[@"title"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
 		NSString* uuid = menuItemDictionary[@"uuid"];
-		NSString* action = menuItemDictionary[@"action"];
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 
 		if ([subMenuTitle isEqualToString:@"_SEPARATOR_"]) {
@@ -70,7 +70,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:subMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu action:action withTitle:subMenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
+			[self createActionMenuItem:menu withTitle:subMenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
 		}
 	}
 
@@ -92,19 +92,36 @@ static RequestManager* sharedInstance = nil;
 	}
 }
 
-- (void) createActionMenuItem:(NSMenu*)menu action:(NSString*)action withTitle:(NSString*)title withIndex:(NSInteger)index enabled:(BOOL)enabled withUuid:(NSString*)uuid forFiles:(NSArray*)files {
+- (void) createActionMenuItem:(NSMenu*)menu withTitle:(NSString*)title withIndex:(NSInteger)index enabled:(BOOL)enabled withUuid:(NSString*)uuid forFiles:(NSArray*)files {
 	NSMenuItem* mainMenuItem = nil;
 
-	if (!action) {
+	if (!enabled) {
 		mainMenuItem = [menu insertItemWithTitle:title action:nil keyEquivalent:@"" atIndex:index];
 	}
-	else if ([action isEqualToString:@"sampleMenuItem"]) {
-		mainMenuItem = [menu insertItemWithTitle:title action:@selector(sampleMenuItemClicked:) keyEquivalent:@"" atIndex:index];
-	}
 	else {
-		NSLog(@"Failed to find context menu action: %@", action);
+		NSDictionary* menuUuidDictionary = [[NSMutableDictionary alloc] init];
+		NSArray* filesArray = [files copy];
 
-		return;
+		[menuUuidDictionary setValue:filesArray forKey:@"files"];
+		[menuUuidDictionary setValue:uuid forKey:@"uuid"];
+
+		[_menuUuidDictionary setValue:menuUuidDictionary forKey:uuid];
+
+		SEL actionSelector = sel_registerName([[@"__CONTEXT_MENU_ACTION_" stringByAppendingString:[@(index)stringValue]] UTF8String]);
+
+		IMP methodIMP = imp_implementationWithBlock(^(id _self) {
+			[[RequestManager sharedInstance] sendMenuItemClicked:uuid];
+		});
+
+		if (![FinderSync instancesRespondToSelector:actionSelector]) {
+			class_addMethod([FinderSync class], actionSelector, methodIMP, "v@:");
+		}
+
+		Method method = class_getInstanceMethod([FinderSync class], actionSelector);
+
+		method_setImplementation(method, methodIMP);
+
+		mainMenuItem = [menu insertItemWithTitle:title action:actionSelector keyEquivalent:@"" atIndex:index];
 	}
 
 	if (enabled) {
@@ -113,14 +130,7 @@ static RequestManager* sharedInstance = nil;
 
 	[mainMenuItem setEnabled:enabled];
 
-	NSDictionary* menuActionDictionary = [[NSMutableDictionary alloc] init];
-	[menuActionDictionary setValue:uuid forKey:@"uuid"];
-	NSArray* filesArray = [files copy];
-	[menuActionDictionary setValue:filesArray forKey:@"files"];
-
-	if (action) {
-		[_menuActionDictionary setValue:menuActionDictionary forKey:action];
-	}
+	[mainMenuItem setImage:[NSImage imageNamed:@"logo"]];
 }
 
 - (void) executeCommand:(NSData*)data {
@@ -174,7 +184,6 @@ static RequestManager* sharedInstance = nil;
 			continue;
 		}
 
-		NSString* action = menuItemDictionary[@"action"];
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
 		NSString* uuid = menuItemDictionary[@"uuid"];
@@ -187,7 +196,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu action:action withTitle:mainMenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
+			[self createActionMenuItem:menu withTitle:mainMenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
 		}
 	}
 
@@ -230,7 +239,7 @@ static RequestManager* sharedInstance = nil;
 	}
 }
 
-- (void)registerBadgeImage:(NSData*)cmdData {
+- (void) registerBadgeImage:(NSData*)cmdData {
 	#ifdef DEBUG
 		NSLog(@"Registering file badge: %@", cmdData);
 	#endif
@@ -240,6 +249,14 @@ static RequestManager* sharedInstance = nil;
 	NSString* path = dictionary[@"path"];
 	NSString* label = dictionary[@"label"];
 	NSNumber* id = dictionary[@"id"];
+
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+
+	if (![fileManager fileExistsAtPath:path]){
+		NSLog(@"Failed to register file badge. Icon not found: %@", path);
+
+		return;
+	}
 
 	[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:[id stringValue]];
 }
@@ -315,21 +332,23 @@ static RequestManager* sharedInstance = nil;
 	return menuItems;
 }
 
-- (void) sendMenuItemClicked:(NSString*)action {
+- (void) sendMenuItemClicked:(NSString*)uuid {
 	#ifdef DEBUG
-		NSLog(@"Menu item clicked with action %@", action);
+		NSLog(@"Menu item clicked with uuid %@", uuid);
 	#endif
 
-	NSDictionary* actionDictionary = _menuActionDictionary[action];
+	NSDictionary* menuUuidDictionary = _menuUuidDictionary[uuid];
 
 	NSDictionary* menuItemClickedDictionary = [[NSMutableDictionary alloc] initWithCapacity:2];
 
 	[menuItemClickedDictionary setValue:@"contextMenuAction" forKey:@"command"];
-	[menuItemClickedDictionary setValue:actionDictionary forKey:@"value"];
+	[menuItemClickedDictionary setValue:menuUuidDictionary forKey:@"value"];
 
 	NSData* data = [[[menuItemClickedDictionary JSONString] stringByAppendingString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding];
 
 	[_socket writeData:data withTimeout:-1 tag:0];
+
+	[_menuUuidDictionary removeAllObjects];
 }
 
 - (void) sendObservingFolder:(NSURL*)url start:(BOOL)start {
@@ -379,15 +398,15 @@ static RequestManager* sharedInstance = nil;
 }
 
 - (void) setFilterFolders:(NSData*)cmdData {
-	#ifdef DEBUG
-		NSLog(@"Setting filter paths: %@", cmdData);
-	#endif
+		#ifdef DEBUG
+	NSLog(@"Setting filter paths: %@", cmdData);
+		#endif
 
 	NSArray* paths = (NSArray*)cmdData;
 
 	NSMutableSet* urls = [[NSMutableSet alloc] init];
 
-    NSMutableSet* newObservedFolders = [[NSMutableSet alloc] init];
+	NSMutableSet* newObservedFolders = [[NSMutableSet alloc] init];
 
 	for (NSString* path in paths) {
 		[urls addObject:[NSURL fileURLWithPath:path]];
@@ -399,10 +418,10 @@ static RequestManager* sharedInstance = nil;
 		}
 	}
 
-    _observedFolders = newObservedFolders;
+	_observedFolders = newObservedFolders;
 
-    [FIFinderSyncController defaultController].directoryURLs = urls;
-    
+	[FIFinderSyncController defaultController].directoryURLs = urls;
+
 	[self refreshFiles];
 }
 
@@ -448,9 +467,9 @@ static RequestManager* sharedInstance = nil;
 
 - (void) socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)error {
 	#ifdef DEBUG
-	if (_connected) {
-		NSLog(@"Disconnected with error: %@", error);
-	}
+		if (_connected) {
+			NSLog(@"Disconnected with error: %@", error);
+		}
 	#endif
 
 	if (_connected && _removeBadgesOnClose) {
