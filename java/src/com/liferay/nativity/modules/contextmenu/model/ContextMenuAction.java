@@ -22,7 +22,7 @@ public abstract class ContextMenuAction {
 	/**
 	 * Called when a context menu item is selected
 	 *
-	 * @param array of selected file paths
+	 * @param paths array of selected file paths
 	 */
 	public abstract void onSelection(String[] paths);
 

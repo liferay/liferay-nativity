@@ -51,6 +51,9 @@ public class Constants {
 
 	public static final String REFRESH_FILES = "refreshFiles";
 
+	public static final String REGISTER_CONTEXT_MENU_ICON =
+		"registerContextMenuIcon";
+
 	public static final String REGISTER_ICON = "registerIcon";
 
 	public static final String REGISTER_ICON_WITH_ID = "registerIconWithId";

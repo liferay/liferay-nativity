@@ -58,6 +58,7 @@ static RequestManager* sharedInstance = nil;
 
 		NSString* subMenuTitle = menuItemDictionary[@"title"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
+		NSString* iconName = menuItemDictionary[@"iconName"];
 		NSString* uuid = menuItemDictionary[@"uuid"];
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 
@@ -70,7 +71,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:subMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu withTitle:subMenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
+			[self createActionMenuItem:menu title:subMenuTitle index:i enabled:enabled uuid:uuid iconName:iconName files:files];
 		}
 	}
 
@@ -92,7 +93,7 @@ static RequestManager* sharedInstance = nil;
 	}
 }
 
-- (void) createActionMenuItem:(NSMenu*)menu withTitle:(NSString*)title withIndex:(NSInteger)index enabled:(BOOL)enabled withUuid:(NSString*)uuid forFiles:(NSArray*)files {
+- (void)createActionMenuItem:(NSMenu *)menu title:(NSString *)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString *)uuid iconName:(NSString *)iconName files:(NSArray*)files {
 	NSMenuItem* mainMenuItem = nil;
 
 	if (!enabled) {
@@ -130,7 +131,13 @@ static RequestManager* sharedInstance = nil;
 
 	[mainMenuItem setEnabled:enabled];
 
-	[mainMenuItem setImage:[NSImage imageNamed:@"logo"]];
+	if (iconName) {
+		NSImage *image = [NSImage imageNamed:iconName];
+
+		if (image) {
+			[mainMenuItem setImage:image];
+		}
+	}
 }
 
 - (void) executeCommand:(NSData*)data {
@@ -152,6 +159,9 @@ static RequestManager* sharedInstance = nil;
 	}
 	else if ([command isEqualToString:@"menuItems"]) {
 		[self processMenuItems:value];
+	}
+	else if ([command isEqualToString:@"registerContextMenuIcon"]) {
+		[self registerContextMenuIcon:value];
 	}
 	else if ([command isEqualToString:@"registerIconWithId"]) {
 		[self registerBadgeImage:value];
@@ -186,6 +196,7 @@ static RequestManager* sharedInstance = nil;
 
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
+		NSString* iconName = menuItemDictionary[@"iconName"];
 		NSString* uuid = menuItemDictionary[@"uuid"];
 
 		if (childrenSubMenuItems && [childrenSubMenuItems count] != 0) {
@@ -196,7 +207,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu withTitle:mainMenuTitle withIndex:i enabled:enabled withUuid:uuid forFiles:files];
+			[self createActionMenuItem:menu title:mainMenuTitle index:i enabled:enabled uuid:uuid iconName:iconName files:files];
 		}
 	}
 
@@ -253,12 +264,35 @@ static RequestManager* sharedInstance = nil;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 
 	if (![fileManager fileExistsAtPath:path]){
-		NSLog(@"Failed to register file badge. Icon not found: %@", path);
+		NSLog(@"Failed to register file badge. File not found: %@", path);
 
 		return;
 	}
 
 	[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:[id stringValue]];
+}
+
+- (void) registerContextMenuIcon:(NSData*)cmdData {
+	#ifdef DEBUG
+		NSLog(@"Registering icon: %@", cmdData);
+	#endif
+
+	NSDictionary* dictionary = (NSDictionary*)cmdData;
+
+	NSString* path = dictionary[@"path"];
+	NSString* name = dictionary[@"name"];
+
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+
+	if (![fileManager fileExistsAtPath:path]){
+		NSLog(@"Failed to register icon. File not found: %@", path);
+
+		return;
+	}
+
+	NSImage* logoImage = [[NSImage alloc] initWithContentsOfFile:path];
+
+	[logoImage setName:name];
 }
 
 - (void) requestFileBadgeId:(NSURL*)url {

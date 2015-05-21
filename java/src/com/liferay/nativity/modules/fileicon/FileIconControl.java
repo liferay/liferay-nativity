@@ -59,7 +59,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	 *
 	 * @param path The path of the overlay icon to register
 	 * @param label The label to show when icons are unavailable
-	 * @param path The unique id identifying this icon
+	 * @param id The unique id identifying this icon
 	 */
 	public void registerIconWithId(String path, String label, int id);
 

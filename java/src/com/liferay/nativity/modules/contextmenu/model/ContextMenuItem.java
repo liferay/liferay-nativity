@@ -86,6 +86,10 @@ public class ContextMenuItem {
 		return _helpText;
 	}
 
+	public String getIconName() {
+		return _iconName;
+	}
+
 	public String getTitle() {
 		return _title;
 	}
@@ -108,6 +112,10 @@ public class ContextMenuItem {
 
 	public void setHelpText(String helpText) {
 		_helpText = helpText;
+	}
+
+	public void setIconName(String iconName) {
+		_iconName = iconName;
 	}
 
 	public void setTitle(String title) {
@@ -141,6 +149,7 @@ public class ContextMenuItem {
 	private List<ContextMenuItem> _contextMenuItems;
 	private boolean _enabled;
 	private String _helpText;
+	private String _iconName;
 	private String _title;
 	private String _uuid;
 

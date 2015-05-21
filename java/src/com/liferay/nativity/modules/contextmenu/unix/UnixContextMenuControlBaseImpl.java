@@ -89,4 +89,8 @@ public abstract class UnixContextMenuControlBaseImpl
 			fireContextMenuActionMessageListener);
 	}
 
+	@Override
+	public void registerIcon(String path, String name) {
+	}
+
 }
