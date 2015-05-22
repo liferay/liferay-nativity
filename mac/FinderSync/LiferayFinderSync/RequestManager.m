@@ -12,13 +12,19 @@
  * details.
  */
 
+#include <assert.h>
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #import <objc/runtime.h>
 #import "FinderSync.h"
 #import "JSONKit.h"
 #import "RequestManager.h"
 
-const NSInteger RECEIVED_CALLBACK_RESPONSE = 2;
-const NSInteger WAITING_FOR_CALLBACK_RESPONSE = 1;
+NSString* const USER_HOME_RELATIVE_PORT_FILE_PATH = @".liferay-nativity/port";
+NSInteger const RECEIVED_CALLBACK_RESPONSE = 2;
+NSInteger const WAITING_FOR_CALLBACK_RESPONSE = 1;
 
 static NSTimeInterval maxCallbackRequestWaitTime = 0.25f;
 static RequestManager* sharedInstance = nil;
@@ -81,19 +87,49 @@ static RequestManager* sharedInstance = nil;
 - (void) connect {
 	NSError* error = nil;
 
-	if (![_socket connectToHost:@"localhost" onPort:33001 error:&error]) {
+	NSString* path = [NSString stringWithUTF8String:getpwuid(getuid())->pw_dir];
+
+	path = [path stringByAppendingPathComponent:USER_HOME_RELATIVE_PORT_FILE_PATH];
+
+	NSFileManager* fileManager = [NSFileManager defaultManager];
+
+	if (![fileManager fileExistsAtPath:path]) {
+		#ifdef DEBUG
+			NSLog(@"Failed to connect. File not found %@", path);
+		#endif
+
+		[self performSelector:@selector(connect) withObject:self afterDelay:1.0];
+
+		return;
+	}
+
+	NSString* portNumberString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+
+	int port = [portNumberString intValue];
+
+	if (port <= 0) {
+		#ifdef DEBUG
+			NSLog(@"Failed to connect. File content is not an int value: %@", path);
+		#endif
+
+		[self performSelector:@selector(connect) withObject:self afterDelay:1.0];
+
+		return;
+	}
+
+	if (![_socket connectToHost:@"localhost" onPort:port error:&error]) {
 		#ifdef DEBUG
 			NSLog(@"Connection failed with error: %@", error);
 		#endif
 	}
 	else {
 		#ifdef DEBUG
-			NSLog(@"Connecting...");
+			NSLog(@"Connecting to port %d", port);
 		#endif
 	}
 }
 
-- (void)createActionMenuItem:(NSMenu *)menu title:(NSString *)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString *)uuid iconName:(NSString *)iconName files:(NSArray*)files {
+- (void) createActionMenuItem:(NSMenu*)menu title:(NSString*)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString*)uuid iconName:(NSString*)iconName files:(NSArray*)files {
 	NSMenuItem* mainMenuItem = nil;
 
 	if (!enabled) {
@@ -132,7 +168,7 @@ static RequestManager* sharedInstance = nil;
 	[mainMenuItem setEnabled:enabled];
 
 	if (iconName) {
-		NSImage *image = [NSImage imageNamed:iconName];
+		NSImage* image = [NSImage imageNamed:iconName];
 
 		if (image) {
 			[mainMenuItem setImage:image];
@@ -261,9 +297,9 @@ static RequestManager* sharedInstance = nil;
 	NSString* label = dictionary[@"label"];
 	NSNumber* id = dictionary[@"id"];
 
-	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSFileManager* fileManager = [NSFileManager defaultManager];
 
-	if (![fileManager fileExistsAtPath:path]){
+	if (![fileManager fileExistsAtPath:path]) {
 		NSLog(@"Failed to register file badge. File not found: %@", path);
 
 		return;
@@ -282,9 +318,9 @@ static RequestManager* sharedInstance = nil;
 	NSString* path = dictionary[@"path"];
 	NSString* name = dictionary[@"name"];
 
-	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSFileManager* fileManager = [NSFileManager defaultManager];
 
-	if (![fileManager fileExistsAtPath:path]){
+	if (![fileManager fileExistsAtPath:path]) {
 		NSLog(@"Failed to register icon. File not found: %@", path);
 
 		return;
@@ -432,9 +468,9 @@ static RequestManager* sharedInstance = nil;
 }
 
 - (void) setFilterFolders:(NSData*)cmdData {
-		#ifdef DEBUG
-	NSLog(@"Setting filter paths: %@", cmdData);
-		#endif
+	#ifdef DEBUG
+		NSLog(@"Setting filter paths: %@", cmdData);
+	#endif
 
 	NSArray* paths = (NSArray*)cmdData;
 

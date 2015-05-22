@@ -161,6 +161,10 @@ public class WindowsNativityControlImpl extends NativityControl {
 	}
 
 	@Override
+	public void setPortFilePath(String path) {
+	}
+
+	@Override
 	public void setSystemFolder(String folder) {
 		if (!WindowsNativityUtil.loaded()) {
 			return;

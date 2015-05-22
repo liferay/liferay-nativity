@@ -215,6 +215,20 @@ public abstract class NativityControl {
 	public abstract void setFilterFolders(String[] folders);
 
 	/**
+	 * Mac Finder Sync only
+	 *
+	 * Set the file path that Nativity will write the port number to
+	 * upon successfully opening the port. The file will be automatically
+	 * deleted upon graceful shutdown. The Finder Sync plugin should read from
+	 * this same path to determine what port number to connect to. If this
+	 * value is not set, Nativity will default to the file path
+	 * {user.home}/.liferay-nativity/port
+	 *
+	 * @param path The path of the file containing the port number
+	 */
+	public abstract void setPortFilePath(String path);
+
+	/**
 	 * Windows only
 	 *
 	 * Marks the specified folder as a system folder so that Desktop.ini values

@@ -161,6 +161,10 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 	}
 
 	@Override
+	public void setPortFilePath(String path) {
+	}
+
+	@Override
 	public void setSystemFolder(String folder) {
 	}
 
