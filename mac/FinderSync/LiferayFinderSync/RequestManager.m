@@ -496,9 +496,7 @@ static RequestManager* sharedInstance = nil;
 }
 
 - (void) socket:(GCDAsyncSocket*)socket didConnectToHost:(NSString*)host port:(UInt16)port {
-	#ifdef DEBUG
-		NSLog(@"Successfully connected to host %@ on port %hu", host, port);
-	#endif
+	NSLog(@"Successfully connected to host %@ on port %hu", host, port);
 
 	_connected = YES;
 
@@ -536,11 +534,9 @@ static RequestManager* sharedInstance = nil;
 }
 
 - (void) socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)error {
-	#ifdef DEBUG
-		if (_connected) {
-			NSLog(@"Disconnected with error: %@", error);
-		}
-	#endif
+	if (_connected) {
+		NSLog(@"Disconnected with error: %@", error);
+	}
 
 	if (_connected && _removeBadgesOnClose) {
 		[self removeAllBadges];
