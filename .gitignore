@@ -1,3 +1,5 @@
+.ivy
+
 build
 build.*.properties
 dist

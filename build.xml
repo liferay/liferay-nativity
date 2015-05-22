@@ -9,17 +9,6 @@
 	<property file="${basedir}/build.${env.HOSTNAME}.properties" />
 	<property file="${basedir}/build.properties" />
 
-	<property name="ivy.install.version" value="${ivy.install.version}" />
-
-	<condition property="ivy.home" value="${env.IVY_HOME}">
-		<isset property="env.IVY_HOME" />
-	</condition>
-	
-	<property name="ivy.home" value="${user.home}/.ant" />
-	<property name="ivy.jar.dir" value="${ivy.home}/lib" />
-	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
-	<property name="ivy.pom.version" value="${java.package.version}" />
-
 	<property name="java.dir" value="${basedir}/java" />
 	<property name="tmp.dir" value="${basedir}/tmp" />
 
@@ -38,7 +27,7 @@
 	</path>
 
 	<target name="build-jar" depends="compile,build-jni-headers">
-		<jar destfile="${basedir}/dist/liferay-nativity-${java.package.version}.jar" filesetmanifest="mergewithoutmain" update="true">
+		<jar destfile="dist/liferay-nativity-${package.version}.jar" filesetmanifest="mergewithoutmain" update="true">
 			<fileset dir="${java.dir}/classes" />
 			<service type="javax.script.ScriptEngineFactory" provider="apple.applescript.AppleScriptEngineFactory" />
 		</jar>
@@ -46,6 +35,12 @@
 
 	<target name="build-jni-headers">
 		<javah destdir="${basedir}/windows/LiferayNativityShellExtensions/LiferayNativityWindowsUtil" classpath="${java.dir}/classes" class="com.liferay.nativity.control.win.WindowsNativityUtil"/>
+	</target>
+
+	<target name="build-sources-jar">
+		<jar destfile="dist/liferay-nativity-${package.version}-sources.jar" filesetmanifest="mergewithoutmain" update="true">
+			<fileset dir="${java.dir}/src" includes="**/*.java" />
+		</jar>
 	</target>
 
 	<target name="build-windows-util">
@@ -190,41 +185,41 @@
 		/>
 	</target>
 
-	<target name="clean">
+	<target name="clean" depends="ivy-init">
+		<ivy:cleancache />
+
 		<delete dir="${java.dir}/classes" />
 		<delete dir="${java.dir}/lib" />
 		<delete dir="dist" />
 		<delete dir="${tmp.dir}" />
 	</target>
 
-	<target name="compile">
-		<antcall target="compile-java">
-			<param name="javac.classpathref" value="lib.classpath" />
-			<param name="javac.destdir" value="${java.dir}/classes" />
-			<param name="javac.srcdir" value="${java.dir}/src" />
-		</antcall>
-	</target>
+	<target name="compile" depends="ivy-init">
+		<ivy:resolve
+			conf="default"
+			log="download-only"
+			transitive="${ivy.resolve.transitive.dependencies}"
+		/>
 
-	<target name="compile-java" depends="ivy-resolve">
+		<ivy:retrieve pattern="${java.dir}/lib/[artifact](-[classifier])-[revision].[ext]"/>
+
 		<mkdir dir="${java.dir}/classes" />
 
-		<copy todir="${javac.destdir}">
-			<fileset dir="${javac.srcdir}" excludes="**/*.java" />
+		<copy todir="${java.dir}/classes">
+			<fileset dir="${java.dir}/src" excludes="**/*.java" />
 		</copy>
 
 		<javac
-			classpathref="${javac.classpathref}"
+			classpathref="lib.classpath"
 			compiler="${javac.compiler}"
 			debug="${javac.debug}"
 			deprecation="${javac.deprecation}"
-			destdir="${javac.destdir}"
+			destdir="${java.dir}/classes"
 			encoding="${javac.encoding}"
 			includeAntRuntime="false"
 			nowarn="${javac.nowarn}"
-			srcdir="${javac.srcdir}"
+			srcdir="${java.dir}/src"
 		/>
-
-		<echo file="${javac.destdir}/.touch"></echo>
 	</target>
 
 	<target name="format-source">
@@ -246,11 +241,11 @@
 
 		<get
 			dest="${ivy.jar.file}"
-			src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+			src="${ivy.jar.url}"
 			usetimestamp="true"
 		/>
 	</target>
-	
+
 	<target name="ivy-init" depends="ivy-download">
 		<path id="ivy.lib.path">
 			<fileset dir="${ivy.jar.dir}" includes="*.jar"/>
@@ -259,17 +254,62 @@
 		<taskdef classpathref="ivy.lib.path" resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" />
 	</target>
 
-	<target name="ivy-makepom">
+	<target name="publish">
+		<ivy:settings file="ivy-settings.xml" />
+
+		<ivy:resolve
+			conf="default"
+			log="download-only"
+			transitive="${ivy.resolve.transitive.dependencies}"
+		/>
+
+		<property name="java.release.qualifier" value="" />
+		<property name="ivy.pom.version" value="${package.version}${java.release.qualifier}" />
+
 		<ivy:makepom
+			description="${ivy.pom.description}"
 			ivyfile="ivy.xml"
-			pomfile="pom.xml"
+			pomfile="dist/liferay-nativity-${package.version}.pom"
+			templatefile="pom.template"
 		>
 			<mapping conf="default" scope="compile" />
 			<mapping conf="runtime" scope="runtime" />
 		</ivy:makepom>
+
+		<ivy:publish
+			forcedeliver="true"
+			overwrite="true"
+			publishivy="false"
+			pubrevision="${ivy.pom.version}"
+			resolver="${ivy.publish.resolver}"
+		>
+			<artifacts pattern="dist/liferay-nativity-${package.version}(-[classifier]).[ext]" />
+		</ivy:publish>
 	</target>
 
-	<target name="ivy-resolve">  
-		 <ivy:retrieve pattern="${java.dir}/lib/[artifact](-[classifier])-[revision].[ext]"/>
+	<target name="publish-local-m2-release" depends="build-jar, build-sources-jar">
+		<antcall target="publish">
+			<param name="ivy.publish.resolver" value="local-m2" />
+		</antcall>
+	</target>
+
+	<target name="publish-local-m2-snapshot" depends="build-jar, build-sources-jar">
+		<antcall target="publish">
+			<param name="ivy.publish.resolver" value="local-m2" />
+			<param name="java.release.qualifier" value="-SNAPSHOT" />
+		</antcall>
+	</target>
+
+	<target name="publish-remote-m2-release" depends="build-jar, build-sources-jar">
+		<antcall target="publish">
+			<param name="ivy.publish.resolver" value="sonatype-m2-release" />
+		</antcall>
+	</target>
+
+	<target name="publish-remote-m2-snapshot" depends="build-jar, build-sources-jar">
+		<antcall target="publish">
+			<param name="ivy.publish.resolver" value="sonatype-m2-snapshot" />
+			<param name="java.release.qualifier" value="-SNAPSHOT" />
+		</antcall>
 	</target>
 </project>
