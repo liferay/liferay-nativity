@@ -83,7 +83,7 @@ static IconCache* sharedInstance = nil;
 
 - (NSImage*)getIcon:(NSNumber*)iconId
 {
-	NSImage* image = [_iconIdDictionary objectForKey:iconId];
+	NSImage* image = [_iconIdDictionary objectForKey:[iconId stringValue]];
 
 	return image;
 }
@@ -113,24 +113,34 @@ static IconCache* sharedInstance = nil;
 		[_iconPathDictionary setObject:iconId forKey:path];
 	}
 
-	[_iconIdDictionary setObject:image forKey:iconId];
+	[_iconIdDictionary setObject:image forKey:[iconId stringValue]];
 	[image release];
 
 	return iconId;
 }
 
-- (NSNumber*)registerMenuIcon:(NSString*)path
+- (void)registerIconWithId:(NSString *)path iconId:(NSString*)iconId
 {
-	NSNumber* menuIconId = [self registerIcon:path];
+	NSFileManager* fileManager = [NSFileManager defaultManager];
 
-	NSImage* menuIconImage = [self getIcon:menuIconId];
+	if (![fileManager fileExistsAtPath:path])
+	{
+		NSLog(@"Failed to register file icon. File not found: %@", path);
 
-	NSSize size;
+		return;
+	}
 
-	size.width = size.height = [[NSFont menuFontOfSize:0] pointSize];
-	[menuIconImage setSize:size];
+	NSImage* image = [[NSImage alloc] initWithContentsOfFile:path];
 
-	return menuIconId;
+	if (!image)
+	{
+		NSLog(@"Failed to register file icon. Not a valid image: %@", path);
+
+		return;
+	}
+
+	[_iconIdDictionary setObject:image forKey:iconId];
+	[image release];
 }
 
 - (void)unregisterIcon:(NSNumber*)iconId
@@ -151,7 +161,7 @@ static IconCache* sharedInstance = nil;
 
 	[_iconPathDictionary removeObjectForKey:path];
 
-	[_iconIdDictionary removeObjectForKey:iconId];
+	[_iconIdDictionary removeObjectForKey:[iconId stringValue]];
 }
 
 @end

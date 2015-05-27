@@ -52,7 +52,7 @@
 
 - (NSImage*)getIcon:(NSNumber*)iconId;
 - (NSNumber*)registerIcon:(NSString*)path;
-- (NSNumber*)registerMenuIcon:(NSString*)path;
+- (void)registerIconWithId:(NSString*)path iconId:(NSString*)iconId;
 - (void)unregisterIcon:(NSNumber*)iconId;
 
 @end
