@@ -215,9 +215,16 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	{
 		[self execEnableFileIconsWithCallbackCmd:value replyTo:sock];
 	}
+	else if ([command isEqualToString:@"registerContextMenuIcon"]) {
+		[self execRegisterContextMenuIcon:value replyTo:sock];
+	}
 	else if ([command isEqualToString:@"registerIcon"])
 	{
 		[self execRegisterIconCmd:value replyTo:sock];
+	}
+	else if ([command isEqualToString:@"registerIconWithId"])
+	{
+		[self execRegisterIconWithIdCmd:value replyTo:sock];
 	}
 	else if ([command isEqualToString:@"registerMenuIcon"])
 	{
@@ -310,6 +317,35 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	[self replyString:@"1" toSocket:sock];
 }
 
+- (void)execRegisterContextMenuIcon:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+{
+	NSDictionary* dictionary = (NSDictionary*)cmdData;
+
+	NSString* path = dictionary[@"path"];
+	NSString* iconId = dictionary[@"iconId"];
+
+	NSFileManager* fileManager = [NSFileManager defaultManager];
+
+	if (![fileManager fileExistsAtPath:path]) {
+		NSLog(@"Failed to register icon. File not found: %@", path);
+
+		return;
+	}
+
+	NSImage* logoImage = [[NSImage alloc] initWithContentsOfFile:path];
+
+	[logoImage setName:iconId];
+
+	NSSize size;
+
+	size.height = [[NSFont menuFontOfSize:0] pointSize];
+	size.width = [[NSFont menuFontOfSize:0] pointSize];
+
+	[logoImage setSize:size];
+
+	[self replyString:@"1" toSocket:sock];
+}
+
 - (void)execRegisterIconCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
 	NSString* path = (NSString*)cmdData;
@@ -328,22 +364,18 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	[self replyString:[_numberFormatter stringFromNumber:index] toSocket:sock];
 }
 
-- (void)execRegisterMenuIconCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
+- (void)execRegisterIconWithIdCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock
 {
-	NSString* path = (NSString*)cmdData;
+	NSDictionary* dictionary = (NSDictionary*)cmdData;
 
-	__block NSNumber* index;
+	NSString* path = [dictionary objectForKey:@"path"];
+	NSString* iconId = [dictionary objectForKey:@"iconId"];
 
 	dispatch_sync(dispatch_get_main_queue(), ^{
-		index = [[IconCache sharedInstance] registerMenuIcon:path];
+		[[IconCache sharedInstance] registerIconWithId:path iconId:iconId];
 	});
 
-	if (!index)
-	{
-		index = [NSNumber numberWithInt:-1];
-	}
-
-	[self replyString:[_numberFormatter stringFromNumber:index] toSocket:sock];
+	[self replyString:@"1" toSocket:sock];
 }
 
 - (void)execRemoveAllFileIconsCmd:(NSData*)cmdData replyTo:(GCDAsyncSocket*)sock

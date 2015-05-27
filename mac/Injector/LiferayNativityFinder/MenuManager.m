@@ -111,7 +111,7 @@ static MenuManager* sharedInstance = nil;
 
 	NSInteger menuIndex = 4;
 
-	BOOL hasSeparatorBefore = [[menu itemAtIndex:menuIndex - 1] isSeparatorItem];
+	BOOL hasSeparatorBefore = [[menu itemAtIndex:menuIndex] isSeparatorItem];
 
 	if (!hasSeparatorBefore)
 	{
