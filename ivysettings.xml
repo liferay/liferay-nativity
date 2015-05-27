@@ -27,8 +27,4 @@
 			<artifact pattern="${sonatype.snapshot.url}/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]" />
 		</url>
 	</resolvers>
-
-	<!-- <signers> -->
-		<!-- <pgp keyId="${pgp.keyname}" name="${pgp.generator}" password="${pgp.passphrase}" /> -->
-	<!-- </signers> -->
 </ivysettings>

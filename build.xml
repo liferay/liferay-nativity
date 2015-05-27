@@ -255,7 +255,7 @@
 	</target>
 
 	<target name="publish">
-		<ivy:settings file="ivy-settings.xml" />
+		<ivy:settings file="ivysettings.xml" />
 
 		<ivy:resolve
 			conf="default"
