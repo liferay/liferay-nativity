@@ -11,16 +11,16 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-#include "config.h"
-#include "content.h"
-#include <glib-object.h>
-#include <glib/gi18n-lib.h>
+#include <boost/algorithm/string.hpp>
 #include <gio/gio.h>
+#include <glib/gi18n-lib.h>
+#include <glib-object.h>
 #include <libnautilus-extension/nautilus-extension-types.h>
 #include <libnautilus-extension/nautilus-file-info.h>
-#include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
-#include <boost/algorithm/string.hpp>
+#include <libnautilus-extension/nautilus-menu-provider.h>
+#include "config.h"
+#include "content.h"
 #include "logger.h"
 
 ContentManager::ContentManager() :
@@ -42,14 +42,14 @@ ContentManager& ContentManager::instance()
 
 std::string ContentManager::getFileIconName(const std::string& fileName) const
 {
-	std::map<std::string, int>::const_iterator itIcon = iconsForFiles_.find(fileName);
+	std::map<std::string, std::string>::const_iterator itIcon = iconsForFiles_.find(fileName);
 
 	if (itIcon == iconsForFiles_.end())
 	{
 		return "";
 	}
 
-	std::map<int, std::string>::const_iterator itName = icons_.find(itIcon->second);
+	std::map<std::string, std::string>::const_iterator itName = icons_.find(itIcon->second);
 
 	if (itName == icons_.end())
 	{
@@ -99,13 +99,15 @@ void ContentManager::setFileIcon(const std::string& fileName, int iconId)
 		return;
 	}
 
-	if (iconId == -1)
+	std::string iconIdString = std::to_string(i);
+
+	if (iconIdString == "-1")
 	{
 		iconsForFiles_.erase(fileName);
 	}
 	else
 	{
-		iconsForFiles_[fileName] = iconId;
+		iconsForFiles_[fileName] = iconIdString;
 	}
 }
 
@@ -122,14 +124,19 @@ void ContentManager::removeAllFileIcons()
 int ContentManager::registerIcon(const std::string& fileName)
 {
 	lastIconId_++;
-	icons_[lastIconId_] = fileName;
+	icons_[std::to_string(lastIconId_)] = fileName;
 
 	return lastIconId_;
 }
 
+void ContentManager::registerIconWithId(const std::string& fileName, const std::string& iconId)
+{
+	icons_[iconId] = fileName;
+}
+
 void ContentManager::unregisterIcon(int iconId)
 {
-	icons_.erase(iconId);
+	icons_.erase(std::to_string(iconId));
 }
 
 void ContentManager::enableFileIcons(bool enable)

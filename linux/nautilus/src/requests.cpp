@@ -11,13 +11,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
-#include "requests.h"
-#include "logger.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include "content.h"
-#define JSON_IS_AMALGAMATION
 #include <json/json.h>
+#include "content.h"
+#include "logger.h"
+#include "requests.h"
+
+#define JSON_IS_AMALGAMATION
 
 RequestManager::RequestManager() :
 	callbackSocket_(2, 33002, NULL, 0, 100000),
@@ -85,33 +86,37 @@ void RequestManager::onStringReceived(int serverId, const std::string& text)
 
 		Json::Value jsonValue = jsonRoot.get("value", "");
 
-		if (command == "setFileIcons")
+		if (command == "enableFileIcons")
 		{
-			execSetFileIconsCmd(jsonValue);
+			execEnableFileIconsCmd(jsonValue);
 		}
 		else if (command == "removeFileIcons")
 		{
 			execRemoveFileIconsCmd(jsonValue);
 		}
-		else if (command == "removeAllFileIcons")
-		{
-			execRemoveAllFileIconsCmd(jsonValue);
-		}
-		else if (command == "enableFileIcons")
-		{
-			execEnableFileIconsCmd(jsonValue);
-		}
 		else if (command == "registerIcon")
 		{
 			execRegisterIconCmd(jsonValue);
 		}
-		else if (command == "unregisterIcon")
+		else if (command == "registerIconWithId")
 		{
-			execUnregisterIconCmd(jsonValue);
+			execRegisterIconCmd(jsonValue);
+		}
+		else if (command == "removeAllFileIcons")
+		{
+			execRemoveAllFileIconsCmd(jsonValue);
+		}
+		else if (command == "setFileIcons")
+		{
+			execSetFileIconsCmd(jsonValue);
 		}
 		else if (command == "setFilterPath")
 		{
 			execSetRootFolderCmd(jsonValue);
+		}
+		else if (command == "unregisterIcon")
+		{
+			execUnregisterIconCmd(jsonValue);
 		}
 		else
 		{
@@ -164,6 +169,13 @@ void RequestManager::execRegisterIconCmd(const Json::Value& jsonValue)
 	int index = ContentManager::instance().registerIcon(jsonValue.asString());
 
 	commandSocket_.writeString(boost::lexical_cast<std::string>(index));
+}
+
+void RequestManager::execRegisterIconWithIdCmd(const Json::Value& jsonValue)
+{
+	ContentManager::instance().registerIconWithId(jsonValue["path"], jsonValue["iconId"]);
+
+	commandSocket_.writeString("1");
 }
 
 void RequestManager::execUnregisterIconCmd(const Json::Value& jsonValue)

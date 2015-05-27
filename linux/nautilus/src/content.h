@@ -28,6 +28,7 @@ class ContentManager
 		void removeFileIcon(const std::string& fileName);
 		void removeAllFileIcons();
 		int registerIcon(const std::string& fileName);
+		int registerIconWithId(const std::string& fileName, const std::string& iconId);
 		void unregisterIcon(int iconId);
 		void enableFileIcons(bool enable);
 		bool isOverlaysEnabled();
@@ -35,9 +36,9 @@ class ContentManager
 		const std::string& getRootFolder() const;
 
 	private:
-		std::map<std::string, int> iconsForFiles_;
+		std::map<std::string, std::string> iconsForFiles_;
 		int lastIconId_;
-		std::map<int, std::string> icons_;
+		std::map<std::string, std::string> icons_;
 		bool overlaysEnabled_;
 		std::string rootFolder_;
 		mutable std::set<std::string> registeredFolders_;

@@ -44,6 +44,7 @@ class RequestManager :
 		void execRemoveAllFileIconsCmd(const Json::Value& jsonValue);
 		void execEnableFileIconsCmd(const Json::Value& jsonValue);
 		void execRegisterIconCmd(const Json::Value& jsonValue);
+		void execRegisterIconWithIdCmd(const Json::Value& jsonValue);
 		void execUnregisterIconCmd(const Json::Value& jsonValue);
 		void execSetRootFolderCmd(const Json::Value& jsonValue);
 };
