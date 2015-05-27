@@ -14,8 +14,13 @@
 
 package com.liferay.nativity.modules.contextmenu.unix;
 
+import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.contextmenu.ContextMenuControlCallback;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Dennis Ju
@@ -28,6 +33,19 @@ public class AppleContextMenuControlImpl
 		ContextMenuControlCallback contextMenuControlCallback) {
 
 		super(nativityControl, contextMenuControlCallback);
+	}
+
+	@Override
+	public void registerIcon(String path, String iconId) {
+		Map<String, String> map = new HashMap<String, String>();
+
+		map.put(Constants.PATH, path);
+		map.put(Constants.ICON_ID, iconId);
+
+		NativityMessage message = new NativityMessage(
+			Constants.REGISTER_CONTEXT_MENU_ICON, map);
+
+		nativityControl.sendMessage(message);
 	}
 
 }

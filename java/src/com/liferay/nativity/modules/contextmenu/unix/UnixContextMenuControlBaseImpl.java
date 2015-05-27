@@ -90,7 +90,7 @@ public abstract class UnixContextMenuControlBaseImpl
 	}
 
 	@Override
-	public void registerIcon(String path, String name) {
+	public void registerIcon(String path, String iconId) {
 	}
 
 }

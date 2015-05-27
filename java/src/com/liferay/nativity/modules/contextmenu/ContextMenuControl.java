@@ -69,14 +69,14 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 	}
 
 	/**
-	 * Mac Finder Sync only
+	 * Mac Finder Sync and Mac Injector only
 	 *
 	 * Register a context menu icon
 	 *
 	 * @param path The path of the context menu icon to register
-	 * @param name The name used for this image
+	 * @param iconId The unique icon id used for this image
 	 */
-	public abstract void registerIcon(String path, String name);
+	public abstract void registerIcon(String path, String iconId);
 
 	protected ContextMenuControlCallback contextMenuControlCallback;
 	protected List<ContextMenuItem> contextMenuItems;

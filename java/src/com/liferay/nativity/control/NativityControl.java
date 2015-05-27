@@ -124,7 +124,7 @@ public abstract class NativityControl {
 	public abstract Set<String> getAllObservedFolders();
 
 	/**
-	 * Mac only
+	 * Mac Injector only
 	 *
 	 * Loads Liferay Nativity into Finder.
 	 *
@@ -133,7 +133,7 @@ public abstract class NativityControl {
 	public abstract boolean load() throws Exception;
 
 	/**
-	 * Mac only
+	 * Mac Injector only
 	 *
 	 * Check if Liferay Nativity is loaded in Finder.
 	 *
@@ -147,7 +147,10 @@ public abstract class NativityControl {
 	 * Causes Explorer to refresh the display of the file in explorer
 	 *
 	 * @param paths The array of file paths to refresh
+	 *
+	 * @deprecated as of 1.4. Use FileIconControl.refreshIcons(paths).
 	 */
+	@Deprecated
 	public abstract void refreshFiles(String[] paths);
 
 	/**
@@ -186,7 +189,7 @@ public abstract class NativityControl {
 	}
 
 	/**
-	 * Mac only
+	 * Mac Finder Sync and Injector only
 	 *
 	 * Used by modules to send messages to the native service.
 	 *
@@ -235,7 +238,11 @@ public abstract class NativityControl {
 	 * will take effect.
 	 *
 	 * @param folder The path of the folder to set as a system folder
+	 *
+	 * @deprecated as of 1.4. Use Java 7's DosFileAttributeView class or Java 6
+	 * with Runtime.exec(...) with attrib system commands.
 	 */
+	@Deprecated
 	public abstract void setSystemFolder(String folder);
 
 	/**

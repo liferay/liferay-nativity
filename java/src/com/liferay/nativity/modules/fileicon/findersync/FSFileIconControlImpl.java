@@ -89,17 +89,21 @@ public class FSFileIconControlImpl implements FileIconControl {
 	}
 
 	@Override
+	public void refreshIcons(String[] paths) {
+	}
+
+	@Override
 	public int registerIcon(String path) {
 		return -1;
 	}
 
 	@Override
-	public void registerIconWithId(String path, String label, int id) {
-		Map<String, Object> map = new HashMap<String, Object>(3);
+	public void registerIconWithId(String path, String label, String iconId) {
+		Map<String, String> map = new HashMap<String, String>(3);
 
-		map.put("path", path);
-		map.put("label", label);
-		map.put("id", id);
+		map.put(Constants.PATH, path);
+		map.put(Constants.LABEL, label);
+		map.put(Constants.ICON_ID, iconId);
 
 		NativityMessage message = new NativityMessage(
 			Constants.REGISTER_ICON_WITH_ID, map);

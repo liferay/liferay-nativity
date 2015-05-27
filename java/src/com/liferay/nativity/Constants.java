@@ -19,8 +19,6 @@ package com.liferay.nativity;
  */
 public class Constants {
 
-	public static final String CLEAR_FILE_ICON = "clearFileIcon";
-
 	public static final String ENABLE_FILE_ICONS = "enableFileIcons";
 
 	public static final String ENABLE_FILE_ICONS_WITH_CALLBACK =
@@ -40,16 +38,16 @@ public class Constants {
 
 	public static final String GET_FILE_ICON_ID = "getFileIconId";
 
-	public static final String MENU_INDEX = "menuIndex";
+	public static final String ICON_ID = "iconId";
+
+	public static final String LABEL = "label";
 
 	public static final String MENU_ITEMS = "menuItems";
-
-	public static final String MENU_TEXT = "menuText";
 
 	public static final String NATIVITY_REGISTRY_KEY =
 		"SOFTWARE\\Liferay Inc\\Liferay Nativity";
 
-	public static final String REFRESH_FILES = "refreshFiles";
+	public static final String PATH = "path";
 
 	public static final String REGISTER_CONTEXT_MENU_ICON =
 		"registerContextMenuIcon";
@@ -70,13 +68,9 @@ public class Constants {
 
 	public static final String SET_FILTER_PATHS = "setFilterPaths";
 
-	public static final String SET_SYSTEM_FOLDER = "setSystemFolder";
-
 	public static final String START_OBSERVING_FOLDER = "startObservingFolder";
 
 	public static final String UNREGISTER_ICON = "unregisterIcon";
-
-	public static final String UPDATE_FILE_ICON = "updateFileIcon";
 
 	public static final String UUID = "uuid";
 

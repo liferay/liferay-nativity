@@ -16,11 +16,15 @@ package com.liferay.nativity.modules.fileicon.win;
 
 import com.liferay.nativity.Constants;
 import com.liferay.nativity.control.NativityControl;
+import com.liferay.nativity.control.win.WindowsNativityUtil;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 import com.liferay.nativity.util.win.RegistryUtil;
 
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 * @author Dennis Ju
@@ -53,12 +57,32 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	}
 
 	@Override
+	public void refreshIcons(String[] paths) {
+		if ((paths == null) || (paths.length == 0)) {
+			return;
+		}
+
+		if (!WindowsNativityUtil.loaded()) {
+			return;
+		}
+
+		try {
+			for (String path : paths) {
+				WindowsNativityUtil.updateExplorer(path);
+			}
+		}
+		catch (UnsatisfiedLinkError ule) {
+			_logger.error(ule.getMessage(), ule);
+		}
+	}
+
+	@Override
 	public int registerIcon(String path) {
 		return 0;
 	}
 
 	@Override
-	public void registerIconWithId(String path, String label, int id) {
+	public void registerIconWithId(String path, String label, String iconId) {
 	}
 
 	@Override
@@ -84,5 +108,8 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	@Override
 	public void unregisterIcon(int id) {
 	}
+
+	private static Logger _logger = LoggerFactory.getLogger(
+		WindowsFileIconControlImpl.class.getName());
 
 }

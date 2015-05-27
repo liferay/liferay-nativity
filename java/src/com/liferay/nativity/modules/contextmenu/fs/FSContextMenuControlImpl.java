@@ -36,11 +36,11 @@ public class FSContextMenuControlImpl extends AppleContextMenuControlImpl {
 	}
 
 	@Override
-	public void registerIcon(String path, String name) {
+	public void registerIcon(String path, String iconId) {
 		Map<String, String> map = new HashMap<String, String>();
 
-		map.put("path", path);
-		map.put("name", name);
+		map.put(Constants.PATH, path);
+		map.put(Constants.ICON_ID, iconId);
 
 		NativityMessage message = new NativityMessage(
 			Constants.REGISTER_CONTEXT_MENU_ICON, map);

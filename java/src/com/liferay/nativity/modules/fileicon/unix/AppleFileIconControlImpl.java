@@ -51,6 +51,11 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 
 	@Override
 	public void refreshIcons() {
+		refreshIcons(null);
+	}
+
+	@Override
+	public void refreshIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
 			Constants.REPAINT_ALL_ICONS, "");
 

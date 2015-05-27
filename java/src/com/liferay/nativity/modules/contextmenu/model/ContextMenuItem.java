@@ -148,9 +148,9 @@ public class ContextMenuItem {
 	private ContextMenuAction _contextMenuAction;
 	private List<ContextMenuItem> _contextMenuItems;
 	private boolean _enabled;
-	private String _helpText;
-	private String _iconName;
-	private String _title;
-	private String _uuid;
+	private String _helpText = "";
+	private String _iconName = "";
+	private String _title = "";
+	private String _uuid = "";
 
 }

@@ -20,6 +20,9 @@ import com.liferay.nativity.control.NativityMessage;
 import com.liferay.nativity.modules.fileicon.FileIconControlBase;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Dennis Ju
  */
@@ -47,7 +50,16 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 	}
 
 	@Override
-	public void registerIconWithId(String path, String label, int id) {
+	public void registerIconWithId(String path, String label, String iconId) {
+		Map<String, String> map = new HashMap<String, String>(3);
+
+		map.put(Constants.PATH, path);
+		map.put(Constants.ICON_ID, iconId);
+
+		NativityMessage message = new NativityMessage(
+			Constants.REGISTER_ICON_WITH_ID, map);
+
+		nativityControl.sendMessage(message);
 	}
 
 	@Override

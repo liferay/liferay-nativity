@@ -32,43 +32,65 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void enableFileIcons();
 
 	/**
-	 * Mac only
+	 * Mac Injector only
 	 *
 	 * Refresh icons. When using callbacks for setting the file icons, this
 	 * must be called when new icons are set to refresh stale windows. Finder
 	 * will not request new icons from the client unless there is interaction
 	 * with the Finder window.
+	 *
+	 * @deprecated as of 1.4. Use refreshIcons(paths) with a null or empty set
+	 * of paths
 	 */
+	@Deprecated
 	public void refreshIcons();
 
 	/**
-	 * Mac and Linux only
+	 * Windows and Mac Injector only
+	 *
+	 * Causes Explorer or Finder to refresh the file icons. This must be called
+	 * when new icons are set to refresh stale windows.
+	 *
+	 * @param paths The array of file paths to refresh. This can be a null or
+	 * empty set for Mac.
+	 */
+	public void refreshIcons(String[] paths);
+
+	/**
+	 * Mac Injector and Linux only
 	 *
 	 * Register an overlay icon
 	 *
 	 * @param path The path of the overlay icon to register
 	 *
 	 * @return overlay icon id. -1 if the icon failed to register.
+	 *
+	 * @deprecated as of 1.4. Use registerIconWithId(...)
 	 */
+	@Deprecated
 	public int registerIcon(String path);
 
 	/**
-	 * Mac Finder Sync only
+	 * Linux, Mac Finder Sync, and Mac Injector only
 	 *
-	 * Register an overlay icon with label and id
+	 * Register an overlay icon with label and iconId
 	 *
 	 * @param path The path of the overlay icon to register
-	 * @param label The label to show when icons are unavailable
-	 * @param id The unique id identifying this icon
+	 * @param label The label to show when icons are unavailable. Only used in
+	 * Mac Finder Sync.
+	 * @param iconId The unique iconId identifying this icon
 	 */
-	public void registerIconWithId(String path, String label, int id);
+	public void registerIconWithId(String path, String label, String iconId);
 
 	/**
 	 * Linux only
 	 * Deprecated for Mac as of 1.2
 	 *
 	 * Removes all file icon overlays
+	 *
+	 * @deprecated as of 1.4. Use disableFileIcons().
 	 */
+	@Deprecated
 	public void removeAllFileIcons();
 
 	/**
@@ -78,7 +100,10 @@ public interface FileIconControl extends FileIconControlCallback {
 	 * Removes file icon overlay
 	 *
 	 * @param path The file path to remove the overlay
+	 *
+	 * @deprecated as of 1.4. Use setFileIcon(path, -1).
 	 */
+	@Deprecated
 	public void removeFileIcon(String path);
 
 	/**
@@ -88,7 +113,10 @@ public interface FileIconControl extends FileIconControlCallback {
 	 * Removes file icon overlays
 	 *
 	 * @param paths The file paths to remove file icon overlays
+	 *
+	 * @deprecated as of 1.4. Use setFileIcons(...) with a value of -1.
 	 */
+	@Deprecated
 	public void removeFileIcons(String[] paths);
 
 	/**
@@ -121,7 +149,10 @@ public interface FileIconControl extends FileIconControlCallback {
 	 * Unregister an overlay icon
 	 *
 	 * @param id The id of the icon to unregister
+	 *
+	 * @deprecated as of 1.4.
 	 */
+	@Deprecated
 	public void unregisterIcon(int id);
 
 }
