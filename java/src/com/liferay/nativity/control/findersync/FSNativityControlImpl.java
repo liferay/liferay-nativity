@@ -66,8 +66,8 @@ public class FSNativityControlImpl extends NativityControl {
 			return true;
 		}
 
-		_parentEventLoopGroup = new NioEventLoopGroup();
 		_childEventLoopGroup = new NioEventLoopGroup();
+		_parentEventLoopGroup = new NioEventLoopGroup();
 
 		try {
 			ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -297,20 +297,20 @@ public class FSNativityControlImpl extends NativityControl {
 
 		@Override
 		public void channelRead(
-			ChannelHandlerContext channelHandlerContext, Object message) {
+			ChannelHandlerContext channelHandlerContext, Object messageObj) {
 
-			ByteBuf readByteBuf = (ByteBuf)message;
+			ByteBuf readByteBuf = (ByteBuf)messageObj;
 
 			try {
-				String data = readByteBuf.toString(CharsetUtil.UTF_8);
+				String messageStr = readByteBuf.toString(CharsetUtil.UTF_8);
 
-				if (data.isEmpty()) {
+				if (messageStr.isEmpty()) {
 					return;
 				}
 
 				try {
 					NativityMessage nativityMessage = _objectMapper.readValue(
-						data, NativityMessage.class);
+						messageStr, NativityMessage.class);
 
 					if (nativityMessage.getCommand().equals(
 							Constants.START_OBSERVING_FOLDER)) {

@@ -32,11 +32,11 @@ import java.util.Map;
 public class FSFileIconControlImpl implements FileIconControl {
 
 	public FSFileIconControlImpl(
-		NativityControl nativityControl,
-		FileIconControlCallback fileIconControlCallback) {
+		FileIconControlCallback fileIconControlCallback,
+		NativityControl nativityControl) {
 
-		this.nativityControl = nativityControl;
 		this.fileIconControlCallback = fileIconControlCallback;
+		this.nativityControl = nativityControl;
 
 		MessageListener messageListener = new MessageListener(
 			Constants.GET_FILE_ICON_ID) {

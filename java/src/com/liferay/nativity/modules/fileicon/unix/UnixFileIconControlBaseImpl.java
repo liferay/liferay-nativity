@@ -29,10 +29,10 @@ import java.util.Map;
 public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 
 	public UnixFileIconControlBaseImpl(
-		NativityControl nativityControl,
-		FileIconControlCallback fileIconControlCallback) {
+		FileIconControlCallback fileIconControlCallback,
+		NativityControl nativityControl) {
 
-		super(nativityControl, fileIconControlCallback);
+		super(fileIconControlCallback, nativityControl);
 	}
 
 	@Override

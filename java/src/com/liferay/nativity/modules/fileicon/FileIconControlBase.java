@@ -28,11 +28,11 @@ import java.util.List;
 public abstract class FileIconControlBase implements FileIconControl {
 
 	public FileIconControlBase(
-		NativityControl nativityControl,
-		FileIconControlCallback fileIconControlCallback) {
+		FileIconControlCallback fileIconControlCallback,
+		NativityControl nativityControl) {
 
-		this.nativityControl = nativityControl;
 		this.fileIconControlCallback = fileIconControlCallback;
+		this.nativityControl = nativityControl;
 
 		MessageListener messageListener = new MessageListener(
 			Constants.GET_FILE_ICON_ID) {

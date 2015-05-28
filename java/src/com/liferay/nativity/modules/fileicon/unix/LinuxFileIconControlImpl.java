@@ -29,10 +29,10 @@ import java.util.Map.Entry;
 public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 
 	public LinuxFileIconControlImpl(
-		NativityControl nativityControl,
-		FileIconControlCallback fileIconControlCallback) {
+		FileIconControlCallback fileIconControlCallback,
+		NativityControl nativityControl) {
 
-		super(nativityControl, fileIconControlCallback);
+		super(fileIconControlCallback, nativityControl);
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		NativityControl nativityControl,
 		FileIconControlCallback fileIconControlCallback) {
 
-		super(nativityControl, fileIconControlCallback);
+		super(fileIconControlCallback, nativityControl);
 	}
 
 	@Override

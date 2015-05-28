@@ -60,17 +60,17 @@ public class FileIconControlUtil {
 
 	protected FileIconControl createFSFileIconControl() {
 		return new FSFileIconControlImpl(
-			_nativityControl, _fileIconControlCallback);
+			_fileIconControlCallback, _nativityControl);
 	}
 
 	protected FileIconControl createLinuxFileIconControl() {
 		return new LinuxFileIconControlImpl(
-			_nativityControl, _fileIconControlCallback);
+			_fileIconControlCallback, _nativityControl);
 	}
 
 	protected FileIconControl createWindowsFileIconControl() {
 		return new WindowsFileIconControlImpl(
-			_nativityControl, _fileIconControlCallback);
+			_fileIconControlCallback, _nativityControl);
 	}
 
 	private FileIconControlUtil(

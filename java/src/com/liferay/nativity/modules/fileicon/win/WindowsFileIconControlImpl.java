@@ -32,10 +32,10 @@ import org.slf4j.LoggerFactory;
 public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	public WindowsFileIconControlImpl(
-		NativityControl nativityControl,
-		FileIconControlCallback fileIconControlCallback) {
+		FileIconControlCallback fileIconControlCallback,
+		NativityControl nativityControl) {
 
-		super(nativityControl, fileIconControlCallback);
+		super(fileIconControlCallback, nativityControl);
 	}
 
 	@Override
