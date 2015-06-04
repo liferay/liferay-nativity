@@ -86,10 +86,15 @@ public class FSFileIconControlImpl implements FileIconControl {
 
 	@Override
 	public void refreshIcons() {
+		refreshIcons(null);
 	}
 
 	@Override
 	public void refreshIcons(String[] paths) {
+		NativityMessage message = new NativityMessage(
+			Constants.REFRESH_ICONS, "");
+
+		nativityControl.sendMessage(message);
 	}
 
 	@Override

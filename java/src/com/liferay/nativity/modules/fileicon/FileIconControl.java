@@ -46,7 +46,7 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void refreshIcons();
 
 	/**
-	 * Windows and Mac Injector only
+	 * Windows, Mac Finder Sync, and Mac Injector only
 	 *
 	 * Causes Explorer or Finder to refresh the file icons. This must be called
 	 * when new icons are set to refresh stale windows.
@@ -120,20 +120,20 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void removeFileIcons(String[] paths);
 
 	/**
-	 * Linux only
+	 * Linux and Mac Finder Sync only
 	 * Deprecated for Mac as of 1.2
 	 *
 	 * Set file icon overlay
 	 *
 	 * @param path The file path to set file icon overlays
 	 *
-	 * @param iconId The id of file icon overlay. Value of -1 will remove the
+	 * @param iconId The id of file icon overlay. A value of -1 will remove the
 	 * overlay (same as calling removeFileIcon).
 	 */
 	public void setFileIcon(String path, int iconId);
 
 	/**
-	 * Linux only
+	 * Linux and Mac Finder Sync only
 	 * Deprecated for Mac as of 1.2
 	 *
 	 * Set file icon overlays

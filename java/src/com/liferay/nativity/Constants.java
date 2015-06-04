@@ -49,6 +49,8 @@ public class Constants {
 
 	public static final String PATH = "path";
 
+	public static final String REFRESH_ICONS = "refreshIcons";
+
 	public static final String REGISTER_CONTEXT_MENU_ICON =
 		"registerContextMenuIcon";
 
