@@ -29,16 +29,13 @@
 
 	NSSet* registeredUrls = [[RequestManager sharedInstance] registeredUrls];
 
-	if ([registeredUrls count] == 0) {
-		registeredUrls = [[NSSet alloc] initWithObjects:[NSURL fileURLWithPath:@"/"], nil];
-	}
-	else {
+	if ([registeredUrls count] > 0) {
 		#ifdef DEBUG
 			NSLog(@"Found previously registered urls: %@", registeredUrls);
 		#endif
-	}
 
-	[FIFinderSyncController defaultController].directoryURLs = registeredUrls;
+		[FIFinderSyncController defaultController].directoryURLs = registeredUrls;
+	}
 
 	NSSet* registeredBadges = [[RequestManager sharedInstance] registeredBadges];
 
