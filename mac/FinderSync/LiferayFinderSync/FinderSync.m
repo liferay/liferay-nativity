@@ -25,9 +25,46 @@
 
 	self = [super init];
 
-	[RequestManager sharedInstance];
+	[[RequestManager sharedInstance] connect];
 
-	[FIFinderSyncController defaultController].directoryURLs = [[NSSet alloc] initWithObjects:[NSURL fileURLWithPath:@"/"], nil];
+	NSSet* registeredUrls = [[RequestManager sharedInstance] registeredUrls];
+
+	if ([registeredUrls count] == 0) {
+		registeredUrls = [[NSSet alloc] initWithObjects:[NSURL fileURLWithPath:@"/"], nil];
+	}
+	else {
+		#ifdef DEBUG
+			NSLog(@"Found previously registered urls: %@", registeredUrls);
+		#endif
+	}
+
+	[FIFinderSyncController defaultController].directoryURLs = registeredUrls;
+
+	NSSet* registeredBadges = [[RequestManager sharedInstance] registeredBadges];
+
+	if ([registeredBadges count] > 0) {
+		for (NSDictionary* dictionary in registeredBadges) {
+			#ifdef DEBUG
+				NSLog(@"Found previously registered badge: %@", dictionary);
+			#endif
+
+			NSString* path = dictionary[@"path"];
+			NSString* label = dictionary[@"label"];
+			NSString* iconId = dictionary[@"iconId"];
+
+			NSFileManager* fileManager = [NSFileManager defaultManager];
+
+			if (![fileManager fileExistsAtPath:path]) {
+				NSLog(@"Failed to register file badge. File not found: %@", path);
+
+				continue;
+			}
+
+			[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:iconId];
+		}
+
+		[[RequestManager sharedInstance] refreshBadges];
+	}
 
 	return self;
 }

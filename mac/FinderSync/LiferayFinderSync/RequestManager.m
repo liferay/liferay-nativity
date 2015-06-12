@@ -30,6 +30,9 @@ static RequestManager* sharedInstance = nil;
 
 @implementation RequestManager
 
+@synthesize registeredBadges;
+@synthesize registeredUrls;
+
 + (RequestManager*) sharedInstance {
 	@synchronized(self) {
 		if (!sharedInstance) {
@@ -42,14 +45,15 @@ static RequestManager* sharedInstance = nil;
 
 - (id) init {
 	if ((self = [super init])) {
+		registeredBadges = [[NSMutableSet alloc] init];
+		registeredUrls = [[NSMutableSet alloc] init];
+
 		_callbackLock = [[NSConditionLock alloc] init];
 		_connected = NO;
 		_menuUuidDictionary = [[NSMutableDictionary alloc] init];
 		_observedFolders = [[NSMutableSet alloc] init];
 		_removeBadgesOnClose = YES;
 		_socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-
-		[self connect];
 	}
 
 	return self;
@@ -92,6 +96,12 @@ static RequestManager* sharedInstance = nil;
 }
 
 - (void) connect {
+	if (_connected) {
+		NSLog(@"Already connected on port %d", _port);
+
+		return;
+	}
+
 	NSError* error = nil;
 
 	NSString* path = [NSString stringWithUTF8String:getpwuid(getuid())->pw_dir];
@@ -112,9 +122,9 @@ static RequestManager* sharedInstance = nil;
 
 	NSString* portNumberString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 
-	int port = [portNumberString intValue];
+	_port = [portNumberString intValue];
 
-	if (port <= 0) {
+	if (_port <= 0) {
 		#ifdef DEBUG
 			NSLog(@"Failed to connect. File content is not an int value: %@", path);
 		#endif
@@ -124,14 +134,14 @@ static RequestManager* sharedInstance = nil;
 		return;
 	}
 
-	if (![_socket connectToHost:@"localhost" onPort:port error:&error]) {
+	if (![_socket connectToHost:@"localhost" onPort:_port error:&error]) {
 		#ifdef DEBUG
 			NSLog(@"Connection failed with error: %@", error);
 		#endif
 	}
 	else {
 		#ifdef DEBUG
-			NSLog(@"Connecting to port %d", port);
+			NSLog(@"Connecting to port %d", _port);
 		#endif
 	}
 }
@@ -194,6 +204,10 @@ static RequestManager* sharedInstance = nil;
 
 	NSString* command = jsonDictionary[@"command"];
 	NSData* value = jsonDictionary[@"value"];
+
+	#ifdef DEBUG
+		NSLog(@"Executing command: %@, data: %@", command, value);
+	#endif
 
 	if (!command) {
 		NSLog(@"Failed to parse data: %@", data);
@@ -322,6 +336,8 @@ static RequestManager* sharedInstance = nil;
 
 		return;
 	}
+
+	[registeredBadges addObject:dictionary];
 
 	[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:iconId];
 }
@@ -510,6 +526,8 @@ static RequestManager* sharedInstance = nil;
 
 	[FIFinderSyncController defaultController].directoryURLs = urls;
 
+	registeredUrls = [urls copy];
+
 	[self refreshBadges];
 }
 
@@ -553,7 +571,7 @@ static RequestManager* sharedInstance = nil;
 
 - (void) socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)error {
 	if (_connected) {
-		NSLog(@"Disconnected with error: %@", error);
+		NSLog(@"Disconnected from port %d with error: %@", _port, error);
 	}
 
 	if (_connected && _removeBadgesOnClose) {

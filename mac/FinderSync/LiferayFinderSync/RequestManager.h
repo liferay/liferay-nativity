@@ -23,14 +23,20 @@
 	BOOL _connected;
 	NSMutableDictionary* _menuUuidDictionary;
 	NSMutableSet* _observedFolders;
+	int _port;
 	BOOL _removeBadgesOnClose;
 	GCDAsyncSocket* _socket;
 }
 
+@property (nonatomic, retain) NSMutableSet* registeredBadges;
+@property (nonatomic, retain) NSMutableSet* registeredUrls;
+
 + (RequestManager*)sharedInstance;
-- (void)sendMenuItemClicked:(NSString*)action;
+- (void)connect;
 - (NSMenu*)menuForFiles:(NSArray*)files;
+- (void)refreshBadges;
 - (void)requestFileBadgeId:(NSURL*)url;
+- (void)sendMenuItemClicked:(NSString*)action;
 - (void)sendObservingFolder:(NSURL*)url start:(BOOL)start;
 
 @end
