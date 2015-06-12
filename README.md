@@ -70,6 +70,12 @@ The LiferayFinderSync.appex bundle should be placed under the /Contents/Plugins/
 
 There are several known issues with the Finder Sync API that require a change in behavior from the existing Nativity API.
 
+##### Conflicts With Multiple Finder Sync Plugins
+
+If multiple Finder Sync plugins monitor the same folders, only the first Finder Sync process that launched will be able to request/set icon badges. This means if a Finder Sync extension "greedily" decides to monitor a parent folder like ~/Documents (like Dropbox currently does), then any Finder Sync extension monitoring files under the ~/Documents parent will not show badges if the greedy extension launched first.
+
+Ideally, Apple needs to figure out an intelligent mechanism for deciding which Finder Sync gets to draw the icon badge. Until then, developers are advised to be "polite" and monitor only the folders that explicitly belong to your application. Context menus will work fine with multiple extensions.
+
 ##### Sandbox
 
 Finder Sync plugins must be sandboxed. By default, sandboxed applications cannot read data outside its own containers. In order to allow icons to be registered from any path as well as the ability to refresh file badges (which requires reading an observed folder's children), the entitlement [com.apple.security.temporary-exception.files.absolute-path.read-only](https://developer.apple.com/library/ios/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/AppSandboxTemporaryExceptionEntitlements.html) is included, but any app submitted to the Mac App Store using this entitlement will likely be rejected.
@@ -331,13 +337,13 @@ The key classes for the java client are:
 The following example Java code will overlay testFile.txt with testIcon.icns and create a context menu item titled "Nativity Test".
 
     NativityControl nativityControl = NativityControlUtil.getNativityControl();
-  
+
     nativityControl.connect();
-  
+
     /* File Icons */
-  
+
     int testIconId;
-  
+
     // FileIconControlCallback used by Windows and Mac
     FileIconControlCallback fileIconControlCallback = new FileIconControlCallback() {
       @Override
@@ -345,14 +351,14 @@ The following example Java code will overlay testFile.txt with testIcon.icns and
         return testIconId;
       }
     };
-  
+
     FileIconControl fileIconControl = FileIconControlUtil.getFileIconControl(
       nativityControl, fileIconControlCallback);
-  
+
     fileIconControl.enableFileIcons();
-  
+
     String testFilePath = "/Users/liferay/Desktop/testFile.txt";
-  
+
     if (OSDetector.isWindows()) {
       // This id is determined when building the DLL
       testIconId = 1;
@@ -360,45 +366,45 @@ The following example Java code will overlay testFile.txt with testIcon.icns and
     else if (OSDetector.isMinimumAppleVersion(OSDetector.MAC_YOSEMITE_10_10)) {
       // Used by Mac Finder Sync. This unique id can be set at runtime.
       testIconId = 1;
-  
+
       fileIconControl.registerIconWithId("/Users/liferay/Desktop/testIcon.icns", "test label", testIconId);
     }
     else if (OSDetector.isLinux() || OSDetector.isMinimumAppleVersion()) {
       // Used by Mac Injector and Linux
       testIconId = fileIconControl.registerIcon("/Users/liferay/Desktop/testIcon.icns");
     }
-  
+
     // FileIconControl.setFileIcon() method only used by Linux
     fileIconControl.setFileIcon(testFilePath, testIconId);
-  
+
     /* Context Menus */
-  
+
     ContextMenuControlCallback contextMenuControlCallback = new ContextMenuControlCallback() {
       @Override
       public List<ContextMenuItem> getContextMenuItems(String[] paths) {
         ContextMenuItem contextMenuItem = new ContextMenuItem("Nativity Test");
-  
+
         ContextMenuAction contextMenuAction = new ContextMenuAction() {
           @Override
           public void onSelection(String[] paths) {
             for (String path : paths) {
               System.out.print(path + ", ");
             }
-  
+
             System.out.println("selected");
           }
         };
-  
+
         contextMenuItem.setContextMenuAction(contextMenuAction);
-  
+
         List<ContextMenuItem> contextMenuItems = new ArrayList<ContextMenuItem>() {};
         contextMenuItems.add(contextMenuItem);
-  
+
         // Mac Finder Sync will only show the parent level of context menus
         return contextMenuItems;
       }
     };
-  
+
     ContextMenuControlUtil.getContextMenuControl(nativityControl, contextMenuControlCallback);
 
 
