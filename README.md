@@ -288,11 +288,13 @@ Liferay Nativity currently only supports Nautilus file manager. Hooks for Nemo a
 ### Build
 
   git clone https://github.com/liferay/liferay-nativity
+
   cd liferay-nativity/linux/nautilus/src
 
   sudo apt-get install cmake build-essential libgtk2.0-dev libnautilus-extension-dev libboost-all-dev
 
   cmake .
+
   make
 
 #### Deployment

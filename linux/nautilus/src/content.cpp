@@ -11,6 +11,8 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+#include "config.h"
+#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 #include <gio/gio.h>
 #include <glib/gi18n-lib.h>
@@ -19,7 +21,6 @@
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
-#include "config.h"
 #include "content.h"
 #include "logger.h"
 
@@ -99,7 +100,7 @@ void ContentManager::setFileIcon(const std::string& fileName, int iconId)
 		return;
 	}
 
-	std::string iconIdString = std::to_string(i);
+	std::string iconIdString = boost::lexical_cast<std::string>(iconId);
 
 	if (iconIdString == "-1")
 	{
@@ -124,7 +125,7 @@ void ContentManager::removeAllFileIcons()
 int ContentManager::registerIcon(const std::string& fileName)
 {
 	lastIconId_++;
-	icons_[std::to_string(lastIconId_)] = fileName;
+	icons_[boost::lexical_cast<std::string>(lastIconId_)] = fileName;
 
 	return lastIconId_;
 }
@@ -136,7 +137,7 @@ void ContentManager::registerIconWithId(const std::string& fileName, const std::
 
 void ContentManager::unregisterIcon(int iconId)
 {
-	icons_.erase(std::to_string(iconId));
+	icons_.erase(boost::lexical_cast<std::string>(iconId));
 }
 
 void ContentManager::enableFileIcons(bool enable)

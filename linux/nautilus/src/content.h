@@ -28,7 +28,7 @@ class ContentManager
 		void removeFileIcon(const std::string& fileName);
 		void removeAllFileIcons();
 		int registerIcon(const std::string& fileName);
-		int registerIconWithId(const std::string& fileName, const std::string& iconId);
+		void registerIconWithId(const std::string& fileName, const std::string& iconId);
 		void unregisterIcon(int iconId);
 		void enableFileIcons(bool enable);
 		bool isOverlaysEnabled();
