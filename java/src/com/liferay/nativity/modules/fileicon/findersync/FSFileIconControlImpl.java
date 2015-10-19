@@ -56,6 +56,10 @@ public class FSFileIconControlImpl implements FileIconControl {
 					filePath = message.getValue().toString();
 				}
 
+				if (filePath == null) {
+					return null;
+				}
+
 				int iconId = getIconForFile(filePath);
 
 				Map<String, Integer> map = new HashMap<String, Integer>(1);
