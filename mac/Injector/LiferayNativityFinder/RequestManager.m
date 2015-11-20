@@ -226,10 +226,6 @@ static NSInteger GOT_CALLBACK_RESPONSE = 2;
 	{
 		[self execRegisterIconWithIdCmd:value replyTo:sock];
 	}
-	else if ([command isEqualToString:@"registerMenuIcon"])
-	{
-		[self execRegisterMenuIconCmd:value replyTo:sock];
-	}
 	else if ([command isEqualToString:@"unregisterIcon"])
 	{
 		[self execUnregisterIconCmd:value replyTo:sock];
