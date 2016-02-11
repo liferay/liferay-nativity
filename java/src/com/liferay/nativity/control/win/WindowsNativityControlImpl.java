@@ -72,9 +72,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				while (_connected) {
-					fireSocketOpenListeners();
+				fireSocketOpenListeners();
 
+				while (_connected) {
 					handleConnection();
 				}
 			}
