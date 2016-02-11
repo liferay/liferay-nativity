@@ -190,12 +190,21 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 	}
 
 	char rec_buf[DEFAULT_BUFLEN];
+
 	int bytesRead = recv(clientSocket, rec_buf, DEFAULT_BUFLEN, MSG_WAITALL);
+
+	if (bytesRead == SOCKET_ERROR || bytesRead == 0)
+	{
+		int error = WSAGetLastError();
+
+		closesocket(clientSocket);
+
+		return false;
+	}
 
 	wchar_t* buf = new wchar_t[ bytesRead / 2 ];
 
 	int value;
-
 	int j = 0;
 
 	for (int i = 0; i < bytesRead; i += 2)

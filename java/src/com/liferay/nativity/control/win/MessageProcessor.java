@@ -73,6 +73,14 @@ public class MessageProcessor implements Runnable {
 		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
 		}
+		finally {
+			try {
+				_inputStreamReader.close();
+			}
+			catch (Exception e) {
+				_logger.error(e.getMessage(), e);
+			}
+		}
 	}
 
 	private void _handle(String receivedMessage) throws IOException {
