@@ -39,7 +39,8 @@
  */
 
 using System;
-
+using Liferay.Nativity.Control.Unix;
+using Liferay.Nativity.Control.Win;
 using log4net;
 
 using Liferay.Nativity.Util;
@@ -57,16 +58,16 @@ namespace Liferay.Nativity.Control
 		{
 			if (OSDetector.IsApple) 
 			{
-				NativityControlUtil.nativityControl = new Unix.AppleNativityControlImpl();
+				NativityControlUtil.nativityControl = new AppleNativityControlImpl();
 			}
-			/*else if (OSDetector.isWindows()) 
+			else if (OSDetector.IsWindows) 
 			{
-				_nativityControl = new WindowsNativityControlImpl();
+				NativityControlUtil.nativityControl = new WindowsNativityControlImpl();
 			}
-			else if (OSDetector.isLinux()) 
+			else if (OSDetector.IsLinux) 
 			{
-				_nativityControl = new LinuxNativityControlImpl();
-			}*/
+				NativityControlUtil.nativityControl = new LinuxNativityControlImpl();
+			}
 			else
 			{
 				logger.ErrorFormat("{0} is not supported", System.Environment.OSVersion.Platform);

@@ -61,20 +61,30 @@ namespace Liferay.Nativity.Modules.FileIcon
 		/// <summary>
 		/// Mac only
 		/// 
+		/// Refresh icons. When using callbacks for setting the file icons, this
+		/// must be called when new icons are set to refresh stale windows. Finder
+		/// will not request new icons from the client unless there is interaction
+		/// with the Finder window.
+		/// </summary>
+		void RefreshIcons();
+
+		/// <summary>
+		/// Mac only
+		/// 
 		/// Register an overlay icon
 		/// </summary>
 		/// <returns>overlay icon id. -1 if the icon failed ot register.</returns>
 		/// <param name="path">path to the overlay icon</param>
 		int RegisterIcon(string path);
 
-        /// <summary>
-        /// Mac only
-        /// 
-        /// Registers the menu icon and resize it to the size of context menu text.
-        /// </summary>
-        /// <returns>The menu icon id. -1 if the icon failed ot register.</returns>
-        /// <param name="path">Path to the menu icon</param>
-        int RegisterMenuIcon(string path);
+		/// <summary>
+		/// Mac only
+		/// 
+		/// Registers the menu icon and resize it to the size of context menu text.
+		/// </summary>
+		/// <returns>The menu icon id. -1 if the icon failed ot register.</returns>
+		/// <param name="path">Path to the menu icon</param>
+		int RegisterMenuIcon(string path);
 		
 		/// <summary>
 		/// Mac and Linux only

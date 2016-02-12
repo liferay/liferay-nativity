@@ -56,8 +56,8 @@ namespace Liferay.Nativity
 		public const string ENABLE_OVERLAY_REGISTRY_NAME = "EnableOverlay";
 		
 		public const string FILES = "files";
-		
-		public const string FILTER_FOLDER_REGISTRY_NAME = "FilterFolder";
+
+		public const string FILTER_FOLDERS_REGISTRY_NAME = "FilterFolders";
 		
 		public const string FIRE_CONTEXT_MENU_ACTION = "contextMenuAction";
 		
@@ -72,14 +72,14 @@ namespace Liferay.Nativity
 		public const string MENU_ITEMS = "menuItems";
 		
 		public const string MENU_TEXT = "menuText";
-		
-		public const string NATIVITY_REGISTRY_KEY = "SOFTWARE\\Liferay Inc\\Liferay Nativity";
+
+		public const string NATIVITY_REGISTRY_KEY = "HKEY_CURRENT_USER\\SOFTWARE\\Liferay Inc\\Liferay Nativity";
 		
 		public const string REFRESH_FILES = "refreshFiles";
 		
 		public const string REGISTER_ICON = "registerIcon";
 
-        public const string REGISTER_MENU_ICON = "registerMenuIcon";
+		public const string REGISTER_MENU_ICON = "registerMenuIcon";
 		
 		public const string REMOVE_ALL_FILE_ICONS = "removeAllFileIcons";
 		
@@ -90,6 +90,8 @@ namespace Liferay.Nativity
 		public const string REPAINT_ALL_ICONS = "repaintAllIcons";
 		
 		public const string SET_FILTER_PATH = "setFilterPath";
+
+		public const string SET_FILTER_PATHS = "setFilterPaths";
 		
 		public const string SET_SYSTEM_FOLDER = "setSystemFolder";
 		

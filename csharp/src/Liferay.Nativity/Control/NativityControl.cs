@@ -175,15 +175,15 @@ namespace Liferay.Nativity.Control
 		{
 			return string.Empty;
 		}
-		
+
 		/// <summary>
 		/// Optionally set the root folder filter path for requests made
 		/// to the native service. For example, setting a value of "/test/folder"
 		/// indicates that any requests for files that are not a child of
 		/// "/test/folder" will be ignored. This can improve native performance.
 		/// </summary>
-		/// <param name="folder">root folder path to filter by (inclusive)</param>
-		public abstract void SetFilterFolder(string folder);
+		/// <param name="folders">The folder paths to filter by (inclusive)</param>
+		public abstract void SetFilterFolders(params string[] folders);
 		
 		/// <summary>
 		/// Windows only

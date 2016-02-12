@@ -40,7 +40,7 @@ The following operating systems are currently supported:
 * Mac OS X 10.7 or greater (tested up to OS X 10.8.4)
 * Linux GNOME Nautilus 3.x or greater (tested up to Nautilus 3.6)
 
-Currently the client code is only available for Java. Contributions for other clients like Ruby, C++, etc are welcome.
+Currently the client code is available for Java and C#. Contributions for other clients like Ruby, C++, etc are welcome.
 
 <img width="400" src="https://raw.github.com/liferay/liferay-nativity/master/extra/screenshot-win.png">
 
@@ -185,6 +185,7 @@ This dll must also be on the java.library. path.
 
 ### Shell Extensions
 The shell extensions must be built and registered to be used by explorer, explorer also must be restarted for the icon overlays to display.
+The registration can be done with a call to **regsvr32 dll_name** command as an administrator.
 
 #### Build Properties
 

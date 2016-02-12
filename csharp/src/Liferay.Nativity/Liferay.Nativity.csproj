@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,6 +43,11 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Control\NativityControlUtil.cs" />
     <Compile Include="Control\NativityControl.cs" />
+    <Compile Include="Control\Unix\LinuxNativityControlImpl.cs" />
+    <Compile Include="Control\Win\MessageProcessor.cs" />
+    <Compile Include="Control\Win\WindowsNativityControlImpl.cs" />
+    <Compile Include="Control\Win\WindowsNativityUtil.cs" />
+    <Compile Include="Modules\FileIcon\Win\WindowsFileIconControlImpl.cs" />
     <Compile Include="Util\OSDetector.cs" />
     <Compile Include="Control\NativityMessage.cs" />
     <Compile Include="Listeners\SocketCloseListener.cs" />
@@ -58,8 +63,6 @@
     <Compile Include="Modules\ContextMenu\ContextMenuControlUtil.cs" />
     <Compile Include="Modules\ContextMenu\ContextMenuControlCallback.cs" />
     <Compile Include="Modules\ContextMenu\Model\ContextMenuItem.cs" />
-    <Compile Include="Modules\ContextMenu\Unix\AppleContextMenuControlImpl.cs" />
-    <Compile Include="Modules\ContextMenu\Unix\UnixContextMenuControlBaseImpl.cs" />
     <Compile Include="Modules\ContextMenu\ContextMenuControl.cs" />
     <Compile Include="Control\MessageListener.cs" />
     <Compile Include="JsonExtensions.cs" />
@@ -68,16 +71,5 @@
     <Compile Include="Listeners\SocketRestartListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Control\" />
-    <Folder Include="Util\" />
-    <Folder Include="Listeners\" />
-    <Folder Include="Control\Unix\" />
-    <Folder Include="Modules\" />
-    <Folder Include="Modules\FileIcon\" />
-    <Folder Include="Modules\FileIcon\Unix\" />
-    <Folder Include="Modules\ContextMenu\" />
-    <Folder Include="Modules\ContextMenu\Model\" />
-    <Folder Include="Modules\ContextMenu\Unix\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

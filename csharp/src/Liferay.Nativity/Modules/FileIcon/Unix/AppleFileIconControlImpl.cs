@@ -38,12 +38,9 @@
  * details.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Liferay.Nativity.Control;
-using Liferay.Nativity.Modules.FileIcon;
 
 namespace Liferay.Nativity.Modules.FileIcon.Unix
 {
@@ -65,6 +62,12 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 		public override void EnableFileIcons()
 		{
 			var message = new NativityMessage(Constants.ENABLE_FILE_ICONS_WITH_CALLBACK, true);
+			this.nativityControl.SendMessage(message);
+		}
+
+		public override void RefreshIcons()
+		{
+			var message = new NativityMessage(Constants.REPAINT_ALL_ICONS, string.Empty);
 			this.nativityControl.SendMessage(message);
 		}
 

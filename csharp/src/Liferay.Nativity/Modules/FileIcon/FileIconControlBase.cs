@@ -117,8 +117,9 @@ namespace Liferay.Nativity.Modules.FileIcon
 
 		public abstract void DisableFileIcons ();
 		public abstract void EnableFileIcons ();
+		public abstract void RefreshIcons();
 		public abstract int RegisterIcon (string path);
-        public abstract int RegisterMenuIcon (string path);
+		public abstract int RegisterMenuIcon (string path);
 		public abstract void RemoveAllFileIcons ();
 		public abstract void RemoveFileIcon (string path);
 		public abstract void RemoveFileIcons (System.Collections.Generic.IEnumerable<string> paths);

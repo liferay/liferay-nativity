@@ -57,16 +57,16 @@ namespace Liferay.Nativity.Modules.ContextMenu.Model
 	{
 		private const string SEPARATOR = "_SEPARATOR_";
 
-        public ContextMenuItem (string title) : this(title, -1)
+		public ContextMenuItem (string title) : this(title, -1)
 		{
 
 		}
 
-        public ContextMenuItem(string title, int icon)
-        {
-            this.title = title;
-            this.icon = icon;
-        }
+		public ContextMenuItem(string title, int icon)
+		{
+			this.title = title;
+			this.icon = icon;
+		}
 
 		[JsonProperty("enabled")]
 		public bool Enabled
@@ -92,13 +92,13 @@ namespace Liferay.Nativity.Modules.ContextMenu.Model
 		}
 		private string title;
 
-        [JsonProperty("icon")]
-        public int Icon
-        {
-            get { return this.icon; }
-            set { this.icon = value; }
-        }
-        private int icon;
+		  [JsonProperty("icon")]
+		  public int Icon
+		  {
+				get { return this.icon; }
+				set { this.icon = value; }
+		  }
+		  private int icon;
 
 		[JsonProperty("contextMenuItems")]
 		public List<ContextMenuItem> ContextMenuItems

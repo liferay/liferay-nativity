@@ -25,6 +25,11 @@ java/classes
 java/dist
 java/.settings
 
+csharp/src/Liferay.Nativity/bin
+csharp/src/Liferay.Nativity/obj
+csharp/src/Liferay.Nativity.Example/bin
+csharp/src/Liferay.Nativity.Example/obj
+
 windows/LiferayNativityShellExtensions/ipch
 windows/LiferayNativityShellExtensions/*.opensdf
 windows/LiferayNativityShellExtensions/Release

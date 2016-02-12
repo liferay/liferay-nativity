@@ -48,11 +48,11 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 	/**
 	 * @author Dennis Ju, ported to C# by Andrew Rondeau. Support for icons added by Ivan Burlakov
 	 */
-	public abstract class LinuxFileIconControlBaseImpl : FileIconControlBase
+	public class LinuxFileIconControlImpl : UnixFileIconControlBaseImpl
 	{
 		private const int MESSAGE_BUFFER_SIZE = 500;
-		
-		public LinuxFileIconControlBaseImpl(
+
+		public LinuxFileIconControlImpl(
 			NativityControl nativityControl,
 			FileIconControlCallback fileIconControlCallback)
 			: base(nativityControl, fileIconControlCallback)
@@ -71,6 +71,10 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 			this.nativityControl.SendMessage(message);
 		}
 
+		public override void RefreshIcons()
+		{
+		}
+
 		public override void RemoveFileIcon(string path)
 		{
 			var message = new NativityMessage(Constants.REMOVE_FILE_ICONS, new string[] { path });
@@ -79,13 +83,13 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 		
 		public override void RemoveFileIcons (IEnumerable<string> paths)
 		{
-			var list = new List<string> (LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE);
+			var list = new List<string>(LinuxFileIconControlImpl.MESSAGE_BUFFER_SIZE);
 			
 			foreach (var path in paths)
 			{
 				list.Add (path);
-				
-				if (list.Count >= LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE)
+
+				if(list.Count >= LinuxFileIconControlImpl.MESSAGE_BUFFER_SIZE)
 				{
 					var message = new NativityMessage (Constants.REMOVE_FILE_ICONS, list);
 					this.nativityControl.SendMessage (message);
@@ -113,13 +117,13 @@ namespace Liferay.Nativity.Modules.FileIcon.Unix
 		
 		public override void SetFileIcons(IDictionary<string, int> fileIconsMap)
 		{
-			var map = new Dictionary<string, int>(LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE);
+			var map = new Dictionary<string, int>(LinuxFileIconControlImpl.MESSAGE_BUFFER_SIZE);
 			
 			foreach (var entry in fileIconsMap)
 			{
 				map[entry.Key] = entry.Value;
-				
-				if (map.Count >= LinuxFileIconControlBaseImpl.MESSAGE_BUFFER_SIZE)
+
+				if(map.Count >= LinuxFileIconControlImpl.MESSAGE_BUFFER_SIZE)
 				{
 					var message = new NativityMessage(Constants.SET_FILE_ICONS, map);
 					this.nativityControl.SendMessage(message);

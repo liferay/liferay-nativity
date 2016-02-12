@@ -53,7 +53,7 @@ namespace Liferay.Nativity.Control.Unix
 	/**
 	* @author Dennis Ju, ported to C# by Andrew Rondeau
 	*/
-	public class UnixNativityControlBaseImpl : NativityControl
+	public abstract class UnixNativityControlBaseImpl : NativityControl
 	{
 		private readonly static ILog logger = LogManager.GetLogger(typeof(UnixNativityControlBaseImpl));
 
@@ -266,33 +266,9 @@ namespace Liferay.Nativity.Control.Unix
 			}
 		}
 
-		public override bool Load ()
+		// Windows only
+		public override void SetSystemFolder(string folder)
 		{
-			throw new NotImplementedException ();
-		}
-		public override void RefreshFiles (System.Collections.Generic.IEnumerable<string> paths)
-		{
-			throw new NotImplementedException ();
-		}
-		public override void SetFilterFolder (string folder)
-		{
-			throw new NotImplementedException ();
-		}
-		public override void SetSystemFolder (string folder)
-		{
-			throw new NotImplementedException ();
-		}
-		public override bool Unload ()
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override bool Loaded 
-		{
-			get 
-			{
-				throw new NotImplementedException ();
-			}
 		}
 
 		public override TimeSpan CheckSocketConnectionInterval

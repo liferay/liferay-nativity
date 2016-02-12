@@ -38,36 +38,20 @@
  * details.
  */
 
-using System;
-
 using Liferay.Nativity.Control;
-using Liferay.Nativity.Util;
 
 namespace Liferay.Nativity.Modules.ContextMenu
 {
 	/**
 	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
-	public class ContextMenuControlUtil 
+	public static class ContextMenuControlUtil 
 	{
 		public static ContextMenuControl GetContextMenuControl(
 			NativityControl nativityControl,
-			ContextMenuControlCallback contextMenuControlCallback) 
+			ContextMenuControlCallback contextMenuControlCallback)
 		{
-			if (OSDetector.IsApple)
-			{
-				return new Unix.AppleContextMenuControlImpl(nativityControl, contextMenuControlCallback);
-			}
-			/*else if (OSDetector.isWindows()) {
-				return new WindowsContextMenuControlImpl(
-					nativityControl, contextMenuControlCallback);
-			}
-			else if (OSDetector.isLinux()) {
-				return new LinuxContextMenuControlImpl(
-					nativityControl, contextMenuControlCallback);
-			}*/
-			
-			return null;
+			return new ContextMenuControl(nativityControl, contextMenuControlCallback);
 		}
 	}
 }

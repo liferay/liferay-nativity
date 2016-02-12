@@ -45,13 +45,14 @@ using System.Linq;
 using log4net;
 
 using Liferay.Nativity.Control;
+using Newtonsoft.Json.Linq;
 
 namespace Liferay.Nativity.Modules.ContextMenu
 {
 	/**
 	 * @author Dennis Ju, ported to C# by Andrew Rondeau
 	 */
-	public abstract class ContextMenuControl
+	public class ContextMenuControl
 	{
 		private static readonly ILog log = LogManager.GetLogger(typeof(ContextMenuControl));
 
@@ -65,38 +66,28 @@ namespace Liferay.Nativity.Modules.ContextMenu
 		{
 			this.nativityControl = nativityControl;
 			this.contextMenuControlCallback = contextMenuControlCallback;
+
+			nativityControl.RegisterMessageListener(Constants.GET_CONTEXT_MENU_ITEMS, this.GetContextMenuItems);
+			nativityControl.RegisterMessageListener(Constants.FIRE_CONTEXT_MENU_ACTION, this.RaiseContextMenuItem_Selected);
 		}
-		
-		public void RaiseContextMenu_Selected (Guid uuid, IEnumerable<string> paths)
-		{
-			Model.ContextMenuItem contextMenuItem;
-			if (this.contextMenuItems.TryGetValue (uuid, out contextMenuItem))
-			{
-				contextMenuItem.TriggerSelected (paths);
-			}
-			else
-			{
-				var registeredMenuItems = string.Join(", ", this.contextMenuItems.Values.Select(cmi => string.Format("{0}:{1}", cmi.Title, cmi.Uuid)).ToArray());
-				log.WarnFormat ("No registered handler for uuid {0}. Registered menu items: {1}", uuid, registeredMenuItems);
-			}
-		}
-		
+
 		/// <summary>
 		/// Called by the native service to request the menu items for a context
 		/// menu popup
 		/// </summary>
-		/// <returns>each ContextMenuItem instance in the list will appear at the
-		/// context menu's top level</returns>
-		/// <param name="paths">the files selected for this context menu popup</param>
-		public IEnumerable<Model.ContextMenuItem> GetContextMenuItems(IEnumerable<string> paths) 
+		/// <returns>response</returns>
+		/// <param name="message">the message with a list of selected files</param>
+		public NativityMessage GetContextMenuItems(NativityMessage message)
 		{
-			var newContextMenuItems = this.contextMenuControlCallback(paths);
+			var currentFilesJArray = message.Value as JArray;
+
+			var newContextMenuItems = this.contextMenuControlCallback(currentFilesJArray.Cast<string>());
 
 			// TODO: There's a potential memory leak here
 			// TODO: There appears to be no message sent when the context menu is closed. When it's closed, this.contextMenuItems should be cleared
 			// TODO: The consequences of this is that, if someone leaves a context menu open for a long time, it will hold references to objects and keep those references alive
 
-			if (newContextMenuItems == null)
+			if(newContextMenuItems == null)
 			{
 				this.contextMenuItems.Clear();
 				return null;
@@ -105,7 +96,55 @@ namespace Liferay.Nativity.Modules.ContextMenu
 			newContextMenuItems = newContextMenuItems.ToArray();
 
 			this.contextMenuItems = newContextMenuItems.SelectMany(cmi => cmi.GetAllContextMenuItems()).ToDictionary(cmi => cmi.Uuid);
-			return newContextMenuItems;
+
+			return new NativityMessage(Constants.MENU_ITEMS, newContextMenuItems);
+		}
+
+		public NativityMessage RaiseContextMenuItem_Selected(NativityMessage nativityMessage)
+		{
+			var message = nativityMessage.Value as JObject;
+
+			if(null == message)
+			{
+				return null;
+			}
+
+			JToken uuidToken;
+			if(message.TryGetValue("uuid", out uuidToken))
+			{
+				Guid uuid;
+				try
+				{
+					uuid = (Guid)uuidToken;
+				}
+				catch
+				{
+					log.ErrorFormat("{0}, ({1}), is not a valid Guid", uuidToken, uuidToken.GetType());
+					return null;
+				}
+
+				JToken filesToken;
+				if(message.TryGetValue("files", out filesToken))
+				{
+					if(filesToken is JArray)
+					{
+						var files = ((JArray)filesToken).Cast<string>();
+
+						Model.ContextMenuItem contextMenuItem;
+						if(this.contextMenuItems.TryGetValue(uuid, out contextMenuItem))
+						{
+							contextMenuItem.TriggerSelected(files);
+						}
+						else
+						{
+							var registeredMenuItems = string.Join(", ", this.contextMenuItems.Values.Select(cmi => string.Format("{0}:{1}", cmi.Title, cmi.Uuid)).ToArray());
+							log.WarnFormat("No registered handler for uuid {0}. Registered menu items: {1}", uuid, registeredMenuItems);
+						}
+					}
+				}
+			}
+
+			return null;
 		}
 	}
 }
