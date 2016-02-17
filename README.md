@@ -287,29 +287,29 @@ Liferay Nativity currently only supports Nautilus file manager. Hooks for Nemo a
 
 ### Build
 
-  git clone https://github.com/liferay/liferay-nativity
+    git clone https://github.com/liferay/liferay-nativity
 
-  cd liferay-nativity/linux/nautilus/src
+    cd liferay-nativity/linux/nautilus/src
 
-  sudo apt-get install cmake build-essential libgtk2.0-dev libnautilus-extension-dev libboost-all-dev
+    sudo apt-get install cmake build-essential libgtk2.0-dev libnautilus-extension-dev libboost-all-dev
 
-  cmake .
+    cmake .
 
-  make
+    make
 
 #### Deployment
 
 ##### Nautilus
 
-  sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nautilus/extensions-3.0/libliferaynativity.so
-  killall -9 nautilus
+    sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nautilus/extensions-3.0/libliferaynativity.so
+    killall -9 nautilus
 
 ##### Nemo (Nautilus fork)
 
-  sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nemo/extensions-3.0/libliferaynativity.so
-  killall -9 nemo
+    sudo ln -s `pwd`/libliferaynativity.so /usr/lib/nemo/extensions-3.0/libliferaynativity.so
+    killall -9 nemo
 
-Upon successful deployment, log messages will be written to ~/.liferay-nativity/liferaynativity.log.
+Upon successful deployment, log messages will be written to `~/.liferay-nativity/liferaynativity.log`.
 
 *Further instructions coming soon*
 
