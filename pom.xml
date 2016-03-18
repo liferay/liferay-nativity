@@ -30,6 +30,10 @@
 		<url>http://github.com/liferay/liferay-nativity</url>
 	</scm>
 	<version>1.0.4-SNAPSHOT</version>
+    <build>
+        <sourceDirectory>java/src</sourceDirectory>
+        <testSourceDirectory>java/test</testSourceDirectory>
+    </build>
  <dependencies>
   <dependency>
    <groupId>com.fasterxml.jackson.core</groupId>
