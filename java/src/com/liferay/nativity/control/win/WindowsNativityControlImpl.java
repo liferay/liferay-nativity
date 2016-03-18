@@ -25,6 +25,7 @@ import com.liferay.nativity.util.win.RegistryUtil;
 
 import java.io.IOException;
 
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -58,7 +59,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 		if (_serverSocket == null) {
 			try {
-				_serverSocket = new ServerSocket(_port);
+				_serverSocket = new ServerSocket(_port, 50, InetAddress.getLoopbackAddress());
 
 				_connected = true;
 			}
