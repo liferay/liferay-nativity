@@ -31,4 +31,8 @@
 	</scm>
 	<url>${ivy.pom.url}</url>
 	<version>${ivy.pom.version}</version>
+    <build>
+        <sourceDirectory>java/src</sourceDirectory>
+        <testSourceDirectory>java/test</testSourceDirectory>
+    </build>
 </project>
