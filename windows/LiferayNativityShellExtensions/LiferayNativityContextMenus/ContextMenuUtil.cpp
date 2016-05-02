@@ -140,6 +140,7 @@ bool ContextMenuUtil::InitMenus(void)
 			Json::Value jsonContextMenuItem = jsonContextMenuItemsList[i];
 
 			ContextMenuItem* contextMenuItem = new ContextMenuItem();
+			contextMenuItem->SetId(i);
 
 			if (!_ParseContextMenuItem(jsonContextMenuItem, contextMenuItem))
 			{
