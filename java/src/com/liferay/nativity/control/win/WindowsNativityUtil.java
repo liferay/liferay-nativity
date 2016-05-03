@@ -53,11 +53,15 @@ public class WindowsNativityUtil {
 
 		String nativityDllName = _NATIVITY_DLL_NAME;
 
-		if (System.getenv("ProgramFiles(x86)") != null) {
-			nativityDllName = nativityDllName + "_x64";
-		}
-		else {
-			nativityDllName = nativityDllName + "_x86";
+		if (System.getProperty("nativity.architecture") != null) {
+			nativityDllName = nativityDllName + "_" + System.getProperty("nativity.architecture");
+		} else {
+			if (System.getenv("ProgramFiles(x86)") != null) {
+				nativityDllName = nativityDllName + "_x64";
+			}
+			else {
+				nativityDllName = nativityDllName + "_x86";
+			}
 		}
 
 		try {
