@@ -68,6 +68,7 @@ static RequestManager* sharedInstance = nil;
 		NSString* subMenuTitle = menuItemDictionary[@"title"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
 		NSString* iconId = menuItemDictionary[@"iconId"];
+		NSString* iconPath = menuItemDictionary[@"iconPath"];
 		NSString* uuid = menuItemDictionary[@"uuid"];
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 
@@ -77,7 +78,17 @@ static RequestManager* sharedInstance = nil;
 		else if (childrenSubMenuItems && [childrenSubMenuItems count] != 0) {
 			NSMenuItem* subMenuItem = [menu addItemWithTitle:subMenuTitle action:nil keyEquivalent:@""];
 
-			if (iconId) {
+			if (iconPath) {
+				NSImage* image = [self getCachedImageFromPath:iconPath];
+
+				if (image) {
+					[subMenuItem setImage:image];
+				}
+				else {
+					NSLog(@"Failed to set context menu icon. File not found: %@", iconPath);
+				}
+			}
+			else if (iconId) {
 				NSImage* image = [NSImage imageNamed:iconId];
 
 				if (image) {
@@ -88,7 +99,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:subMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu title:subMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId files:files];
+			[self createActionMenuItem:menu title:subMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId iconPath:iconPath files:files];
 		}
 	}
 
@@ -146,7 +157,7 @@ static RequestManager* sharedInstance = nil;
 	}
 }
 
-- (void) createActionMenuItem:(NSMenu*)menu title:(NSString*)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString*)uuid iconId:(NSString*)iconId files:(NSArray*)files {
+- (void) createActionMenuItem:(NSMenu*)menu title:(NSString*)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString*)uuid iconId:(NSString*)iconId iconPath:(NSString*)iconPath files:(NSArray*)files {
 	NSMenuItem* mainMenuItem = nil;
 
 	if (!enabled) {
@@ -184,7 +195,17 @@ static RequestManager* sharedInstance = nil;
 
 	[mainMenuItem setEnabled:enabled];
 
-	if (iconId) {
+	if (iconPath) {
+		NSImage* image = [self getCachedImageFromPath:iconPath];
+
+		if (image) {
+			[mainMenuItem setImage:image];
+		}
+		else {
+			NSLog(@"Failed to set context menu icon. File not found: %@", iconPath);
+		}
+	}
+	else if (iconId) {
 		NSImage* image = [NSImage imageNamed:iconId];
 
 		if (image) {
@@ -237,6 +258,30 @@ static RequestManager* sharedInstance = nil;
 	}
 }
 
+- (NSImage*) getCachedImageFromPath:(NSString*)path {
+	NSImage* image = [NSImage imageNamed:path];
+
+	if (!image) {
+		NSFileManager* fileManager = [NSFileManager defaultManager];
+
+		if ([fileManager fileExistsAtPath:path]) {
+			image = [[NSImage alloc] initWithContentsOfFile:path];
+
+			[image setName:path];
+
+			return image;
+		}
+		else {
+			NSLog(@"Failed to set context menu icon. File not found: %@", path);
+		}
+	}
+	else {
+		return image;
+	}
+
+	return nil;
+}
+
 - (NSMenu*) menuForFiles:(NSArray*)files {
 	NSMenu* menu = [[NSMenu alloc] initWithTitle:@""];
 
@@ -257,12 +302,23 @@ static RequestManager* sharedInstance = nil;
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
 		NSString* iconId = menuItemDictionary[@"iconId"];
+		NSString* iconPath = menuItemDictionary[@"iconPath"];
 		NSString* uuid = menuItemDictionary[@"uuid"];
 
 		if (childrenSubMenuItems && [childrenSubMenuItems count] != 0) {
 			NSMenuItem* mainMenuItem = [[NSMenuItem alloc] initWithTitle:mainMenuTitle action:nil keyEquivalent:@""];
 
-			if (iconId) {
+			if (iconPath) {
+				NSImage* image = [self getCachedImageFromPath:iconPath];
+
+				if (image) {
+					[mainMenuItem setImage:image];
+				}
+				else {
+					NSLog(@"Failed to set context menu icon. File not found: %@", iconPath);
+				}
+			}
+			else if (iconId) {
 				NSImage* image = [NSImage imageNamed:iconId];
 
 				if (image) {
@@ -275,7 +331,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu title:mainMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId files:files];
+			[self createActionMenuItem:menu title:mainMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId iconPath:iconPath files:files];
 		}
 	}
 
@@ -342,6 +398,7 @@ static RequestManager* sharedInstance = nil;
 	[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:iconId];
 }
 
+// Deprecated as of 1.1. The host should pass the icon path when menuForFiles is called
 - (void) registerContextMenuIcon:(NSData*)cmdData {
 	#ifdef DEBUG
 		NSLog(@"Registering icon: %@", cmdData);

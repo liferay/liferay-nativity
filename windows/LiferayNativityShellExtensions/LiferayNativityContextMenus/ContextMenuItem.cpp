@@ -30,6 +30,7 @@ ContextMenuItem::ContextMenuItem(const ContextMenuItem& other)
 	_contextMenuItems = other._contextMenuItems;
 	_enabled = other._enabled;
 	_helpText = other._helpText;
+	_iconPath = other._iconPath; 
 	_id = other._id;
 	_index = other._index;
 	_title = other._title;
@@ -41,6 +42,7 @@ ContextMenuItem& ContextMenuItem::operator=(const ContextMenuItem& other)
 	_contextMenuItems = other._contextMenuItems;
 	_enabled = other._enabled;
 	_helpText = other._helpText;
+	_iconPath = other._iconPath; 
 	_id = other._id;
 	_index = other._index;
 	_title = other._title;
@@ -63,6 +65,11 @@ bool ContextMenuItem::GetEnabled()
 wstring* ContextMenuItem::GetHelpText()
 {
 	return _helpText;
+}
+
+wstring* ContextMenuItem::GetIconPath()
+{
+	return _iconPath;
 }
 
 long ContextMenuItem::GetId()
@@ -113,6 +120,11 @@ void ContextMenuItem::SetEnabled(bool enabled)
 void ContextMenuItem::SetHelpText(wstring* helpText)
 {
 	_helpText = helpText;
+}
+
+void ContextMenuItem::SetIconPath(wstring* iconPath)
+{
+	_iconPath = iconPath;
 }
 
 void ContextMenuItem::SetId(long id)

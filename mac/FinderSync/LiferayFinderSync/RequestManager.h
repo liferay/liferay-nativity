@@ -31,12 +31,12 @@
 @property (nonatomic, retain) NSMutableSet* registeredBadges;
 @property (nonatomic, retain) NSMutableSet* registeredUrls;
 
-+ (RequestManager*)sharedInstance;
-- (void)connect;
-- (NSMenu*)menuForFiles:(NSArray*)files;
-- (void)refreshBadges;
-- (void)requestFileBadgeId:(NSURL*)url;
-- (void)sendMenuItemClicked:(NSString*)action;
-- (void)sendObservingFolder:(NSURL*)url start:(BOOL)start;
++ (RequestManager*) sharedInstance;
+- (void) connect;
+- (NSMenu*) menuForFiles:(NSArray*)files;
+- (void) refreshBadges;
+- (void) requestFileBadgeId:(NSURL*)url;
+- (void) sendMenuItemClicked:(NSString*)action;
+- (void) sendObservingFolder:(NSURL*)url start:(BOOL)start;
 
 @end

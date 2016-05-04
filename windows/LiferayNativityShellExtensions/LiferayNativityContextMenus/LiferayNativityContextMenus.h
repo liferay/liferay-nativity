@@ -16,19 +16,16 @@
 #define LIFERAYNATIVITYCONTEXTMENUS_H
 
 #pragma once
-#pragma warning (disable : 4251)
 
 #include "ContextMenuAction.h"
 #include "ContextMenuConstants.h"
 #include "ContextMenuUtil.h"
-
-#include <Shellapi.h>
-#include <Shlwapi.h>
-#include <Strsafe.h>
+#include <gdiplus.h>
 #include <shlobj.h>
-#include <stdlib.h>
 #include <windows.h>
+#include <uxtheme.h>
 
+using namespace std;
 
 class LiferayNativityContextMenus : public IShellExtInit, public IContextMenu
 {
@@ -53,8 +50,13 @@ class LiferayNativityContextMenus : public IShellExtInit, public IContextMenu
 		~LiferayNativityContextMenus(void);
 
 	private:
-
 		int _AddMenu(HMENU, ContextMenuItem*, int, int, UINT);
+		
+		HRESULT _ConvertBufferToPARGB32(HPAINTBUFFER hPaintBuffer, HDC hdc, HICON hicon, SIZE& sizIcon);
+		
+		HRESULT _ConvertToPARGB32(HDC hdc, __inout Gdiplus::ARGB *pargb, HBITMAP hbmp, SIZE& sizImage, int cxRow);
+		
+		HRESULT _Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_opt_out void **ppvBits, __out HBITMAP* phBmp);
 
 		void _HandleCommand(LPCMINVOKECOMMANDINFO pici);
 
@@ -62,13 +64,17 @@ class LiferayNativityContextMenus : public IShellExtInit, public IContextMenu
 
 		void _HandleLoCommand(LPCMINVOKECOMMANDINFO pici);
 
-		void _PerformAction(int actionIndex, HWND hWnd);
+		bool _HasAlpha(__in Gdiplus::ARGB *pargb, SIZE& sizImage, int cxRow);
+
+		HBITMAP _IconToBitmapPARGB32(HICON hIcon);
 
 		bool _InsertSeparator(HMENU, int);
 
 		bool _InsertMenu(HMENU, HMENU, int, const wchar_t*);
 
 		bool _InsertMenu(HMENU, int, int, const wchar_t*);
+
+		void _PerformAction(int actionIndex, HWND hWnd);
 
 		ContextMenuUtil* _contextMenuUtil;
 

@@ -28,6 +28,7 @@
 #define NATIVITY_GET_CONTEXT_MENU_LIST			"getContextMenuList"
 #define NATIVITY_GET_FILE_ICON_ID				"getFileIconId"
 #define NATIVITY_HELP_TEXT						"helpText"
+#define NATIVITY_ICON_PATH						"iconPath"
 #define NATIVITY_TITLE							"title"
 #define NATIVITY_UUID							"uuid"
 #define NATIVITY_VALUE							"value"

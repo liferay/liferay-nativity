@@ -75,7 +75,11 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 	 *
 	 * @param path The path of the context menu icon to register
 	 * @param iconId The unique icon id used for this image
+	 *
+	 * @deprecated as of 1.5. Set the path of the icon per ContextMenuItem
+	 * instance via ContextMenuItem.setIconPath(iconPath)
 	 */
+	@Deprecated
 	public abstract void registerIcon(String path, String iconId);
 
 	protected ContextMenuControlCallback contextMenuControlCallback;

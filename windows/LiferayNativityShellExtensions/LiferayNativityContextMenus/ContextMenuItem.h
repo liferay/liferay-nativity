@@ -35,6 +35,8 @@ class __declspec(dllexport) ContextMenuItem
 
 		std::wstring* GetHelpText();
 
+		std::wstring* GetIconPath();
+
 		long GetId();
 
 		int GetIndex();
@@ -51,6 +53,8 @@ class __declspec(dllexport) ContextMenuItem
 
 		void SetHelpText(std::wstring*);
 
+		void SetIconPath(std::wstring*);
+
 		void SetId(long);
 
 		void SetIndex(int);
@@ -65,6 +69,8 @@ class __declspec(dllexport) ContextMenuItem
 		bool _enabled;
 
 		std::wstring* _helpText;
+
+		std::wstring* _iconPath;
 
 		long _id;
 
