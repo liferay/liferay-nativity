@@ -43,6 +43,11 @@ import org.slf4j.LoggerFactory;
 public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
+	public void addFavoritesPath(String path) {
+		WindowsNativityUtil.addFavoritesPath(path);
+	}
+
+	@Override
 	public boolean connect() {
 		if (_connected) {
 			return true;
@@ -136,6 +141,11 @@ public class WindowsNativityControlImpl extends NativityControl {
 		catch (UnsatisfiedLinkError ule) {
 			_logger.error(ule.getMessage(), ule);
 		}
+	}
+
+	@Override
+	public void removeFavoritesPath(String path) {
+		WindowsNativityUtil.removeFavoritesPath(path);
 	}
 
 	@Override

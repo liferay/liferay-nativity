@@ -38,6 +38,14 @@ public abstract class NativityControl {
 	}
 
 	/**
+	 * Adds the given path to the favorites list in Finder or Explorer
+	 *
+	 * @param path The full path of the file or folder to add to the favorites
+	 * list
+	 */
+	public abstract void addFavoritesPath(String path);
+
+	/**
 	 * Adds a SocketCloseListener that will be triggered when the socket
 	 * connection to the native service is closed
 	 *
@@ -165,6 +173,14 @@ public abstract class NativityControl {
 	public void registerMessageListener(MessageListener messageListener) {
 		_commandMap.put(messageListener.getCommand(), messageListener);
 	}
+
+	/**
+	 * Removes the given path to the favorites list in Finder or Explorer
+	 *
+	 * @param path The full path of the file or folder to remove from the
+	 * favorites list
+	 */
+	public abstract void removeFavoritesPath(String path);
 
 	/**
 	 * Removes a previously added SocketCloseListener instance

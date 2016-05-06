@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityContextMenus", "LiferayNativityContextMenus\LiferayNativityContextMenus.vcxproj", "{E9BC5587-A688-4C36-8B15-DAFBAAAADCAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E4F63E19-808D-4234-8DF0-69C5F47C9CD3} = {E4F63E19-808D-4234-8DF0-69C5F47C9CD3}
@@ -11,6 +13,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityUtil", "LiferayNativityUtil\LiferayNativityUtil.vcxproj", "{E4F63E19-808D-4234-8DF0-69C5F47C9CD3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LiferayNativityWindowsUtil", "LiferayNativityWindowsUtil\LiferayNativityWindowsUtil.vcxproj", "{04E95851-453A-4215-A830-CBCB3A675647}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4F63E19-808D-4234-8DF0-69C5F47C9CD3} = {E4F63E19-808D-4234-8DF0-69C5F47C9CD3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,6 +17,7 @@
 #include <unistd.h>
 
 #import <objc/runtime.h>
+#import "EBLaunchServices.h"
 #import "FinderSync.h"
 #import "JSONKit.h"
 #import "RequestManager.h"
@@ -104,6 +105,14 @@ static RequestManager* sharedInstance = nil;
 	}
 
 	[parentMenuItem setSubmenu:menu];
+}
+
+- (void) addFavoritesPath:(NSData*)cmdData {
+    NSString* path = (NSString*)cmdData;
+
+    NSURL* url = [NSURL fileURLWithPath:path];
+
+    [EBLaunchServices addItemWithURL:url toList:kLSSharedFileListFavoriteItems];
 }
 
 - (void) connect {
@@ -235,6 +244,9 @@ static RequestManager* sharedInstance = nil;
 
 		return;
 	}
+    else if ([command isEqualToString:@"addFavoritesPath"]) {
+        [self addFavoritesPath:value];
+    }
 	else if ([command isEqualToString:@"menuItems"]) {
 		[self processMenuItems:value];
 	}
@@ -247,6 +259,9 @@ static RequestManager* sharedInstance = nil;
 	else if ([command isEqualToString:@"registerIconWithId"]) {
 		[self registerBadgeImage:value];
 	}
+    else if ([command isEqualToString:@"removeFavoritesPath"]) {
+        [self removeFavoritesPath:value];
+    }
 	else if ([command isEqualToString:@"setFileIcons"]) {
 		[self setFileBadges:value];
 	}
@@ -420,6 +435,14 @@ static RequestManager* sharedInstance = nil;
 	NSImage* logoImage = [[NSImage alloc] initWithContentsOfFile:path];
 
 	[logoImage setName:iconId];
+}
+
+- (void) removeFavoritesPath:(NSData*)cmdData {
+    NSString* path = (NSString*)cmdData;
+
+    NSURL* url = [NSURL fileURLWithPath:path];
+
+    [EBLaunchServices removeItemWithURL:url fromList:kLSSharedFileListFavoriteItems];
 }
 
 - (void) requestFileBadgeId:(NSURL*)url {
