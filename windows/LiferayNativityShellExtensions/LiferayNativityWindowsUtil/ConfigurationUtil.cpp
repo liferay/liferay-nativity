@@ -13,9 +13,10 @@
 */
 
 #include "ConfigurationUtil.h"
-#include <atlbase.h>
 
 using namespace std;
+
+#define SIZE 4096
 
 JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativityUtil_updateExplorer
 (JNIEnv* env, jclass jclazz, jstring filePath)
@@ -85,48 +86,6 @@ JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativity
 	env->ReleaseStringChars(filePath, rawString);
 
 	return JNI_TRUE;
-}
-
-bool ConfigurationUtil::AddFavoritesPath(const wchar_t* path)
-{
-	wchar_t* linksPath;
-
-	wchar_t fullPath[MAX_PATH] = {0};
-
-	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Links, 0, NULL, &linksPath))) {
-		PathAppend(fullPath, linksPath);
-		PathAppend(fullPath, PathFindFileName(path));
-
-		wcscat_s(fullPath, L".lnk");
-
-		if (SUCCEEDED(_CreateLink(path, fullPath, L"")))
-		{
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-bool ConfigurationUtil::RemoveFavoritesPath(const wchar_t* path)
-{
-	wchar_t* linksPath;
-
-	wchar_t fullPath[MAX_PATH] = { 0 };
-
-	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Links, 0, NULL, &linksPath))) {
-		PathAppend(fullPath, linksPath);
-		PathAppend(fullPath, PathFindFileName(path));
-
-		wcscat_s(fullPath, L".lnk");
-
-		if (SUCCEEDED(DeleteFile(fullPath)))
-		{
-			return true;
-		}
-	}
-		
-	return false;
 }
 
 bool ConfigurationUtil::UpdateExplorer(const wchar_t* syncRoot)

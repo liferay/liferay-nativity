@@ -37,10 +37,6 @@ public class WindowsNativityUtil {
 		return _loaded;
 	}
 
-	public static native boolean addFavoritesPath(String folder);
-
-	public static native boolean removeFavoritesPath(String folder);
-
 	public static native boolean setSystemFolder(String folder);
 
 	public static native boolean updateExplorer(String filePath);
