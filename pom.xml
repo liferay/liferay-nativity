@@ -19,7 +19,7 @@
             <organizationUrl>https://iterate.ch</organizationUrl>
         </developer>
     </developers>
-    <groupId>com.liferay</groupId>
+    <groupId>ch.iterate.liferay</groupId>
     <artifactId>nativity</artifactId>
     <licenses>
         <license>
