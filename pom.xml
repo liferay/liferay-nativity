@@ -36,9 +36,9 @@
     <name>Liferay Nativity</name>
     <packaging>jar</packaging>
     <scm>
-        <connection>scm:git:git@github.com:liferay/liferay-nativity.git</connection>
-        <developerConnection>scm:git:git@github.com:liferay/liferay-nativity.git</developerConnection>
-        <url>http://github.com/liferay/liferay-nativity</url>
+        <connection>scm:git:git@github.com:iterate-ch/liferay-nativity.git</connection>
+        <developerConnection>scm:git:git@github.com:iterate-ch/liferay-nativity.git</developerConnection>
+        <url>https://github.com/iterate-ch/liferay-nativity</url>
     </scm>
     <version>1.0.4-SNAPSHOT</version>
     <build>
