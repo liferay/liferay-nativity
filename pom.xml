@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <description>Liferay Nativity is a cross-platform library for adding icon overlays and context menus to file browsers.</description>
     <developers>
         <developer>
@@ -39,8 +36,9 @@
         <connection>scm:git:git@github.com:iterate-ch/liferay-nativity.git</connection>
         <developerConnection>scm:git:git@github.com:iterate-ch/liferay-nativity.git</developerConnection>
         <url>https://github.com/iterate-ch/liferay-nativity</url>
-    </scm>
-    <version>1.0.4-SNAPSHOT</version>
+      <tag>nativity-1.0.4</tag>
+  </scm>
+    <version>1.0.4</version>
     <build>
         <sourceDirectory>java/src</sourceDirectory>
         <testSourceDirectory>java/test</testSourceDirectory>
