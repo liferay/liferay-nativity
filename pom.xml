@@ -39,6 +39,13 @@
     <build>
         <sourceDirectory>java/src</sourceDirectory>
         <testSourceDirectory>java/test</testSourceDirectory>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
     </build>
     <dependencies>
         <dependency>
@@ -102,4 +109,15 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>maven.cyberduck.io-release</id>
+            <url>s3://repo.maven.cyberduck.io/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <id>maven.cyberduck.io-snapshot</id>
+            <url>s3://repo.maven.cyberduck.io/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
