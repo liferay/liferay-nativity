@@ -163,11 +163,13 @@ bool ContextMenuUtil::InitMenus(void)
 bool ContextMenuUtil::_ParseContextMenuItem(const Json::Value& jsonContextMenuItem, ContextMenuItem* contextMenuItem)
 {
 	// enabled
+	
 	bool enabled = jsonContextMenuItem.get(NATIVITY_ENABLED, true).asBool();
 
 	contextMenuItem->SetEnabled(enabled);
 
 	// title
+
 	wstring* title = new wstring();
 
 	title->append(StringUtil::toWstring(jsonContextMenuItem.get(NATIVITY_TITLE, "").asString()));
@@ -199,7 +201,15 @@ bool ContextMenuUtil::_ParseContextMenuItem(const Json::Value& jsonContextMenuIt
 	helpText->append(StringUtil::toWstring(jsonContextMenuItem.get(NATIVITY_HELP_TEXT, "").asString()));
 
 	contextMenuItem->SetHelpText(helpText);
+	
+	// icon path
 
+	wstring* iconPath = new wstring();
+
+	iconPath->append(StringUtil::toWstring(jsonContextMenuItem.get(NATIVITY_ICON_PATH, "").asString()));
+
+	contextMenuItem->SetIconPath(iconPath);
+	
 	// children context menu items
 
 	Json::Value jsonChildrenContextMenuItems = jsonContextMenuItem.get(NATIVITY_CONTEXT_MENU_ITEMS, "");

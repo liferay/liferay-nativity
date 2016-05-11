@@ -39,6 +39,10 @@ import org.slf4j.LoggerFactory;
 public abstract class UnixNativityControlBaseImpl extends NativityControl {
 
 	@Override
+	public void addFavoritesPath(String path) {
+	}
+
+	@Override
 	public boolean connect() {
 		try {
 			_commandSocket = new Socket("127.0.0.1", _commandSocketPort);
@@ -115,6 +119,10 @@ public abstract class UnixNativityControlBaseImpl extends NativityControl {
 
 	@Override
 	public void refreshFiles(String[] paths) {
+	}
+
+	@Override
+	public void removeFavoritesPath(String path) {
 	}
 
 	@Override

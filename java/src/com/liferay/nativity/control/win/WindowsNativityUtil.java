@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
  */
 public class WindowsNativityUtil {
 
+	public static native boolean addFavoritesPath(String folder);
+
 	public static boolean load() {
 		if (!_loaded) {
 			_load();
@@ -36,6 +38,8 @@ public class WindowsNativityUtil {
 	public static boolean loaded() {
 		return _loaded;
 	}
+
+	public static native boolean removeFavoritesPath(String folder);
 
 	public static native boolean setSystemFolder(String folder);
 

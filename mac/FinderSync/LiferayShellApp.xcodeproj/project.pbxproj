@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD05A1C51CCEEA520020B0F4 /* EBLaunchServices.m in Sources */ = {isa = PBXBuildFile; fileRef = AD05A1C41CCEEA520020B0F4 /* EBLaunchServices.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		AD1424471AF455F900BC490E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1424461AF455F900BC490E /* AppDelegate.m */; };
 		AD1424491AF455F900BC490E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AD1424481AF455F900BC490E /* main.m */; };
 		AD14244C1AF455F900BC490E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD14244B1AF455F900BC490E /* ViewController.m */; };
@@ -44,6 +45,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AD05A1C31CCEEA520020B0F4 /* EBLaunchServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EBLaunchServices.h; sourceTree = "<group>"; };
+		AD05A1C41CCEEA520020B0F4 /* EBLaunchServices.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EBLaunchServices.m; sourceTree = "<group>"; };
 		AD1424401AF455F900BC490E /* LiferayShellApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiferayShellApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD1424441AF455F900BC490E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD1424451AF455F900BC490E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -84,6 +87,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AD05A1C21CCEEA3F0020B0F4 /* EBLaunchServices */ = {
+			isa = PBXGroup;
+			children = (
+				AD05A1C31CCEEA520020B0F4 /* EBLaunchServices.h */,
+				AD05A1C41CCEEA520020B0F4 /* EBLaunchServices.m */,
+			);
+			name = EBLaunchServices;
+			sourceTree = "<group>";
+		};
 		AD1424371AF455F900BC490E = {
 			isa = PBXGroup;
 			children = (
@@ -128,12 +140,13 @@
 		AD14246B1AF4562800BC490E /* LiferayFinderSync */ = {
 			isa = PBXGroup;
 			children = (
+				AD14246C1AF4562800BC490E /* Supporting Files */,
+				AD05A1C21CCEEA3F0020B0F4 /* EBLaunchServices */,
 				AD338DC51AFAF37F00EE55CA /* Resources */,
 				AD1867061AF45C00000342D9 /* GCDAsyncSocket */,
 				AD14247B1AF457C800BC490E /* JSONKit */,
 				AD14246F1AF4562800BC490E /* FinderSync.h */,
 				AD1424701AF4562800BC490E /* FinderSync.m */,
-				AD14246C1AF4562800BC490E /* Supporting Files */,
 				AD18671C1AF4605C000342D9 /* RequestManager.h */,
 				AD18671D1AF4605C000342D9 /* RequestManager.m */,
 			);
@@ -296,6 +309,7 @@
 				AD1867091AF45C09000342D9 /* GCDAsyncSocket.m in Sources */,
 				AD1867051AF45BF0000342D9 /* JSONKit.m in Sources */,
 				AD1424711AF4562800BC490E /* FinderSync.m in Sources */,
+				AD05A1C51CCEEA520020B0F4 /* EBLaunchServices.m in Sources */,
 				AD18671E1AF4605C000342D9 /* RequestManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -433,6 +447,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -453,6 +468,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = LiferayFinderSync/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

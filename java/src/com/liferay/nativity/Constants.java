@@ -19,6 +19,8 @@ package com.liferay.nativity;
  */
 public class Constants {
 
+	public static final String ADD_FAVORITES_PATH = "addFavoritesPath";
+
 	public static final String ENABLE_FILE_ICONS = "enableFileIcons";
 
 	public static final String ENABLE_FILE_ICONS_WITH_CALLBACK =
@@ -49,6 +51,8 @@ public class Constants {
 
 	public static final String PATH = "path";
 
+	public static final String REFRESH_ICONS = "refreshIcons";
+
 	public static final String REGISTER_CONTEXT_MENU_ICON =
 		"registerContextMenuIcon";
 
@@ -57,6 +61,8 @@ public class Constants {
 	public static final String REGISTER_ICON_WITH_ID = "registerIconWithId";
 
 	public static final String REMOVE_ALL_FILE_ICONS = "removeAllFileIcons";
+
+	public static final String REMOVE_FAVORITES_PATH = "removeFavoritesPath";
 
 	public static final String REMOVE_FILE_ICONS = "removeFileIcons";
 

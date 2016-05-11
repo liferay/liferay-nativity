@@ -56,6 +56,10 @@ public class FSFileIconControlImpl implements FileIconControl {
 					filePath = message.getValue().toString();
 				}
 
+				if (filePath == null) {
+					return null;
+				}
+
 				int iconId = getIconForFile(filePath);
 
 				Map<String, Integer> map = new HashMap<String, Integer>(1);
@@ -86,10 +90,15 @@ public class FSFileIconControlImpl implements FileIconControl {
 
 	@Override
 	public void refreshIcons() {
+		refreshIcons(null);
 	}
 
 	@Override
 	public void refreshIcons(String[] paths) {
+		NativityMessage message = new NativityMessage(
+			Constants.REFRESH_ICONS, "");
+
+		nativityControl.sendMessage(message);
 	}
 
 	@Override

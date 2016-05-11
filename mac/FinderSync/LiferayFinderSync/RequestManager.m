@@ -12,12 +12,12 @@
  * details.
  */
 
-#include <assert.h>
 #include <pwd.h>
 #include <sys/types.h>
 #include <unistd.h>
 
 #import <objc/runtime.h>
+#import "EBLaunchServices.h"
 #import "FinderSync.h"
 #import "JSONKit.h"
 #import "RequestManager.h"
@@ -31,6 +31,9 @@ static RequestManager* sharedInstance = nil;
 
 @implementation RequestManager
 
+@synthesize registeredBadges;
+@synthesize registeredUrls;
+
 + (RequestManager*) sharedInstance {
 	@synchronized(self) {
 		if (!sharedInstance) {
@@ -43,14 +46,15 @@ static RequestManager* sharedInstance = nil;
 
 - (id) init {
 	if ((self = [super init])) {
+		registeredBadges = [[NSMutableSet alloc] init];
+		registeredUrls = [[NSMutableSet alloc] init];
+
 		_callbackLock = [[NSConditionLock alloc] init];
 		_connected = NO;
 		_menuUuidDictionary = [[NSMutableDictionary alloc] init];
 		_observedFolders = [[NSMutableSet alloc] init];
 		_removeBadgesOnClose = YES;
 		_socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-
-		[self connect];
 	}
 
 	return self;
@@ -65,6 +69,7 @@ static RequestManager* sharedInstance = nil;
 		NSString* subMenuTitle = menuItemDictionary[@"title"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
 		NSString* iconId = menuItemDictionary[@"iconId"];
+		NSString* iconPath = menuItemDictionary[@"iconPath"];
 		NSString* uuid = menuItemDictionary[@"uuid"];
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 
@@ -74,7 +79,17 @@ static RequestManager* sharedInstance = nil;
 		else if (childrenSubMenuItems && [childrenSubMenuItems count] != 0) {
 			NSMenuItem* subMenuItem = [menu addItemWithTitle:subMenuTitle action:nil keyEquivalent:@""];
 
-			if (iconId) {
+			if (iconPath) {
+				NSImage* image = [self getCachedImageFromPath:iconPath];
+
+				if (image) {
+					[subMenuItem setImage:image];
+				}
+				else {
+					NSLog(@"Failed to set context menu icon. File not found: %@", iconPath);
+				}
+			}
+			else if (iconId) {
 				NSImage* image = [NSImage imageNamed:iconId];
 
 				if (image) {
@@ -85,14 +100,28 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:subMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu title:subMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId files:files];
+			[self createActionMenuItem:menu title:subMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId iconPath:iconPath files:files];
 		}
 	}
 
 	[parentMenuItem setSubmenu:menu];
 }
 
+- (void) addFavoritesPath:(NSData*)cmdData {
+    NSString* path = (NSString*)cmdData;
+
+    NSURL* url = [NSURL fileURLWithPath:path];
+
+    [EBLaunchServices addItemWithURL:url toList:kLSSharedFileListFavoriteItems];
+}
+
 - (void) connect {
+	if (_connected) {
+		NSLog(@"Already connected on port %d", _port);
+
+		return;
+	}
+
 	NSError* error = nil;
 
 	NSString* path = [NSString stringWithUTF8String:getpwuid(getuid())->pw_dir];
@@ -113,9 +142,9 @@ static RequestManager* sharedInstance = nil;
 
 	NSString* portNumberString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 
-	int port = [portNumberString intValue];
+	_port = [portNumberString intValue];
 
-	if (port <= 0) {
+	if (_port <= 0) {
 		#ifdef DEBUG
 			NSLog(@"Failed to connect. File content is not an int value: %@", path);
 		#endif
@@ -125,19 +154,19 @@ static RequestManager* sharedInstance = nil;
 		return;
 	}
 
-	if (![_socket connectToHost:@"localhost" onPort:port error:&error]) {
+	if (![_socket connectToHost:@"localhost" onPort:_port error:&error]) {
 		#ifdef DEBUG
 			NSLog(@"Connection failed with error: %@", error);
 		#endif
 	}
 	else {
 		#ifdef DEBUG
-			NSLog(@"Connecting to port %d", port);
+			NSLog(@"Connecting to port %d", _port);
 		#endif
 	}
 }
 
-- (void) createActionMenuItem:(NSMenu*)menu title:(NSString*)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString*)uuid iconId:(NSString*)iconId files:(NSArray*)files {
+- (void) createActionMenuItem:(NSMenu*)menu title:(NSString*)title index:(NSInteger)index enabled:(BOOL)enabled uuid:(NSString*)uuid iconId:(NSString*)iconId iconPath:(NSString*)iconPath files:(NSArray*)files {
 	NSMenuItem* mainMenuItem = nil;
 
 	if (!enabled) {
@@ -152,7 +181,7 @@ static RequestManager* sharedInstance = nil;
 
 		[_menuUuidDictionary setValue:menuUuidDictionary forKey:uuid];
 
-		SEL actionSelector = sel_registerName([[@"__CONTEXT_MENU_ACTION_" stringByAppendingString:[@(index)stringValue]] UTF8String]);
+		SEL actionSelector = sel_registerName([[uuid stringByAppendingString:[@(index)stringValue]] UTF8String]);
 
 		IMP methodIMP = imp_implementationWithBlock(^(id _self) {
 			[[RequestManager sharedInstance] sendMenuItemClicked:uuid];
@@ -175,7 +204,17 @@ static RequestManager* sharedInstance = nil;
 
 	[mainMenuItem setEnabled:enabled];
 
-	if (iconId) {
+	if (iconPath) {
+		NSImage* image = [self getCachedImageFromPath:iconPath];
+
+		if (image) {
+			[mainMenuItem setImage:image];
+		}
+		else {
+			NSLog(@"Failed to set context menu icon. File not found: %@", iconPath);
+		}
+	}
+	else if (iconId) {
 		NSImage* image = [NSImage imageNamed:iconId];
 
 		if (image) {
@@ -196,13 +235,23 @@ static RequestManager* sharedInstance = nil;
 	NSString* command = jsonDictionary[@"command"];
 	NSData* value = jsonDictionary[@"value"];
 
+	#ifdef DEBUG
+		NSLog(@"Executing command: %@, data: %@", command, value);
+	#endif
+
 	if (!command) {
 		NSLog(@"Failed to parse data: %@", data);
 
 		return;
 	}
+    else if ([command isEqualToString:@"addFavoritesPath"]) {
+        [self addFavoritesPath:value];
+    }
 	else if ([command isEqualToString:@"menuItems"]) {
 		[self processMenuItems:value];
+	}
+	else if ([command isEqualToString:@"refreshIcons"]) {
+		[self refreshBadges];
 	}
 	else if ([command isEqualToString:@"registerContextMenuIcon"]) {
 		[self registerContextMenuIcon:value];
@@ -210,6 +259,9 @@ static RequestManager* sharedInstance = nil;
 	else if ([command isEqualToString:@"registerIconWithId"]) {
 		[self registerBadgeImage:value];
 	}
+    else if ([command isEqualToString:@"removeFavoritesPath"]) {
+        [self removeFavoritesPath:value];
+    }
 	else if ([command isEqualToString:@"setFileIcons"]) {
 		[self setFileBadges:value];
 	}
@@ -219,6 +271,30 @@ static RequestManager* sharedInstance = nil;
 	else {
 		NSLog(@"Failed to find command: %@", command);
 	}
+}
+
+- (NSImage*) getCachedImageFromPath:(NSString*)path {
+	NSImage* image = [NSImage imageNamed:path];
+
+	if (!image) {
+		NSFileManager* fileManager = [NSFileManager defaultManager];
+
+		if ([fileManager fileExistsAtPath:path]) {
+			image = [[NSImage alloc] initWithContentsOfFile:path];
+
+			[image setName:path];
+
+			return image;
+		}
+		else {
+			NSLog(@"Failed to set context menu icon. File not found: %@", path);
+		}
+	}
+	else {
+		return image;
+	}
+
+	return nil;
 }
 
 - (NSMenu*) menuForFiles:(NSArray*)files {
@@ -241,12 +317,23 @@ static RequestManager* sharedInstance = nil;
 		NSArray* childrenSubMenuItems = (NSArray*)menuItemDictionary[@"contextMenuItems"];
 		BOOL enabled = [menuItemDictionary[@"enabled"] boolValue];
 		NSString* iconId = menuItemDictionary[@"iconId"];
+		NSString* iconPath = menuItemDictionary[@"iconPath"];
 		NSString* uuid = menuItemDictionary[@"uuid"];
 
 		if (childrenSubMenuItems && [childrenSubMenuItems count] != 0) {
 			NSMenuItem* mainMenuItem = [[NSMenuItem alloc] initWithTitle:mainMenuTitle action:nil keyEquivalent:@""];
 
-			if (iconId) {
+			if (iconPath) {
+				NSImage* image = [self getCachedImageFromPath:iconPath];
+
+				if (image) {
+					[mainMenuItem setImage:image];
+				}
+				else {
+					NSLog(@"Failed to set context menu icon. File not found: %@", iconPath);
+				}
+			}
+			else if (iconId) {
 				NSImage* image = [NSImage imageNamed:iconId];
 
 				if (image) {
@@ -259,7 +346,7 @@ static RequestManager* sharedInstance = nil;
 			[self addChildrenSubMenuItems:mainMenuItem withChildren:childrenSubMenuItems forFiles:files];
 		}
 		else {
-			[self createActionMenuItem:menu title:mainMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId files:files];
+			[self createActionMenuItem:menu title:mainMenuTitle index:i enabled:enabled uuid:uuid iconId:iconId iconPath:iconPath files:files];
 		}
 	}
 
@@ -278,7 +365,7 @@ static RequestManager* sharedInstance = nil;
 	[_callbackLock unlockWithCondition:RECEIVED_CALLBACK_RESPONSE];
 }
 
-- (void) refreshFiles {
+- (void) refreshBadges {
 	NSFileManager* fileManager = [NSFileManager defaultManager];
 
 	for (NSURL* observedFolder in [_observedFolders copy]) {
@@ -321,9 +408,12 @@ static RequestManager* sharedInstance = nil;
 		return;
 	}
 
+	[registeredBadges addObject:dictionary];
+
 	[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:iconId];
 }
 
+// Deprecated as of 1.1. The host should pass the icon path when menuForFiles is called
 - (void) registerContextMenuIcon:(NSData*)cmdData {
 	#ifdef DEBUG
 		NSLog(@"Registering icon: %@", cmdData);
@@ -345,6 +435,14 @@ static RequestManager* sharedInstance = nil;
 	NSImage* logoImage = [[NSImage alloc] initWithContentsOfFile:path];
 
 	[logoImage setName:iconId];
+}
+
+- (void) removeFavoritesPath:(NSData*)cmdData {
+    NSString* path = (NSString*)cmdData;
+
+    NSURL* url = [NSURL fileURLWithPath:path];
+
+    [EBLaunchServices removeItemWithURL:url fromList:kLSSharedFileListFavoriteItems];
 }
 
 - (void) requestFileBadgeId:(NSURL*)url {
@@ -508,7 +606,9 @@ static RequestManager* sharedInstance = nil;
 
 	[FIFinderSyncController defaultController].directoryURLs = urls;
 
-	[self refreshFiles];
+	registeredUrls = [urls copy];
+
+	[self refreshBadges];
 }
 
 - (void) socket:(GCDAsyncSocket*)socket didConnectToHost:(NSString*)host port:(UInt16)port {
@@ -551,7 +651,7 @@ static RequestManager* sharedInstance = nil;
 
 - (void) socketDidDisconnect:(GCDAsyncSocket*)socket withError:(NSError*)error {
 	if (_connected) {
-		NSLog(@"Disconnected with error: %@", error);
+		NSLog(@"Disconnected from port %d with error: %@", _port, error);
 	}
 
 	if (_connected && _removeBadgesOnClose) {

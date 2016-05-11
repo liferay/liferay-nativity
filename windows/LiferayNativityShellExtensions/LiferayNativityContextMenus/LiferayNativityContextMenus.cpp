@@ -12,16 +12,11 @@
  * details.
  */
 
+#include <windows.h>
+#include <uxtheme.h>
 #include "LiferayNativityContextMenus.h"
 
-using namespace std;
-
-#pragma comment(lib, "shlwapi.lib")
-
-extern HINSTANCE instanceHandle;
-
-#define IDM_DISPLAY 0
-#define IDB_BMP 160
+#pragma comment(lib, "uxtheme.lib")
 
 LiferayNativityContextMenus::LiferayNativityContextMenus(): _contextMenuUtil(0), _referenceCount(1), _nFiles(0)
 {
@@ -55,6 +50,7 @@ IFACEMETHODIMP LiferayNativityContextMenus::GetCommandString(UINT_PTR idCommand,
 			}
 
 			wcscpy_s((wchar_t*)pszName, cchMax, item->GetHelpText()->c_str());
+
 			break;
 
 		case GCS_VERBW:
@@ -64,6 +60,7 @@ IFACEMETHODIMP LiferayNativityContextMenus::GetCommandString(UINT_PTR idCommand,
 			}
 
 			_itow_s(item->GetId(), (wchar_t*)pszName, cchMax, 10);
+
 			break;
 
 		default:
@@ -262,43 +259,241 @@ int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, in
 
 	menu->SetIndex(cmdCount - offset);
 
-	if (menu->HasSubMenus())
-	{
-		HMENU subMenuHandle = CreatePopupMenu();
-
-		if (_InsertMenu(hMenu, subMenuHandle, location, text->c_str()))
-		{
-			cmdCount++;
-
-			int subLocation = 0;
-
-			vector<ContextMenuItem*>* menus = menu->GetContextMenuItems();
-			for (vector<ContextMenuItem*>::iterator it = menus->begin(); it != menus->end(); it++)
-			{
-				ContextMenuItem* menuA = *it;
-
-				cmdCount = _AddMenu(subMenuHandle, menuA, subLocation, cmdCount, offset);
-
-				subLocation++;
-			}
-		}
-	}
-	else if (text->compare(SEPARATOR) == 0)
+	if (text->compare(SEPARATOR) == 0)
 	{
 		if (_InsertSeparator(hMenu, location))
 		{
 			cmdCount++;
 		}
 	}
-	else
-	{
-		if (_InsertMenu(hMenu, location, cmdCount, text->c_str()))
+	else {
+		if (menu->HasSubMenus())
 		{
-			cmdCount++;
+			HMENU subMenuHandle = CreatePopupMenu();
+
+			if (_InsertMenu(hMenu, subMenuHandle, location, text->c_str()))
+			{
+				cmdCount++;
+
+				int subLocation = 0;
+
+				vector<ContextMenuItem*>* menus = menu->GetContextMenuItems();
+
+				for (vector<ContextMenuItem*>::iterator it = menus->begin(); it != menus->end(); it++)
+				{
+					ContextMenuItem* menuA = *it;
+
+					cmdCount = _AddMenu(subMenuHandle, menuA, subLocation, cmdCount, offset);
+
+					subLocation++;
+				}
+			}
+		}
+		else
+		{
+			if (_InsertMenu(hMenu, location, cmdCount, text->c_str()))
+			{
+				cmdCount++;
+			}
+		}
+
+		HICON hIcon = (HICON)LoadImage(NULL, menu->GetIconPath()->c_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE);
+		
+		if (hIcon != NULL)
+		{
+			HBITMAP bitmap = _IconToBitmapPARGB32(hIcon);
+
+			SetMenuItemBitmaps(hMenu, location, MF_BYPOSITION, bitmap, bitmap);
 		}
 	}
 
 	return cmdCount;
+}
+
+HRESULT LiferayNativityContextMenus::_ConvertBufferToPARGB32(HPAINTBUFFER hPaintBuffer, HDC hdc, HICON hicon, SIZE& sizIcon)
+{
+	RGBQUAD *prgbQuad;
+	int cxRow;
+	HRESULT hr = GetBufferedPaintBits(hPaintBuffer, &prgbQuad, &cxRow);
+	if (SUCCEEDED(hr))
+	{
+		Gdiplus::ARGB *pargb = reinterpret_cast<Gdiplus::ARGB *>(prgbQuad);
+		if (!_HasAlpha(pargb, sizIcon, cxRow))
+		{
+			ICONINFO info;
+			if (GetIconInfo(hicon, &info))
+			{
+				if (info.hbmMask)
+				{
+					hr = _ConvertToPARGB32(hdc, pargb, info.hbmMask, sizIcon, cxRow);
+				}
+
+				DeleteObject(info.hbmColor);
+				DeleteObject(info.hbmMask);
+			}
+		}
+	}
+
+	return hr;
+}
+
+HRESULT LiferayNativityContextMenus::_ConvertToPARGB32(HDC hdc, __inout Gdiplus::ARGB *pargb, HBITMAP hbmp, SIZE& sizImage, int cxRow)
+{
+	BITMAPINFO bmi;
+	SecureZeroMemory(&bmi, sizeof(bmi));
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biCompression = BI_RGB;
+	bmi.bmiHeader.biWidth = sizImage.cx;
+	bmi.bmiHeader.biHeight = sizImage.cy;
+	bmi.bmiHeader.biBitCount = 32;
+
+	HANDLE hHeap = GetProcessHeap();
+	
+	void *pvBits = HeapAlloc(hHeap, 0, bmi.bmiHeader.biWidth * 4 * bmi.bmiHeader.biHeight);
+	
+	if (pvBits == 0)
+	{
+		return E_OUTOFMEMORY;
+	}
+
+	HRESULT hr = E_UNEXPECTED;
+
+	if (GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, pvBits, &bmi, DIB_RGB_COLORS) == bmi.bmiHeader.biHeight)
+	{
+		ULONG cxDelta = cxRow - bmi.bmiHeader.biWidth;
+		Gdiplus::ARGB *pargbMask = static_cast<Gdiplus::ARGB *>(pvBits);
+
+		for (ULONG y = bmi.bmiHeader.biHeight; y; --y)
+		{
+			for (ULONG x = bmi.bmiHeader.biWidth; x; --x)
+			{
+				if (*pargbMask++)
+				{
+					// transparent pixel
+					*pargb++ = 0;
+				}
+				else
+				{
+					// opaque pixel
+					*pargb++ |= 0xFF000000;
+				}
+			}
+			pargb += cxDelta;
+		}
+
+		hr = S_OK;
+	}
+
+	HeapFree(hHeap, 0, pvBits);
+
+	return hr;
+}
+
+HRESULT LiferayNativityContextMenus::_Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_opt_out void **ppvBits, __out HBITMAP* phBmp)
+{
+	if (psize == 0)
+		return E_INVALIDARG;
+
+	if (phBmp == 0)
+		return E_POINTER;
+
+	*phBmp = NULL;
+
+	BITMAPINFO bmi;
+	SecureZeroMemory(&bmi, sizeof(bmi));
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biCompression = BI_RGB;
+	bmi.bmiHeader.biWidth = psize->cx;
+	bmi.bmiHeader.biHeight = psize->cy;
+	bmi.bmiHeader.biBitCount = 32;
+
+	HDC hdcUsed = hdc ? hdc : GetDC(NULL);
+
+	if (hdcUsed)
+	{
+		*phBmp = CreateDIBSection(hdcUsed, &bmi, DIB_RGB_COLORS, ppvBits, NULL, 0);
+
+		if (hdc != hdcUsed)
+		{
+			ReleaseDC(NULL, hdcUsed);
+		}
+	}
+
+	return (NULL == *phBmp) ? E_OUTOFMEMORY : S_OK;
+}
+
+
+bool LiferayNativityContextMenus::_HasAlpha(__in Gdiplus::ARGB *pargb, SIZE& sizImage, int cxRow)
+{
+	ULONG cxDelta = cxRow - sizImage.cx;
+
+	for (ULONG y = sizImage.cy; y; --y)
+	{
+		for (ULONG x = sizImage.cx; x; --x)
+		{
+			if (*pargb++ & 0xFF000000)
+			{
+				return true;
+			}
+		}
+
+		pargb += cxDelta;
+	}
+
+	return false;
+}
+
+HBITMAP LiferayNativityContextMenus::_IconToBitmapPARGB32(HICON hIcon)
+{
+	if (!hIcon)
+		return NULL;
+
+	SIZE sizIcon;
+	sizIcon.cx = GetSystemMetrics(SM_CXSMICON);
+	sizIcon.cy = GetSystemMetrics(SM_CYSMICON);
+
+	RECT rcIcon;
+	SetRect(&rcIcon, 0, 0, sizIcon.cx, sizIcon.cy);
+	HBITMAP hBmp = NULL;
+
+	HDC hdcDest = CreateCompatibleDC(NULL);
+	if (hdcDest)
+	{
+		if (SUCCEEDED(_Create32BitHBITMAP(hdcDest, &sizIcon, NULL, &hBmp)))
+		{
+			HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcDest, hBmp);
+			if (hbmpOld)
+			{
+				BLENDFUNCTION bfAlpha = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+				BP_PAINTPARAMS paintParams = { 0 };
+				paintParams.cbSize = sizeof(paintParams);
+				paintParams.dwFlags = BPPF_ERASE;
+				paintParams.pBlendFunction = &bfAlpha;
+
+				HDC hdcBuffer;
+				HPAINTBUFFER hPaintBuffer = BeginBufferedPaint(hdcDest, &rcIcon, BPBF_DIB, &paintParams, &hdcBuffer);
+				if (hPaintBuffer)
+				{
+					if (DrawIconEx(hdcBuffer, 0, 0, hIcon, sizIcon.cx, sizIcon.cy, 0, NULL, DI_NORMAL))
+					{
+						// If icon did not have an alpha channel we need to convert buffer to PARGB
+						_ConvertBufferToPARGB32(hPaintBuffer, hdcDest, hIcon, sizIcon);
+					}
+
+					// This will write the buffer contents to the destination bitmap
+					EndBufferedPaint(hPaintBuffer, TRUE);
+				}
+
+				SelectObject(hdcDest, hbmpOld);
+			}
+		}
+
+		DeleteDC(hdcDest);
+	}
+
+	return hBmp;
 }
 
 bool LiferayNativityContextMenus::_InsertSeparator(HMENU hMenu, int location)

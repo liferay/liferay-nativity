@@ -5,8 +5,10 @@ build.*.properties
 dist
 tmp
 
+.classpath
 .DS_Store
 .idea/
+.project
 *.mode1v3
 *.mode2v3
 *.moved-aside

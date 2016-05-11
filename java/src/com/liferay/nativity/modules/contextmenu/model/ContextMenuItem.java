@@ -86,8 +86,13 @@ public class ContextMenuItem {
 		return _helpText;
 	}
 
+	@Deprecated
 	public String getIconId() {
 		return _iconId;
+	}
+
+	public String getIconPath() {
+		return _iconPath;
 	}
 
 	public String getTitle() {
@@ -114,8 +119,13 @@ public class ContextMenuItem {
 		_helpText = helpText;
 	}
 
+	@Deprecated
 	public void setIconId(String iconId) {
 		_iconId = iconId;
+	}
+
+	public void setIconPath(String iconPath) {
+		_iconPath = iconPath;
 	}
 
 	public void setTitle(String title) {
@@ -150,6 +160,7 @@ public class ContextMenuItem {
 	private boolean _enabled;
 	private String _helpText = "";
 	private String _iconId = "";
+	private String _iconPath = "";
 	private String _title = "";
 	private String _uuid = "";
 

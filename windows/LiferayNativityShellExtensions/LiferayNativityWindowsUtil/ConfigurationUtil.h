@@ -28,8 +28,13 @@
 class __declspec(dllexport) ConfigurationUtil
 {
 	public:
-		static bool SetSystemFolder(const wchar_t* syncRoot);
-		static bool UpdateExplorer(const wchar_t* syncRoot);
+		static bool AddFavoritesPath(const wchar_t* path);
+		static bool RemoveFavoritesPath(const wchar_t* path);
+		static bool SetSystemFolder(const wchar_t* path);
+		static bool UpdateExplorer(const wchar_t* path);
+
+	private:
+		static HRESULT _CreateLink(LPCWSTR lpszPathObj, LPCWSTR lpszPathLink, LPCWSTR lpszDesc);
 };
 
 #endif

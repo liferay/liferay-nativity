@@ -18,8 +18,6 @@
 #include "logger.h"
 #include "requests.h"
 
-#define JSON_IS_AMALGAMATION
-
 RequestManager::RequestManager() :
 	callbackSocket_(2, 33002, NULL, 0, 100000),
 	commandSocket_(1, 33001, this)
@@ -173,7 +171,7 @@ void RequestManager::execRegisterIconCmd(const Json::Value& jsonValue)
 
 void RequestManager::execRegisterIconWithIdCmd(const Json::Value& jsonValue)
 {
-	ContentManager::instance().registerIconWithId(jsonValue["path"], jsonValue["iconId"]);
+	ContentManager::instance().registerIconWithId(jsonValue["path"].asString(), jsonValue["iconId"].asString());
 
 	commandSocket_.writeString("1");
 }

@@ -61,6 +61,14 @@ import org.slf4j.LoggerFactory;
 public class FSNativityControlImpl extends NativityControl {
 
 	@Override
+	public void addFavoritesPath(String path) {
+		NativityMessage message = new NativityMessage(
+			Constants.ADD_FAVORITES_PATH, path);
+
+		sendMessage(message);
+	}
+
+	@Override
 	public boolean connect() {
 		if (_connected) {
 			return true;
@@ -158,6 +166,14 @@ public class FSNativityControlImpl extends NativityControl {
 
 	@Override
 	public void refreshFiles(String[] paths) {
+	}
+
+	@Override
+	public void removeFavoritesPath(String path) {
+		NativityMessage message = new NativityMessage(
+			Constants.REMOVE_FAVORITES_PATH, path);
+
+		sendMessage(message);
 	}
 
 	@Override
