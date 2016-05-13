@@ -168,7 +168,7 @@ public class TestDriver {
 
 	private static void _registerFileIcon(FileIconControl fileIconControl) {
 		fileIconControl.registerIconWithId(_fileIconPath, "", Integer.toString(_fileIconId));
-		
+
 		try {
 			Thread.sleep(_waitTime);
 		}
