@@ -48,7 +48,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 	wchar_t value[SIZE];
 	DWORD value_length = SIZE;
 
-	hResult = RegQueryValueEx(rootKey, (LPCWSTR)name, NULL, NULL, (LPBYTE)value, &value_length);
+	hResult = HRESULT_FROM_WIN32(RegQueryValueEx(rootKey, (LPCWSTR)name, NULL, NULL, (LPBYTE)value, &value_length));
 
 	if (!SUCCEEDED(hResult))
 	{
@@ -57,9 +57,9 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	result->append(value);
 
-	HRESULT hResult2 = RegCloseKey(rootKey);
+	hResult = HRESULT_FROM_WIN32(RegCloseKey(rootKey));
 
-	if (!SUCCEEDED(hResult2))
+	if (!SUCCEEDED(hResult))
 	{
 		return false;
 	}
