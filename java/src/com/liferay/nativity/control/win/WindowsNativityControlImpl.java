@@ -94,17 +94,18 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean disconnect() {
-		if (!_connected) {
-			return true;
-		}
-
 		try {
+			if (!_connected) {
+				return true;
+			}
 			_serverSocket.close();
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 		}
-
+		finally {
+			_executor.shutdown();
+		}
 		_connected = false;
 
 		return true;
@@ -210,9 +211,6 @@ public class WindowsNativityControlImpl extends NativityControl {
 			_logger.error(e.getMessage(), e);
 
 			fireSocketCloseListeners();
-		}
-		finally {
-			_executor.shutdown();
 		}
 	}
 
