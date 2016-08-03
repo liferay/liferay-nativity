@@ -31,7 +31,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import java.util.Set;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
@@ -93,17 +93,18 @@ public class WindowsNativityControlImpl extends NativityControl {
 
 	@Override
 	public boolean disconnect() {
-		if (!_connected) {
-			return true;
-		}
-
 		try {
+			if (!_connected) {
+				return true;
+			}
 			_serverSocket.close();
 		}
 		catch (IOException e) {
 			_logger.error(e.getMessage(), e);
 		}
-
+		finally {
+			_executor.shutdown();
+		}
 		_connected = false;
 
 		return true;
@@ -220,7 +221,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 	private static int _port = 33001;
 
 	private boolean _connected = false;
-	private Executor _executor = Executors.newCachedThreadPool();
+	private ExecutorService _executor = Executors.newCachedThreadPool();
 	private ServerSocket _serverSocket;
 
 }
