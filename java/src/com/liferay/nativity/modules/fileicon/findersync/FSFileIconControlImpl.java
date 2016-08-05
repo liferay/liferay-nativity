@@ -102,6 +102,10 @@ public class FSFileIconControlImpl implements FileIconControl {
 	}
 
 	@Override
+	public void refreshWindow(String path) {
+	}
+
+	@Override
 	public int registerIcon(String path) {
 		return -1;
 	}

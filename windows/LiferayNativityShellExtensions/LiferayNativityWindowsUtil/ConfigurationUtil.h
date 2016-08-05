@@ -29,6 +29,7 @@ class __declspec(dllexport) ConfigurationUtil
 {
 	public:
 		static bool AddFavoritesPath(const wchar_t* path);
+		static bool RefreshExplorer(const wchar_t* path);
 		static bool RemoveFavoritesPath(const wchar_t* path);
 		static bool SetSystemFolder(const wchar_t* path);
 		static bool UpdateExplorer(const wchar_t* path);

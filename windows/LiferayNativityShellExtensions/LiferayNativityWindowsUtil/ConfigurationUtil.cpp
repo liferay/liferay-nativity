@@ -13,6 +13,7 @@
 */
 
 #include "ConfigurationUtil.h"
+#include <atlbase.h>
 #include <Shlwapi.h>
 
 using namespace std;
@@ -45,6 +46,40 @@ JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativity
 	wideString[len] = 0;
 
 	ConfigurationUtil::AddFavoritesPath(wideString);
+
+	env->ReleaseStringChars(filePath, rawString);
+
+	return JNI_TRUE;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_liferay_nativity_control_win_WindowsNativityUtil_refreshExplorer(JNIEnv* env, jclass jclazz, jstring filePath)
+{
+	if (env == NULL)
+	{
+		return JNI_FALSE;
+	}
+
+	if (filePath == NULL)
+	{
+		return JNI_FALSE;
+	}
+
+	int len = env->GetStringLength(filePath);
+
+	const jchar* rawString = env->GetStringChars(filePath, NULL);
+
+	if (rawString == NULL)
+	{
+		return NULL;
+	}
+
+	wchar_t* wideString = new wchar_t[len + 1];
+
+	memcpy(wideString, rawString, len * 2);
+
+	wideString[len] = 0;
+
+	ConfigurationUtil::RefreshExplorer(wideString);
 
 	env->ReleaseStringChars(filePath, rawString);
 
@@ -171,6 +206,157 @@ bool ConfigurationUtil::AddFavoritesPath(const wchar_t* path)
 		}
 	}
 	
+	return false;
+}
+
+bool ConfigurationUtil::RefreshExplorer(const wchar_t* path)
+{
+	CoInitialize(NULL);
+
+	IShellWindows* iShellWindows = NULL;
+
+	HRESULT hResult = CoCreateInstance(CLSID_ShellWindows, NULL, CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER, IID_IShellWindows, (void**)&iShellWindows);
+
+	if (FAILED(hResult))
+	{
+		iShellWindows->Release();
+
+		CoUninitialize();
+
+		return false;
+	}
+
+	long count;
+
+	if (FAILED(hResult = iShellWindows->get_Count(&count)))
+	{
+		iShellWindows->Release();
+
+		CoUninitialize();
+
+		return false;
+	}
+
+	for (int i = count - 1; i >= 0; i--)
+	{
+		CComPtr<IDispatch> iDispatch;
+		CComVariant index(i);
+
+		if (FAILED(hResult = iShellWindows->Item(index, &iDispatch)))
+		{
+			continue;
+		}
+
+		CComPtr<IWebBrowser2> iWebBrowser2;
+
+		if (FAILED(iDispatch->QueryInterface(IID_IWebBrowser2, (void**)&iWebBrowser2)))
+		{
+			continue;
+		}
+
+		CComPtr<IServiceProvider> iServiceProvider;
+
+		if (FAILED(iDispatch->QueryInterface(IID_IServiceProvider, (void**)&iServiceProvider)))
+		{
+			continue;
+		}
+
+		CComPtr<IShellBrowser> iShellBrowser;
+
+		if (FAILED(hResult = iServiceProvider->QueryService(SID_STopLevelBrowser, IID_IShellBrowser, (void**)&iShellBrowser)))
+		{
+			continue;
+		}
+
+		CComPtr<IShellView> iShellView;
+
+		if (FAILED(hResult = iShellBrowser->QueryActiveShellView(&iShellView)))
+		{
+			continue;
+		}
+
+		CComPtr<IFolderView> iFolderView;
+
+		if (FAILED(hResult = iShellView->QueryInterface(IID_IFolderView, (void**)&iFolderView)))
+		{
+			continue;
+		}
+
+		CComPtr<IPersistFolder2> iPersistFolder2;
+
+		if (FAILED(hResult = iFolderView->GetFolder(IID_IPersistFolder2, (void**)&iPersistFolder2)))
+		{
+			continue;
+		}
+
+		LPITEMIDLIST currentFolder = NULL;
+
+		if (FAILED(hResult = iPersistFolder2->GetCurFolder(&currentFolder)))
+		{
+			continue;
+		}
+
+		LPCITEMIDLIST child = NULL;
+		CComPtr<IShellFolder> iShellFolder;
+
+		if (FAILED(::SHBindToParent(currentFolder, IID_IShellFolder, (void**)&iShellFolder, &child)))
+		{
+			continue;
+		}
+
+		ULONG attrs = SFGAO_FILESYSTEM;
+
+		if (SUCCEEDED(hResult = iShellFolder->GetAttributesOf(1, &child, &attrs)))
+		{
+			if (attrs & SFGAO_FILESYSTEM)
+			{
+				STRRET strret;
+
+				if (SUCCEEDED(hResult = iShellFolder->GetDisplayNameOf(child, SHGDN_FORPARSING, &strret)))
+				{
+					LPWSTR fileName = NULL;
+
+					if (SUCCEEDED(hResult = StrRetToStr(&strret, child, &fileName)))
+					{
+						int pathLength = lstrlen(path);
+
+						if ((lstrlen(fileName) >= pathLength) && (::CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, path, pathLength, fileName, pathLength) == CSTR_EQUAL))
+						{
+							iWebBrowser2->Refresh();
+						}
+					}
+
+					if (fileName)
+					{
+						CoTaskMemFree(fileName);
+
+						fileName = NULL;
+					}
+
+					if (strret.pOleStr)
+					{
+						CoTaskMemFree(strret.pOleStr);
+					}
+				}
+			}
+		}
+
+		if (currentFolder)
+		{
+			CoTaskMemFree(currentFolder);
+
+			currentFolder = NULL;
+		}
+	}
+
+	iShellWindows->Release();
+
+	CoUninitialize();
+
+	if (SUCCEEDED(hResult)) {
+		return true;
+	}
+
 	return false;
 }
 

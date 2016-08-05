@@ -57,6 +57,18 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void refreshIcons(String[] paths);
 
 	/**
+	 * Windows only
+	 *
+	 * Causes Windows to refresh any open Explorer windows that are children of
+	 * the given path; equivalent to pressing F5 on an Explorer window. This is
+	 * useful for refreshing all icons and is significantly cheaper than
+	 * blindly calling refreshIcons(paths) for many files.
+	 *
+	 * @param path The file path to refresh.
+	 */
+	public void refreshWindow(String path);
+
+	/**
 	 * Mac Injector and Linux only
 	 *
 	 * Register an overlay icon

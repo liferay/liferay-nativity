@@ -58,11 +58,11 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	@Override
 	public void refreshIcons(String[] paths) {
-		if ((paths == null) || (paths.length == 0)) {
+		if (!WindowsNativityUtil.loaded()) {
 			return;
 		}
 
-		if (!WindowsNativityUtil.loaded()) {
+		if ((paths == null) || (paths.length == 0)) {
 			return;
 		}
 
@@ -74,6 +74,15 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 		catch (UnsatisfiedLinkError ule) {
 			_logger.error(ule.getMessage(), ule);
 		}
+	}
+
+	@Override
+	public void refreshWindow(String path) {
+		if (!WindowsNativityUtil.loaded()) {
+			return;
+		}
+
+		WindowsNativityUtil.refreshExplorer(path);
 	}
 
 	@Override
