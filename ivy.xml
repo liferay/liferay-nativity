@@ -15,14 +15,10 @@
 	</publications>
 
 	<dependencies defaultconf="default">
-		<dependency name="jackson-annotations" org="com.fasterxml.jackson.core" rev="2.7.4" />
-		<dependency name="jackson-core" org="com.fasterxml.jackson.core" rev="2.7.4" />
-		<dependency name="jackson-databind" org="com.fasterxml.jackson.core" rev="2.7.4" />
-		<dependency name="netty-buffer" org="io.netty" rev="4.0.36.Final" />
-		<dependency name="netty-codec" org="io.netty" rev="4.0.36.Final" />
-		<dependency name="netty-common" org="io.netty" rev="4.0.36.Final" />
-		<dependency name="netty-handler" org="io.netty" rev="4.0.36.Final" />
-		<dependency name="netty-transport" org="io.netty" rev="4.0.36.Final" />
+		<dependency name="jackson-annotations" org="com.fasterxml.jackson.core" rev="2.8.1" />
+		<dependency name="jackson-core" org="com.fasterxml.jackson.core" rev="2.8.1" />
+		<dependency name="jackson-databind" org="com.fasterxml.jackson.core" rev="2.8.1" />
+		<dependency name="netty-all" org="io.netty" rev="4.1.4.Final" />
 		<dependency name="slf4j-api" org="org.slf4j" rev="1.7.21" />
 	</dependencies>
 </ivy-module>
