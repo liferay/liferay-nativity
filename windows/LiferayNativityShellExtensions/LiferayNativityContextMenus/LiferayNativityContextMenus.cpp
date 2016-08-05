@@ -77,13 +77,13 @@ IFACEMETHODIMP LiferayNativityContextMenus::Initialize(LPCITEMIDLIST pidlFolder,
 		return E_INVALIDARG;
 	}
 
-	HRESULT hr = E_FAIL;
+	HRESULT hResult = E_FAIL;
 
 	FORMATETC fe = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 
 	STGMEDIUM stm;
 
-	if (!SUCCEEDED(pDataObj->GetData(&fe, &stm)))
+	if (FAILED(pDataObj->GetData(&fe, &stm)))
 	{
 		return E_FAIL;
 	}
@@ -150,7 +150,7 @@ IFACEMETHODIMP LiferayNativityContextMenus::InvokeCommand(LPCMINVOKECOMMANDINFO 
 
 		if (result != 0)
 		{
-			return false;
+			return E_FAIL;
 		}
 
 		wstring* wcommand = new wstring(buf, num_chars);
@@ -253,6 +253,45 @@ IFACEMETHODIMP LiferayNativityContextMenus::QueryContextMenu(HMENU hMenu, UINT i
 	return MAKE_HRESULT(SEVERITY_SUCCESS, 0, cmdCount - idCmdFirst + 1);
 }
 
+IFACEMETHODIMP LiferayNativityContextMenus::QueryInterface(REFIID riid, void** ppv)
+{
+	HRESULT hResult = S_OK;
+
+	if (IsEqualIID(IID_IUnknown, riid) ||
+		IsEqualIID(IID_IContextMenu, riid))
+	{
+		*ppv = static_cast<IContextMenu*>(this);
+	}
+	else if (IsEqualIID(IID_IShellExtInit, riid))
+	{
+		*ppv = static_cast<IShellExtInit*>(this);
+	}
+	else
+	{
+		hResult = E_NOINTERFACE;
+		*ppv = NULL;
+	}
+
+	if (*ppv)
+	{
+		AddRef();
+	}
+
+	return hResult;
+}
+
+IFACEMETHODIMP_(ULONG) LiferayNativityContextMenus::Release()
+{
+	long cRef = InterlockedDecrement(&_referenceCount);
+
+	if (0 == cRef)
+	{
+		delete this;
+	}
+
+	return cRef;
+}
+
 int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, int location, int cmdCount, UINT offset)
 {
 	wstring* text = menu->GetTitle();
@@ -314,18 +353,22 @@ HRESULT LiferayNativityContextMenus::_ConvertBufferToPARGB32(HPAINTBUFFER hPaint
 {
 	RGBQUAD *prgbQuad;
 	int cxRow;
-	HRESULT hr = GetBufferedPaintBits(hPaintBuffer, &prgbQuad, &cxRow);
-	if (SUCCEEDED(hr))
+	HRESULT hResult = GetBufferedPaintBits(hPaintBuffer, &prgbQuad, &cxRow);
+
+	if (SUCCEEDED(hResult))
 	{
 		Gdiplus::ARGB *pargb = reinterpret_cast<Gdiplus::ARGB *>(prgbQuad);
+
 		if (!_HasAlpha(pargb, sizIcon, cxRow))
 		{
 			ICONINFO info;
+
 			if (GetIconInfo(hicon, &info))
 			{
+
 				if (info.hbmMask)
 				{
-					hr = _ConvertToPARGB32(hdc, pargb, info.hbmMask, sizIcon, cxRow);
+					hResult = _ConvertToPARGB32(hdc, pargb, info.hbmMask, sizIcon, cxRow);
 				}
 
 				DeleteObject(info.hbmColor);
@@ -334,7 +377,7 @@ HRESULT LiferayNativityContextMenus::_ConvertBufferToPARGB32(HPAINTBUFFER hPaint
 		}
 	}
 
-	return hr;
+	return hResult;
 }
 
 HRESULT LiferayNativityContextMenus::_ConvertToPARGB32(HDC hdc, __inout Gdiplus::ARGB *pargb, HBITMAP hbmp, SIZE& sizImage, int cxRow)
@@ -357,7 +400,7 @@ HRESULT LiferayNativityContextMenus::_ConvertToPARGB32(HDC hdc, __inout Gdiplus:
 		return E_OUTOFMEMORY;
 	}
 
-	HRESULT hr = E_UNEXPECTED;
+	HRESULT hResult = E_UNEXPECTED;
 
 	if (GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, pvBits, &bmi, DIB_RGB_COLORS) == bmi.bmiHeader.biHeight)
 	{
@@ -382,12 +425,12 @@ HRESULT LiferayNativityContextMenus::_ConvertToPARGB32(HDC hdc, __inout Gdiplus:
 			pargb += cxDelta;
 		}
 
-		hr = S_OK;
+		hResult = S_OK;
 	}
 
 	HeapFree(hHeap, 0, pvBits);
 
-	return hr;
+	return hResult;
 }
 
 HRESULT LiferayNativityContextMenus::_Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_opt_out void **ppvBits, __out HBITMAP* phBmp)
@@ -423,7 +466,6 @@ HRESULT LiferayNativityContextMenus::_Create32BitHBITMAP(HDC hdc, const SIZE *ps
 
 	return (NULL == *phBmp) ? E_OUTOFMEMORY : S_OK;
 }
-
 
 bool LiferayNativityContextMenus::_HasAlpha(__in Gdiplus::ARGB *pargb, SIZE& sizImage, int cxRow)
 {
@@ -496,20 +538,6 @@ HBITMAP LiferayNativityContextMenus::_IconToBitmapPARGB32(HICON hIcon)
 	return hBmp;
 }
 
-bool LiferayNativityContextMenus::_InsertSeparator(HMENU hMenu, int location)
-{
-	MENUITEMINFO sep = { sizeof(sep) };
-	sep.fMask = MIIM_TYPE;
-	sep.fType = MFT_SEPARATOR;
-
-	if (!InsertMenuItem(hMenu, location, TRUE, &sep))
-	{
-		return false;
-	}
-
-	return true;
-}
-
 bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, HMENU subMenuHandle, int location, const wchar_t* text)
 {
 	MENUITEMINFO menuItem = { sizeof(menuItem) };
@@ -546,41 +574,16 @@ bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, int location, int com
 	return true;
 }
 
-IFACEMETHODIMP LiferayNativityContextMenus::QueryInterface(REFIID riid, void** ppv)
+bool LiferayNativityContextMenus::_InsertSeparator(HMENU hMenu, int location)
 {
-	HRESULT hr = S_OK;
+	MENUITEMINFO sep = { sizeof(sep) };
+	sep.fMask = MIIM_TYPE;
+	sep.fType = MFT_SEPARATOR;
 
-	if (IsEqualIID(IID_IUnknown, riid) ||
-	        IsEqualIID(IID_IContextMenu, riid))
+	if (!InsertMenuItem(hMenu, location, TRUE, &sep))
 	{
-		*ppv = static_cast<IContextMenu*>(this);
-	}
-	else if (IsEqualIID(IID_IShellExtInit, riid))
-	{
-		*ppv = static_cast<IShellExtInit*>(this);
-	}
-	else
-	{
-		hr = E_NOINTERFACE;
-		*ppv = NULL;
+		return false;
 	}
 
-	if (*ppv)
-	{
-		AddRef();
-	}
-
-	return hr;
-}
-
-IFACEMETHODIMP_(ULONG) LiferayNativityContextMenus::Release()
-{
-	long cRef = InterlockedDecrement(&_referenceCount);
-
-	if (0 == cRef)
-	{
-		delete this;
-	}
-
-	return cRef;
+	return true;
 }

@@ -22,7 +22,7 @@ HRESULT NativityContextMenuRegistrationHandler::MakeRegistryEntries(const CLSID&
 
 	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CLASSES_ROOT, REGISTRY_ALL_CONTEXT_MENU, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &allKey, NULL));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -31,7 +31,7 @@ HRESULT NativityContextMenuRegistrationHandler::MakeRegistryEntries(const CLSID&
 
 	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CLASSES_ROOT, REGISTRY_FOLDER_CONTEXT_MENU, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &folderKey, NULL));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -44,14 +44,14 @@ HRESULT NativityContextMenuRegistrationHandler::MakeRegistryEntries(const CLSID&
 
 	hResult = RegSetValueEx(allKey, NULL, 0, REG_SZ, (LPBYTE)value, (DWORD)(wcslen(value) + 1) * sizeof(TCHAR));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = RegSetValueEx(folderKey, NULL, 0, REG_SZ, (LPBYTE)value, (DWORD)(wcslen(value) + 1) * sizeof(TCHAR));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -65,21 +65,21 @@ HRESULT NativityContextMenuRegistrationHandler::RemoveRegistryEntries()
 
 	hResult = HRESULT_FROM_WIN32(RegDeleteKey(HKEY_CLASSES_ROOT, REGISTRY_ALL_CONTEXT_MENU));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = HRESULT_FROM_WIN32(RegDeleteKey(HKEY_CLASSES_ROOT, REGISTRY_FOLDER_CONTEXT_MENU));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = HRESULT_FROM_WIN32(RegFlushKey(HKEY_CLASSES_ROOT));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -104,7 +104,7 @@ HRESULT NativityContextMenuRegistrationHandler::RegisterCOMObject(PCWSTR moduleP
 
 	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CLASSES_ROOT, REGISTRY_CLSID, 0, KEY_WRITE, &hKey));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -113,7 +113,7 @@ HRESULT NativityContextMenuRegistrationHandler::RegisterCOMObject(PCWSTR moduleP
 
 	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(hKey, stringCLSID, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &clsidKey, NULL));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -122,7 +122,7 @@ HRESULT NativityContextMenuRegistrationHandler::RegisterCOMObject(PCWSTR moduleP
 
 	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(clsidKey, REGISTRY_IN_PROCESS, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &inprocessKey, NULL));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -131,21 +131,21 @@ HRESULT NativityContextMenuRegistrationHandler::RegisterCOMObject(PCWSTR moduleP
 
 	hResult = HRESULT_FROM_WIN32(RegSetValue(inprocessKey, NULL, REG_SZ, modulePath, cbData));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = HRESULT_FROM_WIN32(RegSetValueEx(inprocessKey, REGISTRY_THREADING, 0, REG_SZ, (LPBYTE)REGISTRY_APARTMENT, (DWORD)(wcslen(REGISTRY_APARTMENT) + 1) * sizeof(TCHAR)));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = HRESULT_FROM_WIN32(RegSetValueEx(inprocessKey, REGISTRY_VERSION, 0, REG_SZ, (LPBYTE)REGISTRY_VERSION_NUMBER, (DWORD)(wcslen(REGISTRY_VERSION_NUMBER) + 1) * sizeof(TCHAR)));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -155,19 +155,15 @@ HRESULT NativityContextMenuRegistrationHandler::RegisterCOMObject(PCWSTR moduleP
 
 HRESULT NativityContextMenuRegistrationHandler::UnregisterCOMObject(const CLSID& clsid)
 {
-	HRESULT hr = S_OK;
-
 	wchar_t stringCLSID[MAX_PATH];
 
 	StringFromGUID2(clsid, stringCLSID, ARRAYSIZE(stringCLSID));
 
-	HRESULT hResult;
-
 	HKEY clsidKey = NULL;
 
-	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CLASSES_ROOT, REGISTRY_CLSID, 0, DELETE, &clsidKey));
+	HRESULT hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CLASSES_ROOT, REGISTRY_CLSID, 0, DELETE, &clsidKey));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -178,14 +174,14 @@ HRESULT NativityContextMenuRegistrationHandler::UnregisterCOMObject(const CLSID&
 
 	hResult = HRESULT_FROM_WIN32(RegDeleteKey(hKey, REGISTRY_IN_PROCESS));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = HRESULT_FROM_WIN32(RegDeleteKey(clsidKey, stringCLSID));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}

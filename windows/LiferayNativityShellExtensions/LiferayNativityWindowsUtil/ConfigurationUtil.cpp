@@ -186,7 +186,7 @@ bool ConfigurationUtil::RemoveFavoritesPath(const wchar_t* path)
 
 		wcscat_s(fullPath, L".lnk");
 
-		if (SUCCEEDED(DeleteFile(fullPath)))
+		if (DeleteFile(fullPath))
 		{
 			return true;
 		}
@@ -195,16 +195,16 @@ bool ConfigurationUtil::RemoveFavoritesPath(const wchar_t* path)
 	return false;
 }
 
-bool ConfigurationUtil::UpdateExplorer(const wchar_t* syncRoot)
+bool ConfigurationUtil::UpdateExplorer(const wchar_t* path)
 {
-	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, syncRoot, 0);
+	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, path, 0);
 
 	return true;
 }
 
-bool ConfigurationUtil::SetSystemFolder(const wchar_t* syncRoot)
+bool ConfigurationUtil::SetSystemFolder(const wchar_t* path)
 {
-	SetFileAttributes(syncRoot, FILE_ATTRIBUTE_SYSTEM);
+	SetFileAttributes(path, FILE_ATTRIBUTE_SYSTEM);
 
 	return true;
 }
@@ -212,14 +212,14 @@ bool ConfigurationUtil::SetSystemFolder(const wchar_t* syncRoot)
 HRESULT ConfigurationUtil::_CreateLink(LPCWSTR lpszPathObj, LPCWSTR lpszPathLink, LPCWSTR lpszDesc)
 {
 	CoInitialize(NULL);
-	HRESULT hres;
+
 	IShellLink* psl;
 
 	// Get a pointer to the IShellLink interface. It is assumed that CoInitialize
 	// has already been called.
-	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl);
+	HRESULT hResult = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl);
 
-	if (SUCCEEDED(hres))
+	if (SUCCEEDED(hResult))
 	{
 		IPersistFile* ppf;
 
@@ -229,12 +229,12 @@ HRESULT ConfigurationUtil::_CreateLink(LPCWSTR lpszPathObj, LPCWSTR lpszPathLink
 
 		// Query IShellLink for the IPersistFile interface, used for saving the 
 		// shortcut in persistent storage. 
-		hres = psl->QueryInterface(IID_IPersistFile, (LPVOID*)&ppf);
+		hResult = psl->QueryInterface(IID_IPersistFile, (LPVOID*)&ppf);
 
-		if (SUCCEEDED(hres))
+		if (SUCCEEDED(hResult))
 		{
 			// Save the link by calling IPersistFile::Save. 
-			hres = ppf->Save(lpszPathLink, TRUE);
+			hResult = ppf->Save(lpszPathLink, TRUE);
 
 			ppf->Release();
 		}
@@ -244,5 +244,5 @@ HRESULT ConfigurationUtil::_CreateLink(LPCWSTR lpszPathObj, LPCWSTR lpszPathLink
 
 	CoUninitialize();
 
-	return hres;
+	return hResult;
 }

@@ -26,9 +26,9 @@ CommunicationSocket::CommunicationSocket(int port): _port(port)
 {
 	WSADATA wsaData;
 
-	HRESULT iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	HRESULT hResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-	if (iResult != NO_ERROR)
+	if (FAILED(hResult))
 	{
 		int error = WSAGetLastError();
 	}
@@ -58,9 +58,9 @@ bool CommunicationSocket::ReceiveResponseOnly(wstring* message)
 	clientService.sin_addr.s_addr = inet_addr("127.0.0.1");
 	clientService.sin_port = htons(_port);
 
-	HRESULT iResult = connect(clientSocket, (SOCKADDR*) &clientService, sizeof(clientService));
+	HRESULT hResult = connect(clientSocket, (SOCKADDR*) &clientService, sizeof(clientService));
 
-	if (iResult == SOCKET_ERROR)
+	if (FAILED(hResult))
 	{
 		int error = WSAGetLastError();
 
@@ -101,9 +101,9 @@ bool CommunicationSocket::ReceiveResponseOnly(wstring* message)
 	}
 	while (bytesRead > 0);
 
-	HRESULT result = shutdown(clientSocket, SD_BOTH);
+	hResult = shutdown(clientSocket, SD_BOTH);
 
-	if (result == SOCKET_ERROR)
+	if (FAILED(hResult))
 	{
 		int error = WSAGetLastError();
 
@@ -154,9 +154,9 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 	clientService.sin_addr.s_addr = inet_addr("127.0.0.1");
 	clientService.sin_port = htons(_port);
 
-	HRESULT iResult = connect(clientSocket, (SOCKADDR*) &clientService, sizeof(clientService));
+	HRESULT hResult = connect(clientSocket, (SOCKADDR*) &clientService, sizeof(clientService));
 
-	if (iResult == SOCKET_ERROR)
+	if (FAILED(hResult))
 	{
 		int error = WSAGetLastError();
 

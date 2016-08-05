@@ -107,14 +107,14 @@ HRESULT _stdcall DllRegisterServer(void)
 
 	hResult = NativityOverlayRegistrationHandler::RegisterCOMObject(szModule, guid);
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = NativityOverlayRegistrationHandler::MakeRegistryEntries(guid, OVERLAY_NAME);
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
@@ -145,14 +145,14 @@ STDAPI DllUnregisterServer(void)
 
 	hResult = NativityOverlayRegistrationHandler::UnregisterCOMObject(guid);
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
 
 	hResult = NativityOverlayRegistrationHandler::RemoveRegistryEntries(OVERLAY_NAME);
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return hResult;
 	}
