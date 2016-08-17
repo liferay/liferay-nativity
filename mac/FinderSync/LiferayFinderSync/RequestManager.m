@@ -181,7 +181,7 @@ static RequestManager* sharedInstance = nil;
 
 		[_menuUuidDictionary setValue:menuUuidDictionary forKey:uuid];
 
-		SEL actionSelector = sel_registerName([[@"__CONTEXT_MENU_ACTION_" stringByAppendingString:[@(index)stringValue]] UTF8String]);
+		SEL actionSelector = sel_registerName([[@"__CONTEXT_MENU_ACTION_" stringByAppendingString:[[[@(index)stringValue] stringByAppendingString:@"_"] stringByAppendingString:title]] UTF8String]);
 
 		IMP methodIMP = imp_implementationWithBlock(^(id _self) {
 			[[RequestManager sharedInstance] sendMenuItemClicked:uuid];
