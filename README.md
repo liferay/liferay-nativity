@@ -350,6 +350,9 @@ The following example Java code will overlay testFile.txt with testIcon.icns and
 
     nativityControl.connect();
 
+    // Setting filter folders is required for Mac's Finder Sync plugin
+    nativityControl.setFilterFolder("/Users/liferay/Desktop");
+
     /* File Icons */
 
     int testIconId;
