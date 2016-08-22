@@ -86,6 +86,9 @@ public class WindowsNativityControlImpl extends NativityControl {
 			}
 		};
 
+		if(_executor.isShutdown()) {
+			_executor = Executors.newCachedThreadPool();
+		}
 		_executor.execute(runnable);
 
 		return true;
