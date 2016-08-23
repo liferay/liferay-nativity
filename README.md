@@ -82,7 +82,9 @@ Finder Sync plugins must be sandboxed. By default, sandboxed applications cannot
 
 ##### Flat Context Menus
 
-Finder Sync plugins also do not support sub-menus. The context menus returned by the client must be a flat list. Attempting to generate a tree of context menu items will result in only the parent level appearing in the context menu.
+*Fixed in OS X 10.11 El Capitan.*
+
+~~Finder Sync plugins also do not support sub-menus. The context menus returned by the client must be a flat list. Attempting to generate a tree of context menu items will result in only the parent level appearing in the context menu.~~
 
 ### Injector
 
