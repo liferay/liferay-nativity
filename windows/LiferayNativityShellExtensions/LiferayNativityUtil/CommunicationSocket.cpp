@@ -189,36 +189,36 @@ bool CommunicationSocket::SendMessageReceiveResponse(const wchar_t* message, wst
 		return false;
 	}
 
-	char rec_buf[DEFAULT_BUFLEN];
+	int bytesRead;
 
-	int bytesRead = recv(clientSocket, rec_buf, DEFAULT_BUFLEN, MSG_WAITALL);
-
-	if (bytesRead == SOCKET_ERROR || bytesRead == 0)
+	do
 	{
-		int error = WSAGetLastError();
+		char rec_buf[DEFAULT_BUFLEN];
+		bytesRead = recv(clientSocket, rec_buf, DEFAULT_BUFLEN, MSG_WAITALL);
 
-		closesocket(clientSocket);
+		if (bytesRead > 0)
+		{
+			wchar_t* buf = new wchar_t[bytesRead / 2 + 1];
+			int value;
 
-		return false;
-	}
+			int j = 0;
 
-	wchar_t* buf = new wchar_t[ bytesRead / 2 ];
+			for (int i = 0; i < bytesRead; i += 2)
+			{
+				value = rec_buf[i] << rec_buf[i + 1];
 
-	int value;
-	int j = 0;
+				buf[j] = btowc(value);
 
-	for (int i = 0; i < bytesRead; i += 2)
-	{
-		value = rec_buf[i] << rec_buf[i + 1];
+				j++;
+			}
 
-		buf[j] = btowc(value);
+			buf[j] = 0;
 
-		j++;
-	}
+			response->append(buf);
 
-	*response = buf;
-
-	delete[] buf;
+			delete[] buf;
+		}
+	} while (bytesRead > 0);
 
 	result = shutdown(clientSocket, SD_BOTH);
 
