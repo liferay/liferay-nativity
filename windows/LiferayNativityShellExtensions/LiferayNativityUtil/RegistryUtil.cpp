@@ -40,7 +40,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	hResult = HRESULT_FROM_WIN32(RegOpenKeyEx(HKEY_CURRENT_USER, (LPCWSTR)key, NULL, KEY_READ, &rootKey));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return false;
 	}
@@ -50,7 +50,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	hResult = HRESULT_FROM_WIN32(RegQueryValueEx(rootKey, (LPCWSTR)name, NULL, NULL, (LPBYTE)value, &value_length));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return false;
 	}
@@ -59,7 +59,7 @@ bool RegistryUtil::ReadRegistry(const wchar_t* key, const wchar_t* name, wstring
 
 	hResult = HRESULT_FROM_WIN32(RegCloseKey(rootKey));
 
-	if (!SUCCEEDED(hResult))
+	if (FAILED(hResult))
 	{
 		return false;
 	}

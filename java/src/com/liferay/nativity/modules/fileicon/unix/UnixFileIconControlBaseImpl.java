@@ -36,6 +36,10 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 	}
 
 	@Override
+	public void refreshWindow(String path) {
+	}
+
+	@Override
 	public int registerIcon(String path) {
 		NativityMessage message = new NativityMessage(
 			Constants.REGISTER_ICON, path);

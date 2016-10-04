@@ -224,7 +224,9 @@ public abstract class NativityControl {
 	public abstract void setFilterFolder(String folder);
 
 	/**
-	 * Optionally set the root folder filter path for requests made
+	 * Required for Mac Finder Sync. Optional for others.
+	 *
+	 * Set the root folder filter path for requests made
 	 * to the native service. For example, setting a value of "/test/folder"
 	 * indicates that any requests for files that are not a child of
 	 * "/test/folder" will be ignored. This can improve native performance.

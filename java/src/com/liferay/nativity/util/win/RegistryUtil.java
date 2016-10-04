@@ -116,22 +116,22 @@ public class RegistryUtil {
 
 		regOpenKey.setAccessible(true);
 
-		Object result = regOpenKey.invoke(
+		Object object = regOpenKey.invoke(
 			_userRoot, new Object[] {HKEY_CURRENT_USER, _stringToByteArray(key),
 			KEY_WRITE});
 
-		if (result == null) {
+		if (object == null) {
 			return 0;
 		}
 
-		if (result instanceof int[]) {
-			int[] hResult = (int[])result;
+		if (object instanceof int[]) {
+			int[] results = (int[])object;
 
-			if (hResult.length == 0) {
+			if (results.length == 0) {
 				return 0;
 			}
 
-			return hResult[0];
+			return results[0];
 		}
 
 		return 0;
@@ -148,13 +148,13 @@ public class RegistryUtil {
 
 		regSetValueEx.setAccessible(true);
 
-		Object hResult = regSetValueEx.invoke(
+		Object object = regSetValueEx.invoke(
 			_userRoot,
 			new Object[] {
 				handle, _stringToByteArray(name), _stringToByteArray(value)});
 
-		if (hResult instanceof Integer) {
-			int result = ((Integer)hResult).intValue();
+		if (object instanceof Integer) {
+			int result = ((Integer)object).intValue();
 
 			if (result == 0) {
 				return true;

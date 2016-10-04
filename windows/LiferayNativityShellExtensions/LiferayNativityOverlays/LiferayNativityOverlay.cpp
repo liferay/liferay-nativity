@@ -38,7 +38,7 @@ IFACEMETHODIMP_(ULONG) LiferayNativityOverlay::AddRef()
 
 IFACEMETHODIMP LiferayNativityOverlay::QueryInterface(REFIID riid, void** ppv)
 {
-	HRESULT hr = S_OK;
+	HRESULT hResult = S_OK;
 
 	if (IsEqualIID(IID_IUnknown, riid) ||  IsEqualIID(IID_IShellIconOverlayIdentifier, riid))
 	{
@@ -46,7 +46,7 @@ IFACEMETHODIMP LiferayNativityOverlay::QueryInterface(REFIID riid, void** ppv)
 	}
 	else
 	{
-		hr = E_NOINTERFACE;
+		hResult = E_NOINTERFACE;
 		*ppv = NULL;
 	}
 
@@ -55,7 +55,7 @@ IFACEMETHODIMP LiferayNativityOverlay::QueryInterface(REFIID riid, void** ppv)
 		AddRef();
 	}
 
-	return hr;
+	return hResult;
 }
 
 IFACEMETHODIMP_(ULONG) LiferayNativityOverlay::Release()

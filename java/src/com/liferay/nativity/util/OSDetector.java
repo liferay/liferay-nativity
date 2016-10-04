@@ -16,15 +16,14 @@ package com.liferay.nativity.util;
 
 import java.io.File;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Dennis Ju
  */
 public class OSDetector {
 
 	public static final String MAC_CHEETAH_10_0 = "10.0";
+
+	public static final String MAC_EL_CAPITAN_10_11 = "10.11";
 
 	public static final String MAC_JAGUAR_10_2 = "10.2";
 
@@ -40,6 +39,8 @@ public class OSDetector {
 
 	public static final String MAC_PUMA_10_1 = "10.1";
 
+	public static final String MAC_SIERRA_10_12 = "10.12";
+
 	public static final String MAC_SNOW_LEOPARD_10_6 = "10.6";
 
 	public static final String MAC_TIGER_10_4 = "10.4";
@@ -50,6 +51,10 @@ public class OSDetector {
 
 	public static final String WIN_8 = "6.2";
 
+	public static final String WIN_8_1 = "6.3";
+
+	public static final String WIN_10 = "10.0";
+
 	public static final String WIN_2000 = "5.0";
 
 	public static final String WIN_SERVER_2003 = "5.2";
@@ -57,6 +62,10 @@ public class OSDetector {
 	public static final String WIN_SERVER_2008 = "6.0";
 
 	public static final String WIN_SERVER_2012 = "6.2";
+
+	public static final String WIN_SERVER_2012_R2 = "6.3";
+
+	public static final String WIN_SERVER_2016 = "10.0";
 
 	public static final String WIN_VISTA = "6.0";
 
@@ -182,9 +191,6 @@ public class OSDetector {
 
 		return _windows.booleanValue();
 	}
-
-	private static Logger _logger = LoggerFactory.getLogger(
-		OSDetector.class.getName());
 
 	private static Boolean _aix;
 	private static Boolean _apple;

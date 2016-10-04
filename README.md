@@ -36,8 +36,8 @@ Liferay Nativity is a cross-platform library for adding icon overlays and contex
 
 The following operating systems are currently supported:
 
-* Windows Vista or greater (tested up to Windows 8)
-* Mac OS X 10.7 or greater (tested up to OS X 10.8.4)
+* Windows Vista or greater (tested up to Windows 10)
+* Mac OS X 10.7 or greater (tested up to OS X 10.11)
 * Linux GNOME Nautilus 3.x or greater (tested up to Nautilus 3.6)
 
 Currently the client code is only available for Java. Contributions for other clients like Ruby, C++, etc are welcome.
@@ -52,7 +52,7 @@ Currently the client code is only available for Java. Contributions for other cl
 
 ## Mac OS X
 
-As of OS X 10.10 Yosemite, overlay icons and context menus are officially supported through the new Finder Sync API. A sample [Finder Sync plugin](https://github.com/liferay/liferay-nativity/tree/master/mac/FinderSync) is included which continues to work within the existing Nativity architecture.
+As of OS X 10.10 Yosemite, icon overlays and context menus are officially supported through the new Finder Sync API. A sample [Finder Sync plugin](https://github.com/liferay/liferay-nativity/tree/master/mac/FinderSync) is included which works with the existing Nativity architecture.
 
 Liferay Nativity continues to work for OS X 10.9 and below. This code has been moved to the [Injector](https://github.com/liferay/liferay-nativity/tree/master/mac/Injector) folder.
 
@@ -72,17 +72,19 @@ There are several known issues with the Finder Sync API that require a change in
 
 ##### Conflicts With Multiple Finder Sync Plugins
 
-If multiple Finder Sync plugins monitor the same folders, only the first Finder Sync process that launched will be able to request/set icon badges. This means if a Finder Sync extension "greedily" decides to monitor a parent folder like ~/Documents (like Dropbox currently does), then any Finder Sync extension monitoring files under the ~/Documents parent will not show badges if the greedy extension launched first.
+If multiple Finder Sync plugins monitor the same folders, only the first Finder Sync process that launched will be able to request/set icon overlay. This means if a Finder Sync extension "greedily" decides to monitor a parent folder like ~/Documents (like Dropbox currently does), then any Finder Sync extension monitoring files under the ~/Documents parent will not show icon overlays if the greedy extension launched first.
 
-Ideally, Apple needs to figure out an intelligent mechanism for deciding which Finder Sync gets to draw the icon badge. Until then, developers are advised to be "polite" and monitor only the folders that explicitly belong to your application. Context menus will work fine with multiple extensions.
+Ideally, Apple needs to figure out an intelligent mechanism for deciding which Finder Sync gets to draw the icon overlay. Until then, developers are advised to be "polite" and monitor only the folders that explicitly belong to your application. Context menus will work fine with multiple extensions.
 
 ##### Sandbox
 
-Finder Sync plugins must be sandboxed. By default, sandboxed applications cannot read data outside its own containers. In order to allow icons to be registered from any path as well as the ability to refresh file badges (which requires reading an observed folder's children), the entitlement [com.apple.security.temporary-exception.files.absolute-path.read-only](https://developer.apple.com/library/ios/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/AppSandboxTemporaryExceptionEntitlements.html) is included, but any app submitted to the Mac App Store using this entitlement will likely be rejected.
+Finder Sync plugins must be sandboxed. By default, sandboxed applications cannot read data outside its own containers. In order to allow icons to be registered from any path as well as the ability to refresh icon overlays (which requires reading an observed folder's children), the entitlement [com.apple.security.temporary-exception.files.absolute-path.read-only](https://developer.apple.com/library/ios/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/AppSandboxTemporaryExceptionEntitlements.html) is included, but any app submitted to the Mac App Store using this entitlement will likely be rejected.
 
 ##### Flat Context Menus
 
-Finder Sync plugins also do not support sub-menus. The context menus returned by the client must be a flat list. Attempting to generate a tree of context menu items will result in only the parent level appearing in the context menu.
+*Fixed in OS X 10.11 El Capitan.*
+
+~~Finder Sync plugins also do not support sub-menus. The context menus returned by the client must be a flat list. Attempting to generate a tree of context menu items will result in only the parent level appearing in the context menu.~~
 
 ### Injector
 
@@ -145,7 +147,7 @@ The code for LiferayNativityInjector is modified from the scripting additions us
 
 ##### LiferayNativityFinder
 
-Once injected, LiferayNativityFinder is responsible for method swizzling the overlay icons and context menus into Finder. The original source code for method swizzling (as well as the previously used injection method through mach_inject) was written by the talented developers at [TeamDev](http://www.teamdev.com/). Kudos to TeamDev for tackling an extremely challenging programming task!
+Once injected, LiferayNativityFinder is responsible for method swizzling the icon overlays and context menus into Finder. The original source code for method swizzling (as well as the previously used injection method through mach_inject) was written by the talented developers at [TeamDev](http://www.teamdev.com/). Kudos to TeamDev for tackling an extremely challenging programming task!
 
 Below is a brief description of the classes inside LiferayNativityFinder.
 
@@ -161,44 +163,44 @@ Below is a brief description of the classes inside LiferayNativityFinder.
 
 ## Windows
 
-For Windows Nativity makes use of both a JNI interface as well as Windows Shell Extensions.  There are several DLL’s which must be built and configured to use Nativity on Windows.
-* 1 for context menus
-* 1 for each overlay you want to use
-* 1 for JNI Interface dll
-* 1 Utility DLL shared by the context menu shell extension and the icon overlay extension.
+For Windows, Nativity makes use of both a JNI interface as well as Windows Shell Extensions. There are several DLL’s which must be built and configured to use Nativity on Windows.
+* One context menu DLL
+* One DLL for each file icon overlay
+* One utility DLL shared by the context menu shell extension and the icon overlay extension
+* One DLL for the JNI interface
 
 ### JNI Interface
-The JNI interface allows the Java side of nativity to interact with the native side of nativity.  It only provides the ability to set a folder to a system folder.  In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however nativity also provides it do older versions of java can be supported.
+The JNI interface allows the Java side of Nativity to interact with the native side of Nativity. It only provides the ability to set a folder to a system folder. In windows if you want to set a folder icon through an desktop.ini file you must set the folder to be a system folder. So Nativity provides this functionality even though it is available in java 1.7, however Nativity also provides it do older versions of java can be supported.
 
     public static native boolean setSystemFolder(String folder)
 
-The JNI interface also allows interaction with Explorer.  It notifies explorer to redraw an icon overlay.  This provides the ability to refresh the when they have changed.
+The JNI interface also allows interaction with Explorer.  It notifies Explorer to redraw an icon overlay.  This provides the ability to refresh the when they have changed.
 
-    public static native boolean updateExplorer(String filePath);
+    public static native boolean EpdateExplorer(String filePath);
 
 To use the JNI interface, the Liferay Nativity Windows Util project must be build and the resulting DLL named
 
     LiferayNativityWindowsUtil_x64.dll
     LiferayNativityWindowsUtil_x86.dll
 
-This dll must also be on the java.library. path.
+This DLL must also be in your java.library.path.
 
 ### Shell Extensions
-The shell extensions must be built and registered to be used by explorer, explorer also must be restarted for the icon overlays to display.
+The shell extensions must be built and registered to be used by Explorer, Explorer also must be restarted for the icon overlays to display.
 
 #### Build Properties
 
-In your ant properties file you need to add the following properties.
+Add the following properties to your ant properties file:
 * **nativity.dir** This is the location of the nativity code.
 * **nativity.version** This is the version for your build of nativity.
-* **ms.sdk.7.1.dir** This is the directory that that MS SDK 7.1 resides
-* **framework.dir** This is the directory where the .NET Framework resides
+* **ms.sdk.7.1.dir** This is the directory that that MS SDK 7.1 resides.
+* **framework.dir** This is the directory where the .NET Framework resides.
 
-* **context.menu.guid** This is the GUID you have assigned to your context menu dll.
+* **context.menu.guid** This is the GUID you have assigned to your context menu DLL.
 
-* **overlay.name.?** This is the name for your icon overlay DLL, remember you need one icon overlay dll for each icon overlay.
-* **overlay.guid.?** This is the GUID you have assigned to this icon overlay dll.
-* **overlay.id.?** This is the int value that this icon overlay will display for. The dll will query the java side for the id value, if the id value received is equal to this value, the icon overlay will display.
+* **overlay.name.?** This is the name for your icon overlay DLL, remember you need one icon overlay DLL for each icon overlay.
+* **overlay.guid.?** This is the GUID you have assigned to this icon overlay DLL.
+* **overlay.id.?** This is the int value that this icon overlay will display for. The DLL will query the java side for the id value, if the id value received is equal to this value, the icon overlay will display.
 * **overlay.path.?** This is the path to the icon overlay, this icon will be placed in the DLL during the build process.
 
 ##### Sample
@@ -230,7 +232,7 @@ In your ant properties file you need to add the following properties.
 
 #### Windows Util DLL
 
-This dll is required for both the Context Menus and the Icon Overlays.
+This DLL is required for both the Context Menus and the Icon Overlays.
 
     <ant dir="${nativity.dir}" target="build-windows-util" inheritAll="false">
       <property name="nativity.dir" value="${nativity.dir}" />
@@ -252,7 +254,7 @@ This dll is required for both the Context Menus and the Icon Overlays.
 
 #### Icon Overlay DLL
 
-One Icon Overlay DLL must be built for each Icon Overlay.
+One DLL must be built for each icon overlay.
 
     <ant dir="${nativity.dir}" target="build-windows-overlays" inheritAll="false">
       <property name="nativity.dir" value="${nativity.dir}" />
@@ -281,9 +283,17 @@ One Icon Overlay DLL must be built for each Icon Overlay.
       <property name="overlay.path" value="${overlay.path.syncing}" />
     </ant>
 
+Be sure to register your context menu and icon overlay DLL's using regsvr32 (for example: "regsvr32 LiferayNativityOKOverlay_x64.dll").
+
+#### Limitations and Issues
+
+Windows limits the total number of icon overlays to 15. Windows uses 4-6 of these, so only 9-11 remain for use by other applications. If you use other applications like Dropbox or TortoiseSVN, your icon overlays may not appear (Windows will load the first 15 icon overlays alphabetically).
+
+You can see the your list of registered icon overlays by navigating to the following registry key HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers.
+
 ## Linux
 
-Liferay Nativity currently only supports Nautilus file manager. Hooks for Nemo are available, but the overlay icons and context menus do not appear.
+Liferay Nativity currently only supports Nautilus file manager. Hooks for Nemo are available, but the icon overlays and context menus do not appear.
 
 ### Build
 
@@ -341,6 +351,9 @@ The following example Java code will overlay testFile.txt with testIcon.icns and
     NativityControl nativityControl = NativityControlUtil.getNativityControl();
 
     nativityControl.connect();
+
+    // Setting filter folders is required for Mac's Finder Sync plugin
+    nativityControl.setFilterFolder("/Users/liferay/Desktop");
 
     /* File Icons */
 

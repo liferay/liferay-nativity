@@ -175,6 +175,10 @@ public class WindowsNativityControlImpl extends NativityControl {
 		catch (JsonProcessingException jpe) {
 			_logger.error(jpe.getMessage(), jpe);
 		}
+
+		for (String folder : folders) {
+			WindowsNativityUtil.refreshExplorer(folder);
+		}
 	}
 
 	@Override

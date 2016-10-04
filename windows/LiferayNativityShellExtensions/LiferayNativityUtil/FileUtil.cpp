@@ -47,7 +47,7 @@ bool FileUtil::IsFileFiltered(const wchar_t* file)
 
 		delete rootFolder;
 
-		return false;
+		return true;
 	}
 
 	Json::Reader jsonReader;
@@ -57,7 +57,13 @@ bool FileUtil::IsFileFiltered(const wchar_t* file)
 	{
 		delete rootFolder;
 
-		return false;
+		return true;
+	}
+
+	if (jsonFilterFolders.size() == 0) {
+		delete rootFolder;
+
+		return true;
 	}
 
 	for (unsigned int i = 0; i < jsonFilterFolders.size(); i++)
