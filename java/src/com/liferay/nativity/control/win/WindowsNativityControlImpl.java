@@ -62,7 +62,7 @@ public class WindowsNativityControlImpl extends NativityControl {
 			return false;
 		}
 
-		if (_serverSocket == null) {
+		if (_serverSocket == null || _serverSocket.isClosed()) {
 			try {
 				_serverSocket = new ServerSocket(_port, 50, InetAddress.getLoopbackAddress());
 
