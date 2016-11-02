@@ -18,7 +18,7 @@
 		<dependency name="jackson-annotations" org="com.fasterxml.jackson.core" rev="2.8.1" />
 		<dependency name="jackson-core" org="com.fasterxml.jackson.core" rev="2.8.1" />
 		<dependency name="jackson-databind" org="com.fasterxml.jackson.core" rev="2.8.1" />
-		<dependency name="netty-all" org="io.netty" rev="4.1.4.Final" />
+		<dependency name="netty-all" org="io.netty" rev="4.1.6.Final" />
 		<dependency name="slf4j-api" org="org.slf4j" rev="1.7.21" />
 	</dependencies>
 </ivy-module>
