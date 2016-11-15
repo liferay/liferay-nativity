@@ -88,7 +88,7 @@ typedef  id (^EBMappingBlock)(id obj);
     LSSharedFileListRef list = LSSharedFileListCreate(NULL, (CFStringRef)list_name, NULL);
     if (!list) return NO;
     LSSharedFileListItemRef item = LSSharedFileListInsertItemURL(list,
-                                                                 kLSSharedFileListItemLast,
+                                                                 kLSSharedFileListItemBeforeFirst,
                                                                  NULL, NULL,
                                                                  (CFURLRef)url,
                                                                  NULL, NULL);
