@@ -17,8 +17,8 @@ package com.liferay.nativity.modules.contextmenu;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 		this.nativityControl = nativityControl;
 		this.contextMenuControlCallback = contextMenuControlCallback;
 
-		contextMenuItems = new ArrayList<ContextMenuItem>();
+		contextMenuItems = new CopyOnWriteArrayList<>();
 	}
 
 	public void fireContextMenuAction(String uuid, String[] paths) {
