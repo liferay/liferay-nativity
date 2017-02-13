@@ -17,11 +17,11 @@ package com.liferay.nativity.control;
 import com.liferay.nativity.listeners.SocketCloseListener;
 import com.liferay.nativity.listeners.SocketOpenListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
 public abstract class NativityControl {
 
 	public NativityControl() {
-		_commandMap = new HashMap<String, MessageListener>();
-		socketCloseListeners = new ArrayList<SocketCloseListener>();
-		socketOpenListeners = new ArrayList<SocketOpenListener>();
+		_commandMap = new ConcurrentHashMap<>();
+		socketCloseListeners = new CopyOnWriteArrayList<>();
+		socketOpenListeners = new CopyOnWriteArrayList<>();
 	}
 
 	/**
