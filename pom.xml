@@ -36,9 +36,9 @@
         <connection>scm:git:git@github.com:iterate-ch/liferay-nativity.git</connection>
         <developerConnection>scm:git:git@github.com:iterate-ch/liferay-nativity.git</developerConnection>
         <url>https://github.com/iterate-ch/liferay-nativity</url>
-      <tag>nativity-1.0.10</tag>
+      <tag>HEAD</tag>
   </scm>
-    <version>1.0.10</version>
+    <version>1.0.11-SNAPSHOT</version>
     <build>
         <sourceDirectory>java/src</sourceDirectory>
         <testSourceDirectory>java/test</testSourceDirectory>
