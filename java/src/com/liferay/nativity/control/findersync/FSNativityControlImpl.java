@@ -112,7 +112,7 @@ public class FSNativityControlImpl extends NativityControl {
 			InetSocketAddress inetSocketAddress =
 				(InetSocketAddress)channelFuture.channel().localAddress();
 
-			_writePortToFile(inetSocketAddress.getPort());
+			this.connected(inetSocketAddress.getPort());
 		}
 		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
@@ -220,7 +220,7 @@ public class FSNativityControlImpl extends NativityControl {
 		return false;
 	}
 
-	private void _writePortToFile(int port) {
+	protected void connected(int port) {
 		String path = null;
 
 		if (_portFilePath == null) {
