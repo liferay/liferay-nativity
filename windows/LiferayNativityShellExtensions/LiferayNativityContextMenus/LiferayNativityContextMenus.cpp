@@ -12,8 +12,9 @@
  * details.
  */
 
-#include <windows.h>
+#include <atlbase.h>
 #include <uxtheme.h>
+#include <windows.h>
 #include "LiferayNativityContextMenus.h"
 
 #pragma comment(lib, "uxtheme.lib")
@@ -72,50 +73,63 @@ IFACEMETHODIMP LiferayNativityContextMenus::GetCommandString(UINT_PTR idCommand,
 
 IFACEMETHODIMP LiferayNativityContextMenus::Initialize(LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDataObj, HKEY hKeyProgID)
 {
-	if (NULL == pDataObj)
+	if (pDataObj)
 	{
-		return E_INVALIDARG;
-	}
+		FORMATETC fe = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 
-	HRESULT hResult = E_FAIL;
+		STGMEDIUM stm;
 
-	FORMATETC fe = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-
-	STGMEDIUM stm;
-
-	if (FAILED(pDataObj->GetData(&fe, &stm)))
-	{
-		return E_FAIL;
-	}
-
-	HDROP hDrop = static_cast<HDROP>(GlobalLock(stm.hGlobal));
-
-	if (hDrop == NULL)
-	{
-		return E_FAIL;
-	}
-
-	_nFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
-
-	if (_nFiles > 0)
-	{
-		_contextMenuUtil = new ContextMenuUtil();
-		wchar_t szFileName[MAX_PATH];
-
-		for (UINT i = 0; i < _nFiles; i++)
+		if (FAILED(pDataObj->GetData(&fe, &stm)))
 		{
-			UINT success = DragQueryFile(hDrop, i, szFileName, ARRAYSIZE(szFileName));
+			return E_INVALIDARG;
+		}
 
-			if (success != 0)
+		HDROP hDrop = static_cast<HDROP>(GlobalLock(stm.hGlobal));
+
+		if (hDrop == NULL)
+		{
+			return E_INVALIDARG;
+		}
+
+		_nFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+
+		if (_nFiles > 0)
+		{
+			_contextMenuUtil = new ContextMenuUtil();
+			wchar_t szFileName[MAX_PATH];
+
+			for (UINT i = 0; i < _nFiles; i++)
 			{
-				_contextMenuUtil->AddFile(szFileName);
+				UINT success = DragQueryFile(hDrop, i, szFileName, ARRAYSIZE(szFileName));
+
+				if (success != 0)
+				{
+					_contextMenuUtil->AddFile(szFileName);
+				}
 			}
 		}
+
+		GlobalUnlock(stm.hGlobal);
+
+		ReleaseStgMedium(&stm);
 	}
+	else if (pidlFolder)
+	{
+		wstring folderPath;
 
-	GlobalUnlock(stm.hGlobal);
+		folderPath.resize(MAX_PATH);
 
-	ReleaseStgMedium(&stm);
+		if (!SHGetPathFromIDList(pidlFolder, &folderPath[0]))
+		{
+			return E_INVALIDARG;
+		}
+
+		_nFiles = 1;
+
+		_contextMenuUtil = new ContextMenuUtil();
+
+		_contextMenuUtil->AddFile(folderPath);
+	}
 
 	return S_OK;
 }

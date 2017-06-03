@@ -27,6 +27,15 @@ HRESULT NativityContextMenuRegistrationHandler::MakeRegistryEntries(const CLSID&
 		return hResult;
 	}
 
+	HKEY backgroundKey = NULL;
+
+	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CLASSES_ROOT, REGISTRY_BACKGROUND_CONTEXT_MENU, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &backgroundKey, NULL));
+
+	if (FAILED(hResult))
+	{
+		return hResult;
+	}
+
 	HKEY folderKey = NULL;
 
 	hResult = HRESULT_FROM_WIN32(RegCreateKeyEx(HKEY_CLASSES_ROOT, REGISTRY_FOLDER_CONTEXT_MENU, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &folderKey, NULL));
@@ -64,6 +73,13 @@ HRESULT NativityContextMenuRegistrationHandler::RemoveRegistryEntries()
 	HRESULT hResult;
 
 	hResult = HRESULT_FROM_WIN32(RegDeleteKey(HKEY_CLASSES_ROOT, REGISTRY_ALL_CONTEXT_MENU));
+
+	if (FAILED(hResult))
+	{
+		return hResult;
+	}
+
+	hResult = HRESULT_FROM_WIN32(RegDeleteKey(HKEY_CLASSES_ROOT, REGISTRY_BACKGROUND_CONTEXT_MENU));
 
 	if (FAILED(hResult))
 	{

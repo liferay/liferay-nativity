@@ -20,10 +20,11 @@
 #include "ContextMenuAction.h"
 #include "ContextMenuConstants.h"
 #include "ContextMenuUtil.h"
+#include <atlbase.h>
 #include <gdiplus.h>
 #include <shlobj.h>
-#include <windows.h>
 #include <uxtheme.h>
+#include <windows.h>
 
 using namespace std;
 
