@@ -13,11 +13,11 @@
  */
 
 #define CONTEXT_MENU_GUID L"[$context.menu.guid$]"
-#define REGISTRY_ALL_CONTEXT_MENU L"*\\shellex\\ContextMenuHandlers\\LiferayNativityContextMenus"
+#define REGISTRY_ALL_CONTEXT_MENU L"*\\shellex\\ContextMenuHandlers\\MountainDuckContextMenus"
 #define REGISTRY_APARTMENT L"Apartment"
-#define REGISTRY_BACKGROUND_CONTEXT_MENU L"directory\\background\\shellex\\ContextMenuHandlers\\LiferayNativityContextMenus"
+#define REGISTRY_BACKGROUND_CONTEXT_MENU L"directory\\background\\shellex\\ContextMenuHandlers\\MountainDuckContextMenus"
 #define REGISTRY_CLSID L"CLSID"
-#define REGISTRY_FOLDER_CONTEXT_MENU L"Folder\\shellex\\ContextMenuHandlers\\LiferayNativityContextMenus"
+#define REGISTRY_FOLDER_CONTEXT_MENU L"Folder\\shellex\\ContextMenuHandlers\\MountainDuckContextMenus"
 #define REGISTRY_IN_PROCESS L"InprocServer32"
 #define REGISTRY_THREADING L"ThreadingModel"
 #define REGISTRY_VERSION L"Version"

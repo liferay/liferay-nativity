@@ -47,7 +47,7 @@ public class Constants {
 	public static final String MENU_ITEMS = "menuItems";
 
 	public static final String NATIVITY_REGISTRY_KEY =
-		"SOFTWARE\\Liferay Inc\\Liferay Nativity";
+		"SOFTWARE\\iterate GmbH\\Mountain Duck";
 
 	public static final String PATH = "path";
 
