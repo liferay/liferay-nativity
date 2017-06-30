@@ -556,13 +556,13 @@ bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, HMENU subMenuHandle, 
 {
 	MENUITEMINFO menuItem = { sizeof(menuItem) };
 
-	menuItem.fMask = MIIM_STRING | MIIM_SUBMENU;
+	menuItem.fMask = MIIM_STRING | MIIM_SUBMENU | MIIM_STATE;
 
 	menuItem.dwTypeData = (LPWSTR)text;
 
 	menuItem.hSubMenu = subMenuHandle;
 
-	menuItem.fState = enabled ? MFS_DEFAULT : MFS_GRAYED;
+	menuItem.fState = enabled ? MFS_ENABLED : MFS_GRAYED;
 
 	if (!InsertMenuItem(hMenu, location, TRUE, &menuItem))
 	{
@@ -576,13 +576,13 @@ bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, int location, int com
 {
 	MENUITEMINFO menuItem = { sizeof(menuItem) };
 
-	menuItem.fMask = MIIM_STRING | MIIM_ID;
+	menuItem.fMask = MIIM_STRING | MIIM_ID | MIIM_STATE;
 
 	menuItem.dwTypeData = (LPWSTR)text;
 
 	menuItem.wID = command;
 
-	menuItem.fState = enabled ? MFS_DEFAULT : MFS_GRAYED;
+	menuItem.fState = enabled ? MFS_ENABLED : MFS_GRAYED;
 
 	if (!InsertMenuItem(hMenu, location, TRUE, &menuItem))
 	{
