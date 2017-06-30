@@ -71,9 +71,9 @@ class LiferayNativityContextMenus : public IShellExtInit, public IContextMenu
 
 		bool _InsertSeparator(HMENU, int);
 
-		bool _InsertMenu(HMENU, HMENU, int, const wchar_t*);
+		bool _InsertMenu(HMENU, HMENU, int, const wchar_t*, bool);
 
-		bool _InsertMenu(HMENU, int, int, const wchar_t*);
+		bool _InsertMenu(HMENU, int, int, const wchar_t*, bool);
 
 		void _PerformAction(int actionIndex, HWND hWnd);
 

@@ -324,7 +324,7 @@ int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, in
 		{
 			HMENU subMenuHandle = CreatePopupMenu();
 
-			if (_InsertMenu(hMenu, subMenuHandle, location, text->c_str()))
+			if (_InsertMenu(hMenu, subMenuHandle, location, text->c_str(), menu->GetEnabled()))
 			{
 				cmdCount++;
 
@@ -344,7 +344,7 @@ int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, in
 		}
 		else
 		{
-			if (_InsertMenu(hMenu, location, cmdCount, text->c_str()))
+			if (_InsertMenu(hMenu, location, cmdCount, text->c_str(), menu->GetEnabled()))
 			{
 				cmdCount++;
 			}
@@ -552,15 +552,17 @@ HBITMAP LiferayNativityContextMenus::_IconToBitmapPARGB32(HICON hIcon)
 	return hBmp;
 }
 
-bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, HMENU subMenuHandle, int location, const wchar_t* text)
+bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, HMENU subMenuHandle, int location, const wchar_t* text, bool enabled)
 {
 	MENUITEMINFO menuItem = { sizeof(menuItem) };
 
-	menuItem.fMask = MIIM_STRING | MIIM_SUBMENU;
+	menuItem.fMask = MIIM_STRING | MIIM_SUBMENU | MIIM_STATE;
 
 	menuItem.dwTypeData = (LPWSTR)text;
 
 	menuItem.hSubMenu = subMenuHandle;
+
+	menuItem.fState = enabled ? MFS_ENABLED : MFS_GRAYED;
 
 	if (!InsertMenuItem(hMenu, location, TRUE, &menuItem))
 	{
@@ -570,15 +572,17 @@ bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, HMENU subMenuHandle, 
 	return true;
 }
 
-bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, int location, int command, const wchar_t* text)
+bool LiferayNativityContextMenus::_InsertMenu(HMENU hMenu, int location, int command, const wchar_t* text, bool enabled)
 {
 	MENUITEMINFO menuItem = { sizeof(menuItem) };
 
-	menuItem.fMask = MIIM_STRING | MIIM_ID;
+	menuItem.fMask = MIIM_STRING | MIIM_ID | MIIM_STATE;
 
 	menuItem.dwTypeData = (LPWSTR)text;
 
 	menuItem.wID = command;
+
+	menuItem.fState = enabled ? MFS_ENABLED : MFS_GRAYED;
 
 	if (!InsertMenuItem(hMenu, location, TRUE, &menuItem))
 	{
