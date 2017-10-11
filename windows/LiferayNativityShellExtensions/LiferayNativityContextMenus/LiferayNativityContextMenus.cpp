@@ -350,7 +350,10 @@ int LiferayNativityContextMenus::_AddMenu(HMENU hMenu, ContextMenuItem* menu, in
 			}
 		}
 
-		HICON hIcon = (HICON)LoadImage(NULL, menu->GetIconPath()->c_str(), IMAGE_ICON, 16, 16, LR_LOADFROMFILE);
+        SIZE sizIcon;
+        sizIcon.cx = GetSystemMetrics(SM_CXSMICON);
+        sizIcon.cy = GetSystemMetrics(SM_CYSMICON);
+		HICON hIcon = (HICON)LoadImage(NULL, menu->GetIconPath()->c_str(), IMAGE_ICON, sizIcon.cx, sizIcon.cy, LR_LOADFROMFILE);
 		
 		if (hIcon != NULL)
 		{
