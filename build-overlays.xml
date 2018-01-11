@@ -1,0 +1,20 @@
+<project name="liferay-nativity-overlays" default="overlays" basedir=".">
+
+    <include file="build.xml"/>
+
+    <target name="overlays">
+        <ant target="build-windows-overlays" inheritAll="false">
+            <property name="overlay.name" value="${overlay.name.green}" />
+            <property name="overlay.guid" value="${overlay.guid.green}" />
+            <property name="overlay.id" value="${overlay.id.green}" />
+            <property name="overlay.path" value="${overlay.path.green}" />
+        </ant>
+        <ant target="build-windows-overlays" inheritAll="false">
+            <property name="overlay.name" value="${overlay.name.blue}" />
+            <property name="overlay.guid" value="${overlay.guid.blue}" />
+            <property name="overlay.id" value="${overlay.id.blue}" />
+            <property name="overlay.path" value="${overlay.path.blue}" />
+        </ant>
+    </target>
+
+</project>
