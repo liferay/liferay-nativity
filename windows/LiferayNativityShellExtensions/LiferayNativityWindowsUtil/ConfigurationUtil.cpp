@@ -242,7 +242,7 @@ bool ConfigurationUtil::RefreshExplorer(const wchar_t* path)
 		CComPtr<IDispatch> iDispatch;
 		CComVariant index(i);
 
-		if (FAILED(hResult = iShellWindows->Item(index, &iDispatch)))
+		if (FAILED(hResult = iShellWindows->Item(index, &iDispatch)) || hResult == S_FALSE)
 		{
 			continue;
 		}
