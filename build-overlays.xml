@@ -4,16 +4,34 @@
 
     <target name="overlays">
         <ant target="build-windows-overlays" inheritAll="false">
-            <property name="overlay.name" value="${overlay.name.green}" />
-            <property name="overlay.guid" value="${overlay.guid.green}" />
-            <property name="overlay.id" value="${overlay.id.green}" />
-            <property name="overlay.path" value="${overlay.path.green}" />
+            <property name="overlay.name" value="${overlay.name.error}" />
+            <property name="overlay.guid" value="${overlay.guid.error}" />
+            <property name="overlay.id" value="${overlay.id.error}" />
+            <property name="overlay.path" value="${overlay.path.error}" />
         </ant>
         <ant target="build-windows-overlays" inheritAll="false">
-            <property name="overlay.name" value="${overlay.name.blue}" />
-            <property name="overlay.guid" value="${overlay.guid.blue}" />
-            <property name="overlay.id" value="${overlay.id.blue}" />
-            <property name="overlay.path" value="${overlay.path.blue}" />
+            <property name="overlay.name" value="${overlay.name.ignored}" />
+            <property name="overlay.guid" value="${overlay.guid.ignored}" />
+            <property name="overlay.id" value="${overlay.id.ignored}" />
+            <property name="overlay.path" value="${overlay.path.ignored}" />
+        </ant>
+        <ant target="build-windows-overlays" inheritAll="false">
+            <property name="overlay.name" value="${overlay.name.infinite}" />
+            <property name="overlay.guid" value="${overlay.guid.infinite}" />
+            <property name="overlay.id" value="${overlay.id.infinite}" />
+            <property name="overlay.path" value="${overlay.path.infinite}" />
+        </ant>
+        <ant target="build-windows-overlays" inheritAll="false">
+            <property name="overlay.name" value="${overlay.name.syncing}" />
+            <property name="overlay.guid" value="${overlay.guid.syncing}" />
+            <property name="overlay.id" value="${overlay.id.syncing}" />
+            <property name="overlay.path" value="${overlay.path.syncing}" />
+        </ant>
+        <ant target="build-windows-overlays" inheritAll="false">
+            <property name="overlay.name" value="${overlay.name.uptodate}" />
+            <property name="overlay.guid" value="${overlay.guid.uptodate}" />
+            <property name="overlay.id" value="${overlay.id.uptodate}" />
+            <property name="overlay.path" value="${overlay.path.uptodate}" />
         </ant>
     </target>
 
