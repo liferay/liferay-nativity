@@ -38,7 +38,7 @@
         <url>https://github.com/iterate-ch/liferay-nativity</url>
       <tag>HEAD</tag>
   </scm>
-    <version>1.0.15-SNAPSHOT</version>
+    <version>1.0.16-SNAPSHOT</version>
     <build>
         <sourceDirectory>java/src</sourceDirectory>
         <testSourceDirectory>java/test</testSourceDirectory>
