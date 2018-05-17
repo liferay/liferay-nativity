@@ -49,29 +49,8 @@ public class AppleFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
-	@Override
-	public void refreshIcons() {
-		refreshIcons(null);
-	}
-
-	@Override
+    @Override
 	public void refreshIcons(String[] paths) {
-		NativityMessage message = new NativityMessage(
-			Constants.REPAINT_ALL_ICONS, "");
-
-		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void removeFileIcon(String path) {
-		NativityMessage message = new NativityMessage(
-			Constants.REPAINT_ALL_ICONS, "");
-
-		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void removeFileIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
 			Constants.REPAINT_ALL_ICONS, "");
 

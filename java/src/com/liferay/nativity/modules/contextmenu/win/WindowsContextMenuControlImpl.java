@@ -79,9 +79,4 @@ public class WindowsContextMenuControlImpl extends ContextMenuControl {
 		nativityControl.registerMessageListener(
 			fireContextMenuActionMessageListener);
 	}
-
-	@Override
-	public void registerIcon(String path, String iconId) {
-	}
-
 }
