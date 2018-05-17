@@ -22,6 +22,7 @@ import com.liferay.nativity.modules.fileicon.FileIconControl;
 import com.liferay.nativity.modules.fileicon.FileIconControlCallback;
 import com.liferay.nativity.util.StringUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class FSFileIconControlImpl implements FileIconControl {
 	@Override
 	public void refreshIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
-			Constants.REFRESH_ICONS, "");
+			Constants.REFRESH_ICONS, Arrays.asList(paths));
 
 		nativityControl.sendMessage(message);
 	}

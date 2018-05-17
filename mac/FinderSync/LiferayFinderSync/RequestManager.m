@@ -251,7 +251,7 @@ static RequestManager* sharedInstance = nil;
 		[self processMenuItems:value];
 	}
 	else if ([command isEqualToString:@"refreshIcons"]) {
-		[self refreshBadges];
+		[self refreshBadges:(NSArray*)value];
 	}
 	else if ([command isEqualToString:@"registerContextMenuIcon"]) {
 		[self registerContextMenuIcon:value];
@@ -365,28 +365,11 @@ static RequestManager* sharedInstance = nil;
 	[_callbackLock unlockWithCondition:RECEIVED_CALLBACK_RESPONSE];
 }
 
-- (void) refreshBadges {
-	NSFileManager* fileManager = [NSFileManager defaultManager];
-
-	for (NSURL* observedFolder in [_observedFolders copy]) {
-		NSError* error = nil;
-
-		NSArray* urls = [fileManager contentsOfDirectoryAtURL:observedFolder includingPropertiesForKeys:nil options:0 error:&error];
-
-		if (error) {
-			NSLog(@"Failed to refresh badges for %@. Error: %@", observedFolder, error);
-
-			continue;
-		}
-
-		for (NSURL* url in urls) {
-			[self requestFileBadgeId:url];
-		}
-	}
-
-	for (NSURL* url in [[FIFinderSyncController defaultController].directoryURLs copy]) {
-		[self requestFileBadgeId:url];
-	}
+- (void) refreshBadges:(NSArray*)paths {
+    for (NSString* path in paths) {
+		NSString* normalizedPath = [path decomposedStringWithCanonicalMapping];
+        [self requestFileBadgeId:[NSURL fileURLWithPath:normalizedPath]];
+    }
 }
 
 - (void) registerBadgeImage:(NSData*)cmdData {
@@ -607,8 +590,6 @@ static RequestManager* sharedInstance = nil;
 	[FIFinderSyncController defaultController].directoryURLs = urls;
 
 	registeredUrls = [urls copy];
-
-	[self refreshBadges];
 }
 
 - (void) socket:(GCDAsyncSocket*)socket didConnectToHost:(NSString*)host port:(UInt16)port {
