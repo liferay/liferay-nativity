@@ -60,7 +60,11 @@
 			[[FIFinderSyncController defaultController] setBadgeImage:[[NSImage alloc] initWithContentsOfFile:path] label:label forBadgeIdentifier:iconId];
 		}
 
-		[[RequestManager sharedInstance] refreshBadges];
+        NSMutableArray* files = [NSMutableArray arrayWithCapacity: [registeredUrls count]];
+		for (NSURL* url in registeredUrls) {
+		    [files addObject:[url path]];
+		}
+        [[RequestManager sharedInstance] refreshBadges:files];
 	}
 
 	return self;

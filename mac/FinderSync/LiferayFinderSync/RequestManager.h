@@ -34,7 +34,7 @@
 + (RequestManager*) sharedInstance;
 - (void) connect;
 - (NSMenu*) menuForFiles:(NSArray*)files;
-- (void) refreshBadges;
+- (void) refreshBadges:(NSArray*)files;
 - (void) requestFileBadgeId:(NSURL*)url;
 - (void) sendMenuItemClicked:(NSString*)action;
 - (void) sendObservingFolder:(NSURL*)url start:(BOOL)start;
