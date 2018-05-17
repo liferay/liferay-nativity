@@ -51,28 +51,8 @@ public class LinuxFileIconControlImpl extends UnixFileIconControlBaseImpl {
 		nativityControl.sendMessage(message);
 	}
 
-	@Override
-	public void refreshIcons() {
-	}
-
-	@Override
+    @Override
 	public void refreshIcons(String[] paths) {
-	}
-
-	@Override
-	public void removeFileIcon(String path) {
-		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_FILE_ICONS, new String[] { path });
-
-		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void removeFileIcons(String[] paths) {
-		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_FILE_ICONS, paths);
-
-		nativityControl.sendMessage(message);
 	}
 
 	@Override

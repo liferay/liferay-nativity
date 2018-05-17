@@ -89,11 +89,6 @@ public class FSFileIconControlImpl implements FileIconControl {
 	}
 
 	@Override
-	public void refreshIcons() {
-		refreshIcons(null);
-	}
-
-	@Override
 	public void refreshIcons(String[] paths) {
 		NativityMessage message = new NativityMessage(
 			Constants.REFRESH_ICONS, "");
@@ -103,11 +98,6 @@ public class FSFileIconControlImpl implements FileIconControl {
 
 	@Override
 	public void refreshWindow(String path) {
-	}
-
-	@Override
-	public int registerIcon(String path) {
-		return -1;
 	}
 
 	@Override
@@ -122,18 +112,6 @@ public class FSFileIconControlImpl implements FileIconControl {
 			Constants.REGISTER_ICON_WITH_ID, map);
 
 		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void removeAllFileIcons() {
-	}
-
-	@Override
-	public void removeFileIcon(String path) {
-	}
-
-	@Override
-	public void removeFileIcons(String[] paths) {
 	}
 
 	@Override
@@ -175,10 +153,6 @@ public class FSFileIconControlImpl implements FileIconControl {
 
 			nativityControl.sendMessage(message);
 		}
-	}
-
-	@Override
-	public void unregisterIcon(int id) {
 	}
 
 	protected FileIconControlCallback fileIconControlCallback;

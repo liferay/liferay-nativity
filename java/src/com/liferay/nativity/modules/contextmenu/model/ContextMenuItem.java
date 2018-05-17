@@ -86,11 +86,6 @@ public class ContextMenuItem {
 		return _helpText;
 	}
 
-	@Deprecated
-	public String getIconId() {
-		return _iconId;
-	}
-
 	public String getIconPath() {
 		return _iconPath;
 	}
@@ -117,11 +112,6 @@ public class ContextMenuItem {
 
 	public void setHelpText(String helpText) {
 		_helpText = helpText;
-	}
-
-	@Deprecated
-	public void setIconId(String iconId) {
-		_iconId = iconId;
 	}
 
 	public void setIconPath(String iconPath) {

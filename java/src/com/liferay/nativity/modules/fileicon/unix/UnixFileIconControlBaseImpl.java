@@ -39,21 +39,7 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 	public void refreshWindow(String path) {
 	}
 
-	@Override
-	public int registerIcon(String path) {
-		NativityMessage message = new NativityMessage(
-			Constants.REGISTER_ICON, path);
-
-		String reply = nativityControl.sendMessage(message);
-
-		if ((reply == null) || reply.isEmpty()) {
-			return -1;
-		}
-
-		return Integer.parseInt(reply);
-	}
-
-	@Override
+    @Override
 	public void registerIconWithId(String path, String label, String iconId) {
 		Map<String, String> map = new HashMap<String, String>(3);
 
@@ -62,22 +48,6 @@ public abstract class UnixFileIconControlBaseImpl extends FileIconControlBase {
 
 		NativityMessage message = new NativityMessage(
 			Constants.REGISTER_ICON_WITH_ID, map);
-
-		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void removeAllFileIcons() {
-		NativityMessage message = new NativityMessage(
-			Constants.REMOVE_ALL_FILE_ICONS, "");
-
-		nativityControl.sendMessage(message);
-	}
-
-	@Override
-	public void unregisterIcon(int id) {
-		NativityMessage message = new NativityMessage(
-			Constants.UNREGISTER_ICON, id);
 
 		nativityControl.sendMessage(message);
 	}
