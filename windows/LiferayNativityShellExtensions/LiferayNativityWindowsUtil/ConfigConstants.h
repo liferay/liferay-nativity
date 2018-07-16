@@ -12,6 +12,6 @@
  *  details.
  */
 
-#define REGISTRY_LIFERAY_KEY	L"SOFTWARE\\Liferay Inc\\Liferay Nativity"
+#define REGISTRY_LIFERAY_KEY	L"SOFTWARE\\iterate GmbH\\Mountain Duck"
 #define REGISTRY_SYNC_ROOT_KEY	L"Nativity Root"
 #define REGISTRY_RPC_PORT_KEY	L"Nativity Port"

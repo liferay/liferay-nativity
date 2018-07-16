@@ -17,13 +17,13 @@ package com.liferay.nativity.modules.contextmenu.model;
 /**
  * @author Dennis Ju
  */
-public abstract class ContextMenuAction {
+public interface ContextMenuAction {
 
 	/**
 	 * Called when a context menu item is selected
 	 *
 	 * @param paths array of selected file paths
 	 */
-	public abstract void onSelection(String[] paths);
+	void onSelection(String[] paths);
 
 }

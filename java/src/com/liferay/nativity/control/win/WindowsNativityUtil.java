@@ -57,17 +57,9 @@ public class WindowsNativityUtil {
 
 		_logger.trace("Loading WindowsNativityUtil DLL");
 
-		String nativityDllName = _NATIVITY_DLL_NAME;
-
-		if (System.getenv("ProgramFiles(x86)") != null) {
-			nativityDllName = nativityDllName + "_x64";
-		}
-		else {
-			nativityDllName = nativityDllName + "_x86";
-		}
-
+		String architecture = System.getProperty("sun.arch.data.model").equals("32") ? "x86" : "x64";
 		try {
-			System.loadLibrary(nativityDllName);
+			System.loadLibrary(_NATIVITY_DLL_NAME + "_" + architecture);
 
 			_loaded = true;
 

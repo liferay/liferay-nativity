@@ -32,20 +32,6 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void enableFileIcons();
 
 	/**
-	 * Mac Injector only
-	 *
-	 * Refresh icons. When using callbacks for setting the file icons, this
-	 * must be called when new icons are set to refresh stale windows. Finder
-	 * will not request new icons from the client unless there is interaction
-	 * with the Finder window.
-	 *
-	 * @deprecated as of 1.4. Use refreshIcons(paths) with a null or empty set
-	 * of paths
-	 */
-	@Deprecated
-	public void refreshIcons();
-
-	/**
 	 * Windows, Mac Finder Sync, and Mac Injector only
 	 *
 	 * Causes Explorer or Finder to refresh the file icons. This must be called
@@ -69,20 +55,6 @@ public interface FileIconControl extends FileIconControlCallback {
 	public void refreshWindow(String path);
 
 	/**
-	 * Mac Injector and Linux only
-	 *
-	 * Register an overlay icon
-	 *
-	 * @param path The path of the overlay icon to register
-	 *
-	 * @return overlay icon id. -1 if the icon failed to register.
-	 *
-	 * @deprecated as of 1.4. Use registerIconWithId(...)
-	 */
-	@Deprecated
-	public int registerIcon(String path);
-
-	/**
 	 * Linux, Mac Finder Sync, and Mac Injector only
 	 *
 	 * Register an overlay icon with label and iconId
@@ -93,43 +65,6 @@ public interface FileIconControl extends FileIconControlCallback {
 	 * @param iconId The unique iconId identifying this icon
 	 */
 	public void registerIconWithId(String path, String label, String iconId);
-
-	/**
-	 * Linux only
-	 * Deprecated for Mac as of 1.2
-	 *
-	 * Removes all file icon overlays
-	 *
-	 * @deprecated as of 1.4. Use disableFileIcons().
-	 */
-	@Deprecated
-	public void removeAllFileIcons();
-
-	/**
-	 * Linux only
-	 * Deprecated for Mac as of 1.2
-	 *
-	 * Removes file icon overlay
-	 *
-	 * @param path The file path to remove the overlay
-	 *
-	 * @deprecated as of 1.4. Use setFileIcon(path, -1).
-	 */
-	@Deprecated
-	public void removeFileIcon(String path);
-
-	/**
-	 * Linux only
-	 * Deprecated for Mac as of 1.2
-	 *
-	 * Removes file icon overlays
-	 *
-	 * @param paths The file paths to remove file icon overlays
-	 *
-	 * @deprecated as of 1.4. Use setFileIcons(...) with a value of -1.
-	 */
-	@Deprecated
-	public void removeFileIcons(String[] paths);
 
 	/**
 	 * Linux and Mac Finder Sync only
@@ -154,17 +89,5 @@ public interface FileIconControl extends FileIconControlCallback {
 	 * icon overlay ids
 	 */
 	public void setFileIcons(Map<String, Integer> fileIconsMap);
-
-	/**
-	 * Mac only
-	 *
-	 * Unregister an overlay icon
-	 *
-	 * @param id The id of the icon to unregister
-	 *
-	 * @deprecated as of 1.4.
-	 */
-	@Deprecated
-	public void unregisterIcon(int id);
 
 }

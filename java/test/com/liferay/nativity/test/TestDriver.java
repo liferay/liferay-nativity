@@ -131,12 +131,13 @@ public class TestDriver {
 
 	private static void _clearFileIcon(FileIconControl fileIconControl) {
 		if (_list) {
-			String[] paths = new String[] { _testFolder, _testFile };
-
-			fileIconControl.removeFileIcons(paths);
+			Map<String, Integer> paths = new HashMap<>();
+			paths.put(_testFolder, -1);
+			paths.put(_testFile, -1);
+			fileIconControl.setFileIcons(paths);
 		}
 		else {
-			fileIconControl.removeFileIcon(_testFolder);
+			fileIconControl.setFileIcon(_testFolder, -1);
 		}
 
 		try {

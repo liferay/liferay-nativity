@@ -17,8 +17,8 @@ package com.liferay.nativity.modules.contextmenu;
 import com.liferay.nativity.control.NativityControl;
 import com.liferay.nativity.modules.contextmenu.model.ContextMenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 		this.nativityControl = nativityControl;
 		this.contextMenuControlCallback = contextMenuControlCallback;
 
-		contextMenuItems = new ArrayList<ContextMenuItem>();
+		contextMenuItems = new CopyOnWriteArrayList<>();
 	}
 
 	public void fireContextMenuAction(String uuid, String[] paths) {
@@ -67,20 +67,6 @@ public abstract class ContextMenuControl implements ContextMenuControlCallback {
 
 		return newContextMenuItems;
 	}
-
-	/**
-	 * Mac Finder Sync and Mac Injector only
-	 *
-	 * Register a context menu icon
-	 *
-	 * @param path The path of the context menu icon to register
-	 * @param iconId The unique icon id used for this image
-	 *
-	 * @deprecated as of 1.5. Set the path of the icon per ContextMenuItem
-	 * instance via ContextMenuItem.setIconPath(iconPath)
-	 */
-	@Deprecated
-	public abstract void registerIcon(String path, String iconId);
 
 	protected ContextMenuControlCallback contextMenuControlCallback;
 	protected List<ContextMenuItem> contextMenuItems;

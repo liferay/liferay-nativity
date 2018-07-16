@@ -242,7 +242,7 @@ bool ConfigurationUtil::RefreshExplorer(const wchar_t* path)
 		CComPtr<IDispatch> iDispatch;
 		CComVariant index(i);
 
-		if (FAILED(hResult = iShellWindows->Item(index, &iDispatch)))
+		if (FAILED(hResult = iShellWindows->Item(index, &iDispatch)) || hResult == S_FALSE)
 		{
 			continue;
 		}
@@ -383,7 +383,7 @@ bool ConfigurationUtil::RemoveFavoritesPath(const wchar_t* path)
 
 bool ConfigurationUtil::UpdateExplorer(const wchar_t* path)
 {
-	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, path, 0);
+	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSHNOWAIT, path, 0);
 
 	return true;
 }

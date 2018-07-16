@@ -52,11 +52,7 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 			Constants.ENABLE_OVERLAY_REGISTRY_NAME, 1);
 	}
 
-	@Override
-	public void refreshIcons() {
-	}
-
-	@Override
+    @Override
 	public void refreshIcons(String[] paths) {
 		if (!WindowsNativityUtil.loaded()) {
 			return;
@@ -86,24 +82,7 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 	}
 
 	@Override
-	public int registerIcon(String path) {
-		return 0;
-	}
-
-	@Override
 	public void registerIconWithId(String path, String label, String iconId) {
-	}
-
-	@Override
-	public void removeAllFileIcons() {
-	}
-
-	@Override
-	public void removeFileIcon(String path) {
-	}
-
-	@Override
-	public void removeFileIcons(String[] paths) {
 	}
 
 	@Override
@@ -112,10 +91,6 @@ public class WindowsFileIconControlImpl extends FileIconControlBase {
 
 	@Override
 	public void setFileIcons(Map<String, Integer> fileIconsMap) {
-	}
-
-	@Override
-	public void unregisterIcon(int id) {
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(

@@ -45,12 +45,12 @@ import java.io.PrintWriter;
 
 import java.net.InetSocketAddress;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +112,7 @@ public class FSNativityControlImpl extends NativityControl {
 			InetSocketAddress inetSocketAddress =
 				(InetSocketAddress)channelFuture.channel().localAddress();
 
-			_writePortToFile(inetSocketAddress.getPort());
+			this.connected(inetSocketAddress.getPort());
 		}
 		catch (Exception e) {
 			_logger.error(e.getMessage(), e);
@@ -220,7 +220,7 @@ public class FSNativityControlImpl extends NativityControl {
 		return false;
 	}
 
-	private void _writePortToFile(int port) {
+	protected void connected(int port) {
 		String path = null;
 
 		if (_portFilePath == null) {
@@ -278,7 +278,7 @@ public class FSNativityControlImpl extends NativityControl {
 	private EventLoopGroup _childEventLoopGroup;
 	private boolean _connected;
 	private List<FinderSyncChannelHandler> _finderSyncChannelHandlers =
-		new ArrayList<FinderSyncChannelHandler>();
+		new CopyOnWriteArrayList<>();
 	private EventLoopGroup _parentEventLoopGroup;
 	private String _portFilePath;
 
