@@ -383,7 +383,7 @@ bool ConfigurationUtil::RemoveFavoritesPath(const wchar_t* path)
 
 bool ConfigurationUtil::UpdateExplorer(const wchar_t* path)
 {
-	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSH, path, 0);
+	SHChangeNotify(SHCNE_UPDATEITEM, SHCNF_PATH | SHCNF_FLUSHNOWAIT, path, 0);
 
 	return true;
 }
