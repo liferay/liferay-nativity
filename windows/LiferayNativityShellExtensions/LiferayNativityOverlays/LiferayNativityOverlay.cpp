@@ -114,18 +114,16 @@ IFACEMETHODIMP LiferayNativityOverlay::GetOverlayInfo(PWSTR pwszIconFile, int cc
 
 bool LiferayNativityOverlay::_IsOverlaysEnabled()
 {
-	int* enable = new int();
+	int enable;
 	bool success = false;
 
-	if (RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_ENABLE_OVERLAY, enable))
+	if (RegistryUtil::ReadRegistry(REGISTRY_ROOT_KEY, REGISTRY_ENABLE_OVERLAY, &enable))
 	{
 		if (enable)
 		{
 			success = true;
 		}
 	}
-
-	delete enable;
 
 	return success;
 }
